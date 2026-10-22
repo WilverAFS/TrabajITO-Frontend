@@ -1,29 +1,30 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import './App.css'
+
+import { useState } from 'react';
+import hero from './assets/trabajito.png';
+import './App.css';
 
 function App() {
-  const [mostrarPassword, setMostrarPassword] = useState(false)
-  const [correo, setCorreo] = useState('')
-  const [password, setPassword] = useState('')
+  const [correo, setCorreo] = useState('');
+  const [contrasena, setContrasena] = useState('');
+  const [mostrarContrasena, setMostrarContrasena] = useState(false);
 
-  const manejarSubmit = (event) => {
-    event.preventDefault()
-    alert('El formulario funciona. Falta conectar el backend de TrabajITO.')
-  }
+  const iniciarSesion = (e) => {
+    e.preventDefault();
+    alert('La pantalla está lista. Falta conectar el inicio de sesión con el backend.');
+  };
 
   return (
-    <div className="pagina-login">
+    <div className="pagina">
       <header className="navbar">
-        <a className="marca" href="#inicio" aria-label="TrabajITO, inicio">
-          <span className="marca-icono">🛠️</span>
-          <span>trabaj<span>ITO</span></span>
+        <a className="logo" href="/" aria-label="TrabajITO inicio">
+          <span className="logo-icono">🛠️</span>
+          <span>trabaj<span className="logo-verde">ITO</span></span>
         </a>
       </header>
 
-      <main className="login-layout" id="inicio">
+      <main className="contenido">
         <section className="presentacion">
-          <a className="volver" href="#inicio">
+          <a href="/" className="volver">
             <span aria-hidden="true">←</span> Volver al inicio
           </a>
 
@@ -39,25 +40,27 @@ function App() {
             portafolios, disponibilidad y reputación.
           </p>
 
-          <div className="hero-card">
+          <div className="imagen-contenedor">
             <img
-              src={heroImg}
-              alt="Presentación de los servicios de TrabajITO"
-              className="hero-imagen"
+              className="imagen-hero"
+              src={hero}
+              alt="Profesionales ofreciendo sus servicios"
             />
 
-            <div className="hero-mensaje">
-              <span className="escudo" aria-hidden="true">✓</span>
+            <div className="imagen-mensaje">
+              <span className="escudo">✓</span>
               <div>
                 <strong>Perfiles, portafolios y reputación.</strong>
-                <p>Disponibilidad publicada y calificaciones.</p>
+                <small>Disponibilidad pública y calificaciones.</small>
               </div>
             </div>
           </div>
+
+          <div className="franja-decorativa" />
         </section>
 
-        <section className="formulario-card">
-          <div className="formulario-encabezado">
+        <section className="login-card">
+          <div className="login-encabezado">
             <h2>Inicia sesión como cliente o trabajador.</h2>
             <p>
               Accede con tu correo y contraseña para consultar perfiles,
@@ -65,79 +68,88 @@ function App() {
             </p>
           </div>
 
-          <form onSubmit={manejarSubmit}>
+          <form onSubmit={iniciarSesion}>
+            <label htmlFor="correo">Correo electrónico</label>
             <div className="campo">
-              <label htmlFor="correo">Correo electrónico</label>
-
-              <div className="input-contenedor">
-                <span className="input-icono" aria-hidden="true">✉</span>
-                <input
-                  id="correo"
-                  type="email"
-                  placeholder="tu@correo.com"
-                  autoComplete="email"
-                  value={correo}
-                  onChange={(event) => setCorreo(event.target.value)}
-                  required
-                />
-              </div>
+              <span className="campo-icono" aria-hidden="true">✉</span>
+              <input
+                id="correo"
+                type="email"
+                placeholder="tu@correo.com"
+                value={correo}
+                onChange={(e) => setCorreo(e.target.value)}
+                autoComplete="email"
+                required
+              />
             </div>
 
+            <label htmlFor="contrasena">Contraseña</label>
             <div className="campo">
-              <label htmlFor="password">Contraseña</label>
-
-              <div className="input-contenedor">
-                <span className="input-icono" aria-hidden="true">♙</span>
-                <input
-                  id="password"
-                  type={mostrarPassword ? 'text' : 'password'}
-                  placeholder="Ingresa tu contraseña"
-                  autoComplete="current-password"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  required
-                />
-              </div>
+              <span className="campo-icono" aria-hidden="true">♙</span>
+              <input
+                id="contrasena"
+                type={mostrarContrasena ? 'text' : 'password'}
+                placeholder="Ingresa tu contraseña"
+                value={contrasena}
+                onChange={(e) => setContrasena(e.target.value)}
+                autoComplete="current-password"
+                required
+              />
             </div>
 
             <label className="mostrar-password">
               <input
                 type="checkbox"
-                checked={mostrarPassword}
-                onChange={(event) =>
-                  setMostrarPassword(event.target.checked)
-                }
+                checked={mostrarContrasena}
+                onChange={(e) => setMostrarContrasena(e.target.checked)}
               />
-              Mostrar contraseña
+              <span>Mostrar contraseña</span>
             </label>
 
-            <button className="boton-login" type="submit">
+            <button type="submit" className="boton-login">
               Iniciar sesión
             </button>
 
-            <a className="enlace-centrado" href="#recuperar">
+            <a
+              href="#recuperar"
+              className="enlace-recuperar"
+              onClick={(e) => {
+                e.preventDefault();
+                alert('La recuperación de contraseña se implementará después.');
+              }}
+            >
               ¿Olvidaste tu contraseña?
             </a>
           </form>
 
+          <div className="separador" />
+
           <div className="registro">
             <p>¿Aún no tienes una cuenta?</p>
-            <a href="#registro">
+            <a
+              href="#registro"
+              onClick={(e) => {
+                e.preventDefault();
+                alert('Aquí podrás conectar tu pantalla de registro.');
+              }}
+            >
               Regístrate <span aria-hidden="true">→</span>
             </a>
           </div>
 
           <div className="aviso-seguridad">
-            <span className="aviso-icono" aria-hidden="true">✓</span>
+            <span className="aviso-icono">✓</span>
             <div>
               <strong>Acceso diferenciado.</strong>
-              <p>Consulta perfiles, portafolios, disponibilidad y reputación.</p>
+              <small>
+                Consulta perfiles, portafolios, disponibilidad y reputación.
+              </small>
             </div>
           </div>
         </section>
       </main>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
