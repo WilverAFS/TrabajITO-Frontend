@@ -1,6 +1,5 @@
 
 import { useState } from 'react';
-import hero from './assets/hero.png';
 import logo from './assets/logo.png';
 import './App.css';
 
@@ -18,9 +17,9 @@ function App() {
     <div className="pagina">
       <header className="navbar">
         <a className="logo" href="/" aria-label="TrabajITO inicio">
-  <img src={logo} alt="Logo de TrabajITO" className="logo-imagen" />
-  <span>trabaj<span className="logo-verde">ITO</span></span>
-         </a>
+          <img src={logo} alt="Logo de TrabajITO" className="logo-imagen" />
+          <span>trabaj<span className="logo-verde">ITO</span></span>
+        </a>
       </header>
 
       <main className="contenido">
@@ -63,8 +62,8 @@ function App() {
         <section className="login-card">
           <div className="login-encabezado">
             <img src={logo} alt="Logo de TrabajITO" />
-           </div> 
-           <div className="login-encabezado">
+          </div>
+          <div className="login-encabezado">
             <h2>Inicia sesión como cliente o trabajador.</h2>
             <p>
               Accede con tu correo y contraseña para consultar perfiles,
@@ -130,13 +129,7 @@ function App() {
 
           <div className="registro">
             <p>¿Aún no tienes una cuenta?</p>
-            <a
-              href="#registro"
-              onClick={(e) => {
-                e.preventDefault();
-                alert('Aquí podrás conectar tu pantalla de registro.');
-              }}
-            >
+            <a href="/registro">
               Regístrate <span aria-hidden="true">→</span>
             </a>
           </div>
