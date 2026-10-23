@@ -1,122 +1,159 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+
+import { useState } from 'react';
+import hero from './assets/hero.png';
+import logo from './assets/logo.png';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [correo, setCorreo] = useState('');
+  const [contrasena, setContrasena] = useState('');
+  const [mostrarContrasena, setMostrarContrasena] = useState(false);
+
+  const iniciarSesion = (e) => {
+    e.preventDefault();
+    alert('La pantalla está lista. Falta conectar el inicio de sesión con el backend.');
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
+    <div className="pagina">
+      <header className="navbar">
+        <a className="logo" href="/" aria-label="TrabajITO inicio">
+  <img src={logo} alt="Logo de TrabajITO" className="logo-imagen" />
+  <span>trabaj<span className="logo-verde">ITO</span></span>
+         </a>
+      </header>
+
+      <main className="contenido">
+        <section className="presentacion">
+          <a href="/" className="volver">
+            <span aria-hidden="true">←</span> Volver al inicio
+          </a>
+
+          <div className="etiqueta">Trabajadores de oficio</div>
+
+          <h1>
+            Encuentra y conecta con
+            <span> profesionales.</span>
+          </h1>
+
+          <p className="descripcion">
+            Accede como cliente o trabajador para consultar perfiles,
+            portafolios, disponibilidad y reputación.
           </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
 
-      <div className="ticks"></div>
+          <div className="imagen-principal">
+            <img
+              className="logo"
+              src={logo}
+              alt="Profesionales ofreciendo sus servicios"
+            />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+            <div className="imagen-mensaje">
+              <span className="escudo">✓</span>
+              <div>
+                <strong>Perfiles, portafolios y reputación.</strong>
+                <small>Disponibilidad pública y calificaciones.</small>
+              </div>
+            </div>
+          </div>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+          <div className="franja-decorativa" />
+        </section>
+
+        <section className="login-card">
+          <div className="login-encabezado">
+            <img src={logo} alt="Logo de TrabajITO" />
+           </div> 
+           <div className="login-encabezado">
+            <h2>Inicia sesión como cliente o trabajador.</h2>
+            <p>
+              Accede con tu correo y contraseña para consultar perfiles,
+              portafolios, disponibilidad y reputación.
+            </p>
+          </div>
+
+          <form onSubmit={iniciarSesion}>
+            <label htmlFor="correo">Correo electrónico</label>
+            <div className="campo">
+              <span className="campo-icono" aria-hidden="true">✉</span>
+              <input
+                id="correo"
+                type="email"
+                placeholder="tu@correo.com"
+                value={correo}
+                onChange={(e) => setCorreo(e.target.value)}
+                autoComplete="email"
+                required
+              />
+            </div>
+
+            <label htmlFor="contrasena">Contraseña</label>
+            <div className="campo">
+              <span className="campo-icono" aria-hidden="true">♙</span>
+              <input
+                id="contrasena"
+                type={mostrarContrasena ? 'text' : 'password'}
+                placeholder="Ingresa tu contraseña"
+                value={contrasena}
+                onChange={(e) => setContrasena(e.target.value)}
+                autoComplete="current-password"
+                required
+              />
+            </div>
+
+            <label className="mostrar-password">
+              <input
+                type="checkbox"
+                checked={mostrarContrasena}
+                onChange={(e) => setMostrarContrasena(e.target.checked)}
+              />
+              <span>Mostrar contraseña</span>
+            </label>
+
+            <button type="submit" className="boton-login">
+              Iniciar sesión
+            </button>
+
+            <a
+              href="#recuperar"
+              className="enlace-recuperar"
+              onClick={(e) => {
+                e.preventDefault();
+                alert('La recuperación de contraseña se implementará después.');
+              }}
+            >
+              ¿Olvidaste tu contraseña?
+            </a>
+          </form>
+
+          <div className="separador" />
+
+          <div className="registro">
+            <p>¿Aún no tienes una cuenta?</p>
+            <a
+              href="#registro"
+              onClick={(e) => {
+                e.preventDefault();
+                alert('Aquí podrás conectar tu pantalla de registro.');
+              }}
+            >
+              Regístrate <span aria-hidden="true">→</span>
+            </a>
+          </div>
+
+          <div className="aviso-seguridad">
+            <span className="aviso-icono">✓</span>
+            <div>
+              <strong>Acceso diferenciado.</strong>
+              <small>
+                Consulta perfiles, portafolios, disponibilidad y reputación.
+              </small>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
 }
 
-export default App
+export default App;
