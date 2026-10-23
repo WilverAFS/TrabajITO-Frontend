@@ -1,0 +1,165 @@
+/* Estilos encapsulados para la pantalla Registro. No afectan el App.jsx de otro integrante. */
+html.trabajito-registro-route {
+  color-scheme: light;
+  background: #eaf2ff;
+}
+html.trabajito-registro-route #root {
+  display: block;
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  margin: 0;
+  border: none;
+  text-align: left;
+}
+
+.rg-pagina, .rg-pagina * { box-sizing: border-box; }
+.rg-pagina {
+  --rg-azul: #205bd9;
+  --rg-tinta: #183450;
+  --rg-subtitulo: #59718e;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  min-height: 100vh;
+  color: var(--rg-tinta);
+  background: #eaf2ff;
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: normal;
+}
+.rg-pagina h1, .rg-pagina h2, .rg-pagina p { margin: 0; font-family: inherit; }
+.rg-pagina a { text-decoration: none; }
+
+.rg-header {
+  height: 84px;
+  background: white;
+  border-bottom: 1px solid #dce7f5;
+  flex-shrink: 0;
+}
+.rg-header-contenido {
+  height: 100%;
+  width: min(1288px, calc(100% - 10.5%));
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.rg-marca { display: inline-flex; align-items: center; }
+.rg-marca img { display: block; width: 190px; height: 60px; object-fit: contain; }
+.rg-enlace-header {
+  border: 1px solid #d3e0f1;
+  background: #fff;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #155ee3;
+}
+
+.rg-principal {
+  flex: 1;
+  width: min(1288px, calc(100% - 10.5%));
+  margin: 0 auto;
+  padding: 39px 0 47px;
+  display: grid;
+  grid-template-columns: minmax(0, 635px) minmax(395px, 496px);
+  justify-content: space-between;
+  gap: 50px;
+  align-items: center;
+}
+.rg-presentacion { width: 100%; min-width: 0; }
+.rg-regresar { color: #115de0; font-size: 14px; font-weight: 700; display: inline-block; margin-bottom: 34px; }
+.rg-etiqueta {
+  background: #dbf5e8;
+  color: #117c58;
+  border-radius: 25px;
+  display: table;
+  padding: 5px 12px;
+  font-weight: 700;
+  font-size: 12px;
+  margin-bottom: 23px;
+}
+.rg-etiqueta span { margin-right: 5px; }
+.rg-pagina .rg-presentacion h1 {
+  font-size: clamp(34px, 3.15vw, 45px);
+  font-weight: 800;
+  letter-spacing: -1.25px;
+  line-height: 1.12;
+  color: #183450;
+  margin: 0 0 17px;
+  max-width: 660px;
+}
+.rg-presentacion h1 span { color: var(--rg-azul); display: block; }
+.rg-introduccion { color: var(--rg-subtitulo); font-size: 17px; line-height: 1.6; margin-bottom: 23px !important; }
+.rg-hero { width: 100%; height: auto; display: block; border-radius: 25px; }
+
+.rg-tarjeta {
+  background: #fff;
+  border: 1px solid #d8e3f1;
+  border-radius: 20px;
+  padding: 35px 37px 46px;
+  box-shadow: 0 10px 34px rgba(33, 66, 100, 0.025);
+  width: 100%;
+}
+.rg-pagina .rg-tarjeta h2 { font-size: 35px; line-height: 1.25; letter-spacing: -0.7px; color: #183450; font-weight: 800; margin: 0 0 8px; }
+.rg-tarjeta-descripcion { color: #5d7390; font-size: 16px; line-height: 1.55; margin-bottom: 24px !important; }
+.rg-formulario { display: flex; flex-direction: column; gap: 18px; }
+.rg-fila-nombres { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.rg-campo-grupo { min-width: 0; }
+.rg-campo-grupo > label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 7px; color: #1b3751; }
+.rg-campo-control { border: 1px solid #d2dfef; border-radius: 12px; height: 54px; display: flex; align-items: center; padding: 0 16px; gap: 10px; }
+.rg-campo-control:focus-within { border-color: #2c67dd; outline: 3px solid rgb(32 91 217 / 12%); }
+.rg-campo-icono { display: flex; align-items: center; color: #58728c; flex-shrink: 0; }
+.rg-campo-control input { width: 100%; min-width: 0; height: 100%; background: transparent; border: 0; font: inherit; font-size: 15px; color: #193957; outline: none; }
+.rg-campo-control input::placeholder { color: #607792; opacity: 1; }
+.rg-opcion-check { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; color: #2b4562; font-size: 14px; }
+.rg-opcion-check input { flex-shrink: 0; appearance: auto; width: 19px; height: 19px; margin: 1px 0 0; accent-color: var(--rg-azul); }
+.rg-mostrar { margin-top: 13px; }
+.rg-terminos { margin-top: 7px; }
+.rg-texto-enlace { color: #105de3; font-weight: 700; }
+.rg-boton-crear {
+  width: 100%; min-height: 51px; border: none; border-radius: 11px; background: var(--rg-azul);
+  color: white; font: inherit; font-size: 16px; font-weight: 700; margin-top: 4px; cursor: pointer;
+}
+.rg-boton-crear:hover { background: #174cbd; }
+.rg-boton-crear:focus-visible, .rg-pagina a:focus-visible { outline: 3px solid #70a0f8; outline-offset: 3px; }
+.rg-mensaje { font-size: 13px !important; border-radius: 8px; padding: 10px 12px; }
+.rg-error { color: #a22b37; background: #fff0f1; }
+.rg-confirmacion { color: #12623f; background: #eaf8ef; }
+.rg-tarjeta-pie { text-align: center; border-top: 1px solid #dce5f1; margin-top: 24px; padding-top: 21px; }
+.rg-tarjeta-pie p { font-size: 14px; color: #647992; margin: 0 0 8px; }
+.rg-tarjeta-pie a { color: #135ee3; font-weight: 700; font-size: 16px; }
+
+.rg-footer { flex-shrink: 0; background: #13304e; min-height: 69px; color: #b1c1d2; }
+.rg-footer-contenido { width: min(1288px, calc(100% - 10.5%)); margin: 0 auto; min-height: 69px; display: flex; justify-content: space-between; align-items: center; gap: 22px; font-size: 12px; }
+.rg-footer-contenido small { font-size: 12px; }
+.rg-footer nav { display: flex; flex-wrap: wrap; gap: 30px; }
+.rg-footer nav span { color: #edf4fb; }
+
+@media (max-width: 1100px) {
+  .rg-principal { grid-template-columns: minmax(0, 1fr) minmax(380px, 1fr); gap: 28px; }
+  .rg-tarjeta { padding: 28px 25px 34px; }
+  .rg-pagina .rg-presentacion h1 { font-size: clamp(32px, 3.4vw, 42px); }
+}
+@media (max-width: 760px) {
+  .rg-header { height: 70px; }
+  .rg-header-contenido, .rg-principal, .rg-footer-contenido { width: calc(100% - 38px); }
+  .rg-marca img { width: 164px; height: 52px; }
+  .rg-principal { display: flex; flex-direction: column; gap: 28px; padding-top: 28px; padding-bottom: 36px; }
+  .rg-presentacion { width: 100%; }
+  .rg-regresar { margin-bottom: 19px; }
+  .rg-etiqueta { margin-bottom: 15px; }
+  .rg-pagina .rg-presentacion h1 { font-size: clamp(30px, 6vw, 42px); }
+  .rg-introduccion { font-size: 15px; }
+  .rg-hero { max-height: 360px; object-fit: cover; }
+  .rg-tarjeta { max-width: 540px; }
+  .rg-footer-contenido { justify-content: center; flex-direction: column; padding: 20px 0; text-align: center; }
+  .rg-footer nav { justify-content: center; gap: 12px 20px; }
+}
+@media (max-width: 430px) {
+  .rg-enlace-header { font-size: 12px; padding: 9px 10px; }
+  .rg-tarjeta { padding: 25px 20px 32px; }
+  .rg-pagina .rg-tarjeta h2 { font-size: 30px; }
+  .rg-fila-nombres { grid-template-columns: 1fr; gap: 18px; }
+}
