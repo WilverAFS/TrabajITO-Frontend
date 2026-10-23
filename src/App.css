@@ -35,8 +35,11 @@
   text-decoration: none;
 }
 
-.logo-icono {
-  font-size: 25px;
+.logo-imagen {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  display: block;
 }
 
 .logo-verde {
@@ -109,9 +112,11 @@
   line-height: 1.75;
 }
 
+
 .imagen-contenedor {
   position: relative;
-  width: 100%;
+  isolation: isolate;
+  width: 70%;
   max-width: 570px;
   height: clamp(210px, 29vw, 330px);
   overflow: hidden;
@@ -121,22 +126,25 @@
 }
 
 .imagen-hero {
-  width: 100%;
-  height: 100%;
+  width: 70%;
+  height: 70%;
   display: block;
   object-fit: cover;
   transition: transform 0.45s ease;
 }
 
 .imagen-contenedor:hover .imagen-hero {
-  transform: scale(1.035);
+  transform: scale(1.06);
 }
 
+
+
+
 .imagen-mensaje {
-  position: absolute;
-  left: 16px;
-  bottom: 16px;
-  max-width: calc(100% - 32px);
+  position: static;
+  width: fit-content;
+  max-width: 100%;
+  margin: 16px 0 0;
   display: flex;
   align-items: center;
   gap: 11px;
@@ -146,6 +154,8 @@
   border-radius: 13px;
   box-shadow: 0 5px 18px rgb(15 34 58 / 10%);
 }
+
+
 
 .escudo,
 .aviso-icono {
@@ -402,6 +412,8 @@
 
   .imagen-contenedor {
     height: 250px;
+    overflow: hidden;
+  border-radius: 20px;
   }
 }
 
@@ -436,6 +448,8 @@
 
   .imagen-contenedor {
     height: clamp(220px, 62vw, 340px);
+      overflow: hidden;
+  border-radius: 20px;
   }
 
   .franja-decorativa {
@@ -460,4 +474,38 @@
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+.login-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 0 auto 24px;
+}
+
+.login-logo img {
+  display: block;
+  width: 70%;
+  max-width: 230px;
+  height: 70px;
+  object-fit: contain;
+  object-position: center;
+}
+
+
+.imagen-principal {
+  display: block;
+  width: 75%;
+  height: 100%;
+  margin: 0 auto;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 20px;
+  transition: transform 0.4s ease;
+  transform: scale(1);
+}
+
+.imagen-principal:hover {
+  transform: scale(1.06);
 }

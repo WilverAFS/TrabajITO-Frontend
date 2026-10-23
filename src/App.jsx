@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
-import hero from './assets/trabajito.png';
+import hero from './assets/hero.png';
+import logo from './assets/logo.png';
 import './App.css';
 
 function App() {
@@ -17,9 +18,9 @@ function App() {
     <div className="pagina">
       <header className="navbar">
         <a className="logo" href="/" aria-label="TrabajITO inicio">
-          <span className="logo-icono">🛠️</span>
-          <span>trabaj<span className="logo-verde">ITO</span></span>
-        </a>
+  <img src={logo} alt="Logo de TrabajITO" className="logo-imagen" />
+  <span>trabaj<span className="logo-verde">ITO</span></span>
+         </a>
       </header>
 
       <main className="contenido">
@@ -40,10 +41,10 @@ function App() {
             portafolios, disponibilidad y reputación.
           </p>
 
-          <div className="imagen-contenedor">
+          <div className="imagen-principal">
             <img
-              className="imagen-hero"
-              src={hero}
+              className="logo"
+              src={logo}
               alt="Profesionales ofreciendo sus servicios"
             />
 
@@ -61,6 +62,9 @@ function App() {
 
         <section className="login-card">
           <div className="login-encabezado">
+            <img src={logo} alt="Logo de TrabajITO" />
+           </div> 
+           <div className="login-encabezado">
             <h2>Inicia sesión como cliente o trabajador.</h2>
             <p>
               Accede con tu correo y contraseña para consultar perfiles,
