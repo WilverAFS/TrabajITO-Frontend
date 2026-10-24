@@ -19,6 +19,7 @@
     -<br>
     Monterrubio Diaz Luis Mario<br>
     Valencia Durán José Eduardo<br>
+    Espinoza de la Rosa Uriel<br>
   </p>
   <p><strong>Oaxaca de Juárez, Oaxaca · 2026</strong></p>
   <p><strong>Estado:</strong> En desarrollo &nbsp;·&nbsp; <strong>Método de trabajo:</strong> Kanban</p>
