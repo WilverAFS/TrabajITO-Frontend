@@ -17,7 +17,7 @@
     Cruz Sanchez Jhoan Marvin<br>
     -<br>
     -<br>
-    -<br>
+    Monterrubio Diaz Luis Mario<br>
     Valencia Durán José Eduardo<br>
   </p>
   <p><strong>Oaxaca de Juárez, Oaxaca · 2026</strong></p>
