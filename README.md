@@ -14,7 +14,7 @@
   <h4>Integrantes del Equipo 5</h4>
   <p>
     -<br>
-    -<br>
+    Cruz Sanchez Jhoan Marvin<br>
     -<br>
     -<br>
     -<br>
