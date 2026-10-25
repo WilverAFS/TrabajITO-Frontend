@@ -2,17 +2,22 @@
 import { useState } from 'react';
 import logo from './assets/logo.png';
 import './App.css';
+import Recuperacion from './pages/Recuperacion'
 
 function App() {
   const [correo, setCorreo] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [mostrarContrasena, setMostrarContrasena] = useState(false);
 
+  const [vista, setVista] = useState('login');
+
   const iniciarSesion = (e) => {
     e.preventDefault();
     alert('La pantalla está lista. Falta conectar el inicio de sesión con el backend.');
   };
-
+    if (vista === 'recuperacion') {
+      return <Recuperacion />;
+    }
   return (
     <div className="pagina">
       <header className="navbar">
@@ -118,7 +123,7 @@ function App() {
               className="enlace-recuperar"
               onClick={(e) => {
                 e.preventDefault();
-                alert('La recuperación de contraseña se implementará después.');
+                setVista('recuperacion');
               }}
             >
               ¿Olvidaste tu contraseña?
