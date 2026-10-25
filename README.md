@@ -15,6 +15,7 @@
   <p>
     -<br>
     Cruz Sanchez Jhoan Marvin<br>
+    Pacheco Cruz Diego<br>
     -<br>
     -<br>
     Monterrubio Diaz Luis Mario<br>
