@@ -13,11 +13,9 @@
   </p>
   <h4>Integrantes del Equipo 5</h4>
   <p>
-    -<br>
+    Flores Santiago Wilver Alfredo<br>
     Cruz Sanchez Jhoan Marvin<br>
     Pacheco Cruz Diego<br>
-    -<br>
-    -<br>
     Monterrubio Diaz Luis Mario<br>
     Valencia Durán José Eduardo<br>
     Espinoza de la Rosa Uriel<br>
