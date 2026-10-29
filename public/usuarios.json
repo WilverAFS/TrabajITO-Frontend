@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "nombre": "Uriel",
+    "correo": "uriel@trabajito.com",
+    "contrasena": "123456",
+    "rol": "cliente"
+  },
+  {
+    "id": 2,
+    "nombre": "Carlos",
+    "correo": "carlos@trabajito.com",
+    "contrasena": "plomero123",
+    "rol": "trabajador"
+  }
+]
