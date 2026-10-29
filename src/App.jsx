@@ -3,21 +3,59 @@ import { useState } from 'react';
 import logo from './assets/logo.png';
 import './App.css';
 import Recuperacion from './pages/Recuperacion'
+import Inicio from './pages/Inicio';
 
 function App() {
   const [correo, setCorreo] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [mostrarContrasena, setMostrarContrasena] = useState(false);
-
-  const [vista, setVista] = useState('login');
-
-  const iniciarSesion = (e) => {
+  
+  const [vista, setVista] = useState('login'); // 'login', 'recuperacion', 'inicio'
+  const [nombreUsuario, setNombreUsuario] = useState('');
+  const [errorLogin, setErrorLogin] = useState('');
+  const iniciarSesion = async (e) => {
     e.preventDefault();
-    alert('La pantalla está lista. Falta conectar el inicio de sesión con el backend.');
+    setErrorLogin(''); 
+    try {
+      // Simulamos la petición a la API leyendo el archivo local
+      const respuesta = await fetch('/usuarios.json');
+      const usuarios = await respuesta.json();
+
+      // Buscamos si existe un usuario con el correo y contraseña ingresados
+      const usuarioValido = usuarios.find(
+        (u) => u.correo === correo && u.contrasena === contrasena
+      );
+
+      if (usuarioValido) {
+        setNombreUsuario(usuarioValido.nombre);
+        // Si coincide, pasamos a la pantalla de inicio
+        setVista('inicio');
+      } else {
+        // Si no coincide, mostramos un error
+        setErrorLogin('Correo o contraseña incorrectos. Intenta de nuevo.');
+      }
+    } catch (error) {
+      console.error('Error simulando la API:', error);
+      alert('Error de conexión con el servidor.');
+    }
+    
+  };
+  const cerrarSesion = () => {
+    setCorreo('');
+    setContrasena('');
+    setNombreUsuario('');
+    setErrorLogin('');
+    setVista('login');
   };
     if (vista === 'recuperacion') {
       return <Recuperacion />;
     }
+    if (vista === 'inicio') {
+       return <Inicio cerrarSesion={cerrarSesion} nombreUsuario={nombreUsuario} />;    
+    }
+
+
+
   return (
     <div className="pagina">
       <header className="navbar">
@@ -113,6 +151,13 @@ function App() {
               />
               <span>Mostrar contraseña</span>
             </label>
+
+            {/* Aquí agregamos el mensaje de error en rojo */}
+            {errorLogin && (
+              <div style={{ color: '#d32f2f', fontSize: '0.9rem', marginBottom: '1rem', textAlign: 'center', fontWeight: '500' }}>
+                {errorLogin}
+              </div>
+            )}
 
             <button type="submit" className="boton-login">
               Iniciar sesión
