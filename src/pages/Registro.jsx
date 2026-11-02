@@ -47,12 +47,15 @@ export default function Registro() {
   const [mensaje, setMensaje] = useState('')
   const [error, setError] = useState('')
 
-  function manejarRegistro(evento) {
+async function manejarRegistro(evento) {
     evento.preventDefault()
     setMensaje('')
     setError('')
 
     const datos = new FormData(evento.currentTarget)
+    const nombre = String(datos.get('nombre') ?? '')
+    const apellidos = String(datos.get('apellidos') ?? '')
+    const correo = String(datos.get('correo') ?? '')
     const contrasena = String(datos.get('contrasena') ?? '')
     const confirmacion = String(datos.get('confirmacion') ?? '')
 
@@ -61,8 +64,45 @@ export default function Registro() {
       return
     }
 
-    // Maquetación exclusivamente frontend. No enviar datos ni guardar contraseñas.
-    setMensaje('Formulario validado. El registro de cuentas se conectará al backend más adelante.')
+    try {
+      const respuesta = await fetch('http://127.0.0.1:8000/api/v1/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          nombre: nombre,
+          // Lo enviamos como "apellido" en singular porque así está en tu base de datos
+          apellido: apellidos, 
+          correo: correo,
+          // Laravel generalmente espera estos nombres en inglés para la validación
+          password: contrasena,
+          password_confirmation: confirmacion, 
+          device_name: 'react-web'
+        })
+      });
+
+      const data = await respuesta.json();
+
+      if (respuesta.ok && data.success) {
+        setMensaje('¡Cuenta creada exitosamente! Ahora puedes regresar e iniciar sesión.');
+        setError(''); // Aseguramos que se borre la caja roja
+        evento.target.reset(); 
+      } else {
+        setMensaje(''); // Aseguramos que se borre la caja verde
+        if (data.errors) {
+          const primerError = Object.values(data.errors)[0][0];
+          setError(primerError);
+        } else {
+          setError(data.message || 'Error al crear la cuenta.');
+        }
+      }
+      
+    } catch (err) {
+      console.error('Error conectando a la API:', err);
+      setError('Error de conexión con el servidor.');
+    }
   }
 
   return (
