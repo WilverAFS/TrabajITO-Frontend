@@ -1,6 +1,6 @@
 
-import { useState } from 'react';
-import logo from './assets/logo.png';
+
+import { useState, useEffect } from 'react';import logo from './assets/logo.png';
 import './App.css';
 import Recuperacion from './pages/Recuperacion'
 import Inicio from './pages/Inicio';
@@ -13,40 +13,109 @@ function App() {
   const [vista, setVista] = useState('login'); // 'login', 'recuperacion', 'inicio'
   const [nombreUsuario, setNombreUsuario] = useState('');
   const [errorLogin, setErrorLogin] = useState('');
+  const [cargando, setCargando] = useState(true);
+  useEffect(() => {
+    const verificarToken = async () => {
+      const token = localStorage.getItem('token');
+      if (!token || token === 'undefined') {
+        setCargando(false); // Quitamos la pausa si no hay sesión
+        return;
+      }
+
+      try {
+        const respuesta = await fetch('http://127.0.0.1:8000/api/v1/me', {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}` 
+          }
+        });
+        const data = await respuesta.json();
+        if (respuesta.ok && data.success) {
+          setNombreUsuario(data.data.nombre); 
+          setVista('inicio'); 
+        } else {
+          localStorage.removeItem('token'); 
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setCargando(false); // Quitamos la pausa sin importar el resultado
+      }
+    };
+    verificarToken();
+  }, []);
   const iniciarSesion = async (e) => {
     e.preventDefault();
     setErrorLogin(''); 
+    
     try {
-      // Simulamos la petición a la API leyendo el archivo local
-      const respuesta = await fetch('/usuarios.json');
-      const usuarios = await respuesta.json();
+      const respuesta = await fetch('http://127.0.0.1:8000/api/v1/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          correo: correo,
+          password: contrasena, // El backend requiere la clave en inglés
+          device_name: 'react-web'
+        })
+      });
 
-      // Buscamos si existe un usuario con el correo y contraseña ingresados
-      const usuarioValido = usuarios.find(
-        (u) => u.correo === correo && u.contrasena === contrasena
-      );
+      const data = await respuesta.json();
 
-      if (usuarioValido) {
-        setNombreUsuario(usuarioValido.nombre);
-        // Si coincide, pasamos a la pantalla de inicio
+      if (respuesta.ok && data.success) {
+        // Guardamos el token en el almacenamiento local del navegador
+        const tokenReal = data.token || data.data.token;
+        localStorage.setItem('token', tokenReal);
+        // Extraemos el nombre del usuario desde la respuesta de Laravel
+        setNombreUsuario(data.data.usuario.nombre);
+        // Redirigimos a la pantalla principal
         setVista('inicio');
       } else {
-        // Si no coincide, mostramos un error
-        setErrorLogin('Correo o contraseña incorrectos. Intenta de nuevo.');
+        // Mostramos el error exacto que devuelva el backend
+        setErrorLogin(data.message || 'Correo o contraseña incorrectos.');
       }
     } catch (error) {
-      console.error('Error simulando la API:', error);
-      alert('Error de conexión con el servidor.');
+      console.error('Error conectando a la API:', error);
+      setErrorLogin('Error de conexión con el servidor.');
     }
-    
   };
-  const cerrarSesion = () => {
-    setCorreo('');
-    setContrasena('');
-    setNombreUsuario('');
-    setErrorLogin('');
-    setVista('login');
+  const cerrarSesion = async () => {
+    try {
+      // 1. Obtenemos el token que guardamos al iniciar sesión
+      const token = localStorage.getItem('token');
+
+      if (token) {
+        // 2. Hacemos la petición POST al endpoint de logout
+        await fetch('http://127.0.0.1:8000/api/v1/auth/logout', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            // Laravel Sanctum exige el Bearer token para saber a quién desconectar
+            'Authorization': `Bearer ${token}` 
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error al cerrar sesión en el servidor:', error);
+    } finally {
+      // 3. Pase lo que pase con el servidor, borramos el token de tu navegador
+      localStorage.removeItem('token');
+      
+      // 4. Limpiamos tus variables de estado de React y volvemos al login
+      setCorreo('');
+      setContrasena('');
+      setNombreUsuario('');
+      setErrorLogin('');
+      setVista('login');
+    }
   };
+
+    if (cargando) {
+     return <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', fontFamily: 'system-ui' }}>Cargando TrabajITO...</div>;
+    }
     if (vista === 'recuperacion') {
       return <Recuperacion />;
     }
