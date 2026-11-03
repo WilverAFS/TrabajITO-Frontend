@@ -1,17 +1,15 @@
 
 
-import { useState, useEffect } from 'react';import logo from './assets/logo.png';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router';
+import logo from './assets/logo.png';
 import './App.css';
-import Recuperacion from './pages/Recuperacion'
-import Inicio from './pages/Inicio';
 
 function App() {
+  const navigate = useNavigate();
   const [correo, setCorreo] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [mostrarContrasena, setMostrarContrasena] = useState(false);
-  
-  const [vista, setVista] = useState('login'); // 'login', 'recuperacion', 'inicio'
-  const [nombreUsuario, setNombreUsuario] = useState('');
   const [errorLogin, setErrorLogin] = useState('');
   const [cargando, setCargando] = useState(true);
   useEffect(() => {
@@ -32,8 +30,7 @@ function App() {
         });
         const data = await respuesta.json();
         if (respuesta.ok && data.success) {
-          setNombreUsuario(data.data.nombre); 
-          setVista('inicio'); 
+          navigate('/inicio', { replace: true }); 
         } else {
           localStorage.removeItem('token'); 
         }
@@ -44,7 +41,7 @@ function App() {
       }
     };
     verificarToken();
-  }, []);
+  }, [navigate]);
   const iniciarSesion = async (e) => {
     e.preventDefault();
     setErrorLogin(''); 
@@ -70,9 +67,7 @@ function App() {
         const tokenReal = data.token || data.data.token;
         localStorage.setItem('token', tokenReal);
         // Extraemos el nombre del usuario desde la respuesta de Laravel
-        setNombreUsuario(data.data.usuario.nombre);
-        // Redirigimos a la pantalla principal
-        setVista('inicio');
+        navigate('/inicio', { replace: true });
       } else {
         // Mostramos el error exacto que devuelva el backend
         setErrorLogin(data.message || 'Correo o contraseña incorrectos.');
@@ -82,45 +77,9 @@ function App() {
       setErrorLogin('Error de conexión con el servidor.');
     }
   };
-  const cerrarSesion = async () => {
-    try {
-      // 1. Obtenemos el token que guardamos al iniciar sesión
-      const token = localStorage.getItem('token');
 
-      if (token) {
-        // 2. Hacemos la petición POST al endpoint de logout
-        await fetch('http://127.0.0.1:8000/api/v1/auth/logout', {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            // Laravel Sanctum exige el Bearer token para saber a quién desconectar
-            'Authorization': `Bearer ${token}` 
-          }
-        });
-      }
-    } catch (error) {
-      console.error('Error al cerrar sesión en el servidor:', error);
-    } finally {
-      // 3. Pase lo que pase con el servidor, borramos el token de tu navegador
-      localStorage.removeItem('token');
-      
-      // 4. Limpiamos tus variables de estado de React y volvemos al login
-      setCorreo('');
-      setContrasena('');
-      setNombreUsuario('');
-      setErrorLogin('');
-      setVista('login');
-    }
-  };
-
-    if (cargando) {
+  if (cargando) {
      return <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', fontFamily: 'system-ui' }}>Cargando TrabajITO...</div>;
-    }
-    if (vista === 'recuperacion') {
-      return <Recuperacion />;
-    }
-    if (vista === 'inicio') {
-       return <Inicio cerrarSesion={cerrarSesion} nombreUsuario={nombreUsuario} />;    
     }
 
 
@@ -232,25 +191,18 @@ function App() {
               Iniciar sesión
             </button>
 
-            <a
-              href="#recuperar"
-              className="enlace-recuperar"
-              onClick={(e) => {
-                e.preventDefault();
-                setVista('recuperacion');
-              }}
-            >
+            <Link to="/recuperar" className="enlace-recuperar">
               ¿Olvidaste tu contraseña?
-            </a>
+            </Link>
           </form>
 
           <div className="separador" />
 
           <div className="registro">
             <p>¿Aún no tienes una cuenta?</p>
-            <a href="/registro">
+            <Link to="/registro">
               Regístrate <span aria-hidden="true">→</span>
-            </a>
+            </Link>
           </div>
 
           <div className="aviso-seguridad">
