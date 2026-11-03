@@ -3,6 +3,7 @@ import { Link, Route, Routes } from 'react-router'
 import App from '../App.jsx'
 import Registro from '../pages/Registro.jsx'
 import Recuperacion from '../pages/Recuperacion.jsx'
+import InicioAutenticado from './InicioAutenticado.jsx'
 import './AppRouter.css'
 
 // Estas rutas describen la navegacion prevista, NO implementan autorizacion.
@@ -12,7 +13,7 @@ const modulos = [
   { ruta: '/', nombre: 'Inicio de sesion', descripcion: 'Pantalla - inicio de sesión', estado: 'existente' },
   { ruta: '/registro', nombre: 'Registro', descripcion: 'Formulario de registro', estado: 'existente' },
   { ruta: '/recuperar', nombre: 'Recuperacion', descripcion: 'Recuperación de contraseña', estado: 'existente' },
-  { ruta: '/inicio', nombre: 'Inicio de usuario', descripcion: 'Vista principal', estado: 'pendiente' },
+  { ruta: '/inicio', nombre: 'Inicio de usuario', descripcion: 'Pantalla real con sesión validada', estado: 'existente' },
   { ruta: '/explorar', nombre: 'Exploracion de trabajadores', descripcion: 'Exploración', estado: 'pendiente' },
   { ruta: '/perfil-profesional', nombre: 'Perfil profesional', descripcion: 'Perfil profesional', estado: 'pendiente' },
   { ruta: '/contrataciones', nombre: 'Contrataciones', descripcion: 'Contrataciones', estado: 'pendiente' },
@@ -102,7 +103,7 @@ export default function AppRouter() {
       <Route path="/registro" element={<ConTitulo titulo="Registro" registro><Registro /></ConTitulo>} />
       <Route path="/recuperar" element={<ConTitulo titulo="Recuperacion"><Recuperacion /></ConTitulo>} />
       <Route path="/rutas" element={<ConTitulo titulo="Rutas"><MapaRutas /></ConTitulo>} />
-      <Route path="/inicio" element={<ConTitulo titulo="Inicio"><Marcador nombre="Inicio de usuario" descripcion="Ruta reservada para la pantalla de inicio del usuario." restringida /></ConTitulo>} />
+      <Route path="/inicio" element={<ConTitulo titulo="Inicio"><InicioAutenticado /></ConTitulo>} />
       <Route path="/explorar" element={<ConTitulo titulo="Exploracion"><Marcador nombre="Exploracion de trabajadores" descripcion="Catalogo, filtros y resultados de busqueda de profesionales." /></ConTitulo>} />
       <Route path="/perfil-profesional" element={<ConTitulo titulo="Perfil profesional"><Marcador nombre="Perfil profesional" descripcion="Creacion, oficios, disponibilidad, portafolio y reputacion." restringida /></ConTitulo>} />
       <Route path="/contrataciones" element={<ConTitulo titulo="Contrataciones"><Marcador nombre="Contrataciones" descripcion="Solicitudes, historial, publicaciones y valoraciones." restringida /></ConTitulo>} />
