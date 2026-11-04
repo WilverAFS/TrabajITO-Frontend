@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import logo from './assets/logo.png';
-import hero from './assets/hero.png';
+import hero from './assets/logo.png';
 import './App.css';
 import Recuperacion from './pages/Recuperacion';
 
