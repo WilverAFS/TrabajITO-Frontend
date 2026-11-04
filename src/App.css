@@ -1,3 +1,7 @@
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 /* Estilos generales */
 :root {
   font-family: Inter, "Segoe UI", Arial, sans-serif;
@@ -180,6 +184,19 @@ a {
 .hero-foto {
   position: relative;
   width: 100%;
+<<<<<<< Updated upstream
+=======
+  height: 304px;
+  overflow: hidden;
+  border-radius: 21px;
+  background: #d7e2ed;
+  box-shadow: 0 10px 28px rgb(39 67 103 / 8%);
+}
+
+.hero-foto {
+  position: relative;
+  width: 100%;
+>>>>>>> Stashed changes
   height: auto;
   display: flex;
   flex-direction: column;
@@ -189,6 +206,7 @@ a {
   box-shadow: none;
 }
 
+<<<<<<< Updated upstream
 .hero-foto > img {
   width: 100%;
   height: 100%;
@@ -197,6 +215,8 @@ a {
   transition: transform .45s ease;
 }
 
+=======
+>>>>>>> Stashed changes
 .hero-foto:hover > img {
   transform: scale(1.055);
 }
@@ -269,6 +289,10 @@ a {
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 12px;
   margin-top: 19px;
+<<<<<<< Updated upstream
+=======
+  width: 100%;
+>>>>>>> Stashed changes
 }
 
 .oficio-card {
@@ -277,7 +301,11 @@ a {
   background: #fff;
   border: 1px solid #e0e8f2;
   border-radius: 15px;
+<<<<<<< Updated upstream
   transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+=======
+  transition: transform .25s ease, box-shadow .25s ease;
+>>>>>>> Stashed changes
 }
 
 .oficio-card:hover {
@@ -633,7 +661,11 @@ a {
 
 .imagen-hero {
   width: 100%;
+<<<<<<< Updated upstream
   height: 280%;
+=======
+  height: 150px;
+>>>>>>> Stashed changes
   display: block;
   object-fit: cover;
   border-radius: 22px;
@@ -648,6 +680,10 @@ a {
   position: static;
   width: 100%;
   margin-top: 15px;
+<<<<<<< Updated upstream
+=======
+  bottom: 16px;
+>>>>>>> Stashed changes
   display: flex;
   align-items: center;
   gap: 11px;
