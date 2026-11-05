@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
-import { Link, Route, Routes } from 'react-router'
+import { Link, Route, Routes, useNavigate } from 'react-router'
 import App from '../App.jsx'
+import Presentacion from '../pages/Presentacion.jsx';
 import Registro from '../pages/Registro.jsx'
 import Recuperacion from '../pages/Recuperacion.jsx'
 import InicioAutenticado from './InicioAutenticado.jsx'
@@ -10,15 +11,16 @@ import './AppRouter.css'
 // Administracion, perfil y contrataciones mostraran marcadores temporales
 // hasta integrar autenticacion y permisos reales desde Laravel Sanctum.
 const modulos = [
-  { ruta: '/', nombre: 'Inicio de sesion', descripcion: 'Pantalla - inicio de sesión', estado: 'existente' },
+  { ruta: '/', nombre: 'Presentación', descripcion: 'Página principal de TrabajITO', estado: 'existente' },
+  { ruta: '/login', nombre: 'Inicio de sesión', descripcion: 'Formulario de inicio de sesión', estado: 'existente' },
   { ruta: '/registro', nombre: 'Registro', descripcion: 'Formulario de registro', estado: 'existente' },
-  { ruta: '/recuperar', nombre: 'Recuperacion', descripcion: 'Recuperación de contraseña', estado: 'existente' },
+  { ruta: '/recuperar', nombre: 'Recuperación', descripcion: 'Recuperación de contraseña', estado: 'existente' },
   { ruta: '/inicio', nombre: 'Inicio de usuario', descripcion: 'Pantalla real con sesión validada', estado: 'existente' },
-  { ruta: '/explorar', nombre: 'Exploracion de trabajadores', descripcion: 'Exploración', estado: 'pendiente' },
+  { ruta: '/explorar', nombre: 'Exploración de trabajadores', descripcion: 'Exploración', estado: 'pendiente' },
   { ruta: '/perfil-profesional', nombre: 'Perfil profesional', descripcion: 'Perfil profesional', estado: 'pendiente' },
   { ruta: '/contrataciones', nombre: 'Contrataciones', descripcion: 'Contrataciones', estado: 'pendiente' },
-  { ruta: '/administracion', nombre: 'Administracion', descripcion: 'Administración', estado: 'pendiente' },
-]
+  { ruta: '/administracion', nombre: 'Administración', descripcion: 'Administración', estado: 'pendiente' },
+];
 
 function ConTitulo({ titulo, registro = false, children }) {
   useEffect(() => {
@@ -96,19 +98,131 @@ function NoEncontrada() {
   )
 }
 
+function PresentacionConNavegacion() {
+  const navigate = useNavigate();
+
+  return (
+    <ConTitulo titulo="Presentación">
+      <Presentacion
+        onIniciarSesion={() => navigate('/login')}
+      />
+    </ConTitulo>
+  );
+}
 export default function AppRouter() {
   return (
     <Routes>
-      <Route path="/" element={<ConTitulo titulo="Inicio de sesion"><App /></ConTitulo>} />
-      <Route path="/registro" element={<ConTitulo titulo="Registro" registro><Registro /></ConTitulo>} />
-      <Route path="/recuperar" element={<ConTitulo titulo="Recuperacion"><Recuperacion /></ConTitulo>} />
-      <Route path="/rutas" element={<ConTitulo titulo="Rutas"><MapaRutas /></ConTitulo>} />
-      <Route path="/inicio" element={<ConTitulo titulo="Inicio"><InicioAutenticado /></ConTitulo>} />
-      <Route path="/explorar" element={<ConTitulo titulo="Exploracion"><Marcador nombre="Exploracion de trabajadores" descripcion="Catalogo, filtros y resultados de busqueda de profesionales." /></ConTitulo>} />
-      <Route path="/perfil-profesional" element={<ConTitulo titulo="Perfil profesional"><Marcador nombre="Perfil profesional" descripcion="Creacion, oficios, disponibilidad, portafolio y reputacion." restringida /></ConTitulo>} />
-      <Route path="/contrataciones" element={<ConTitulo titulo="Contrataciones"><Marcador nombre="Contrataciones" descripcion="Solicitudes, historial, publicaciones y valoraciones." restringida /></ConTitulo>} />
-      <Route path="/administracion" element={<ConTitulo titulo="Administracion"><Marcador nombre="Administracion" descripcion="Usuarios, verificacion de trabajadores, publicaciones y reportes." restringida /></ConTitulo>} />
-      <Route path="*" element={<ConTitulo titulo="Pagina no encontrada"><NoEncontrada /></ConTitulo>} />
+      {/* Página principal: Presentación de TrabajITO */}
+      <Route
+        path="/"
+        element={<PresentacionConNavegacion />}
+      />
+
+      {/* Inicio de sesión */}
+      <Route
+        path="/login"
+        element={
+          <ConTitulo titulo="Inicio de sesión">
+            <App />
+          </ConTitulo>
+        }
+      />
+
+      <Route
+        path="/registro"
+        element={
+          <ConTitulo titulo="Registro" registro>
+            <Registro />
+          </ConTitulo>
+        }
+      />
+
+      <Route
+        path="/recuperar"
+        element={
+          <ConTitulo titulo="Recuperacion">
+            <Recuperacion />
+          </ConTitulo>
+        }
+      />
+
+      <Route
+        path="/rutas"
+        element={
+          <ConTitulo titulo="Rutas">
+            <MapaRutas />
+          </ConTitulo>
+        }
+      />
+
+      <Route
+        path="/inicio"
+        element={
+          <ConTitulo titulo="Inicio">
+            <InicioAutenticado />
+          </ConTitulo>
+        }
+      />
+
+      <Route
+        path="/explorar"
+        element={
+          <ConTitulo titulo="Exploracion">
+            <Marcador
+              nombre="Exploracion de trabajadores"
+              descripcion="Catalogo, filtros y resultados de busqueda de profesionales."
+            />
+          </ConTitulo>
+        }
+      />
+
+      <Route
+        path="/perfil-profesional"
+        element={
+          <ConTitulo titulo="Perfil profesional">
+            <Marcador
+              nombre="Perfil profesional"
+              descripcion="Creacion, oficios, disponibilidad, portafolio y reputacion."
+              restringida
+            />
+          </ConTitulo>
+        }
+      />
+
+      <Route
+        path="/contrataciones"
+        element={
+          <ConTitulo titulo="Contrataciones">
+            <Marcador
+              nombre="Contrataciones"
+              descripcion="Solicitudes, historial, publicaciones y valoraciones."
+              restringida
+            />
+          </ConTitulo>
+        }
+      />
+
+      <Route
+        path="/administracion"
+        element={
+          <ConTitulo titulo="Administracion">
+            <Marcador
+              nombre="Administracion"
+              descripcion="Usuarios, verificacion de trabajadores, publicaciones y reportes."
+              restringida
+            />
+          </ConTitulo>
+        }
+      />
+
+      <Route
+        path="*"
+        element={
+          <ConTitulo titulo="Pagina no encontrada">
+            <NoEncontrada />
+          </ConTitulo>
+        }
+      />
     </Routes>
-  )
+  );
 }
