@@ -4,6 +4,7 @@ import App from '../App.jsx'
 import Registro from '../pages/Registro.jsx'
 import Recuperacion from '../pages/Recuperacion.jsx'
 import InicioAutenticado from './InicioAutenticado.jsx'
+import MiPerfil from '../pages/MiPerfil.jsx'
 import './AppRouter.css'
 
 // Estas rutas describen la navegacion prevista, NO implementan autorizacion.
@@ -14,6 +15,7 @@ const modulos = [
   { ruta: '/registro', nombre: 'Registro', descripcion: 'Formulario de registro', estado: 'existente' },
   { ruta: '/recuperar', nombre: 'Recuperacion', descripcion: 'Recuperación de contraseña', estado: 'existente' },
   { ruta: '/inicio', nombre: 'Inicio de usuario', descripcion: 'Pantalla real con sesión validada', estado: 'existente' },
+  { ruta: '/mi-perfil', nombre: 'Mi perfil', descripcion: 'Información y seguridad de la cuenta', estado: 'existente'},
   { ruta: '/explorar', nombre: 'Exploracion de trabajadores', descripcion: 'Exploración', estado: 'pendiente' },
   { ruta: '/perfil-profesional', nombre: 'Perfil profesional', descripcion: 'Perfil profesional', estado: 'pendiente' },
   { ruta: '/contrataciones', nombre: 'Contrataciones', descripcion: 'Contrataciones', estado: 'pendiente' },
@@ -104,6 +106,7 @@ export default function AppRouter() {
       <Route path="/recuperar" element={<ConTitulo titulo="Recuperacion"><Recuperacion /></ConTitulo>} />
       <Route path="/rutas" element={<ConTitulo titulo="Rutas"><MapaRutas /></ConTitulo>} />
       <Route path="/inicio" element={<ConTitulo titulo="Inicio"><InicioAutenticado /></ConTitulo>} />
+      <Route path="/mi-perfil" element={<ConTitulo titulo="Mi perfil"><MiPerfil /></ConTitulo>} />
       <Route path="/explorar" element={<ConTitulo titulo="Exploracion"><Marcador nombre="Exploracion de trabajadores" descripcion="Catalogo, filtros y resultados de busqueda de profesionales." /></ConTitulo>} />
       <Route path="/perfil-profesional" element={<ConTitulo titulo="Perfil profesional"><Marcador nombre="Perfil profesional" descripcion="Creacion, oficios, disponibilidad, portafolio y reputacion." restringida /></ConTitulo>} />
       <Route path="/contrataciones" element={<ConTitulo titulo="Contrataciones"><Marcador nombre="Contrataciones" descripcion="Solicitudes, historial, publicaciones y valoraciones." restringida /></ConTitulo>} />
