@@ -52,7 +52,7 @@ export default function MiPerfil() {
         if (error.name === 'AbortError') return
         if (error.status === 401) {
           localStorage.removeItem('token')
-          navigate('/', { replace: true })
+          navigate('/login', { replace: true })
           return
         }
         setErrorCarga(error.message)
@@ -90,7 +90,7 @@ export default function MiPerfil() {
     } catch (error) {
       if (error.status === 401) {
         localStorage.removeItem('token')
-        navigate('/', { replace: true })
+        navigate('/login', { replace: true })
         return
       }
       setErrorDatos(error.message)
@@ -127,7 +127,7 @@ export default function MiPerfil() {
     } catch (error) {
       if (error.status === 401) {
         localStorage.removeItem('token')
-        navigate('/', { replace: true })
+        navigate('/login', { replace: true })
         return
       }
       setErrorClave(error.message)
@@ -216,7 +216,7 @@ export default function MiPerfil() {
             {claveActualizada ? (
               <div className="mp-clave-ok">
                 <p className="mp-exito" role="status">Tu contraseña cambió correctamente. Laravel cerró las sesiones activas para proteger tu cuenta.</p>
-                <Link className="mp-enlace-boton" to="/">Iniciar sesión nuevamente</Link>
+                <Link className="mp-enlace-boton" to="/login">Iniciar sesión nuevamente</Link>
               </div>
             ) : (
               <form onSubmit={guardarClave}>
