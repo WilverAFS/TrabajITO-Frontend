@@ -5,6 +5,7 @@ import Presentacion from '../pages/Presentacion.jsx';
 import Registro from '../pages/Registro.jsx'
 import Recuperacion from '../pages/Recuperacion.jsx'
 import InicioAutenticado from './InicioAutenticado.jsx'
+import MiPerfil from '../pages/MiPerfil.jsx'
 import './AppRouter.css'
 
 // Estas rutas describen la navegacion prevista, NO implementan autorizacion.
@@ -16,6 +17,7 @@ const modulos = [
   { ruta: '/registro', nombre: 'Registro', descripcion: 'Formulario de registro', estado: 'existente' },
   { ruta: '/recuperar', nombre: 'Recuperación', descripcion: 'Recuperación de contraseña', estado: 'existente' },
   { ruta: '/inicio', nombre: 'Inicio de usuario', descripcion: 'Pantalla real con sesión validada', estado: 'existente' },
+  { ruta: '/mi-perfil', nombre: 'Mi perfil', descripcion: 'Información y seguridad de la cuenta', estado: 'existente' },
   { ruta: '/explorar', nombre: 'Exploración de trabajadores', descripcion: 'Exploración', estado: 'pendiente' },
   { ruta: '/perfil-profesional', nombre: 'Perfil profesional', descripcion: 'Perfil profesional', estado: 'pendiente' },
   { ruta: '/contrataciones', nombre: 'Contrataciones', descripcion: 'Contrataciones', estado: 'pendiente' },
@@ -160,6 +162,15 @@ export default function AppRouter() {
         element={
           <ConTitulo titulo="Inicio">
             <InicioAutenticado />
+          </ConTitulo>
+        }
+      />
+
+      <Route
+        path="/mi-perfil"
+        element={
+          <ConTitulo titulo="Mi perfil">
+            <MiPerfil />
           </ConTitulo>
         }
       />
