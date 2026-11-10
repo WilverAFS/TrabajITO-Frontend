@@ -68,11 +68,29 @@ export default function Inicio({ cerrarSesion, nombreUsuario }) {
               >
                 Ver perfil
               </button>
-              <button onClick={cerrarSesion}>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuAbierto(false)
+                  navigate('/perfil-profesional')
+                }}
+              >
+                Mi perfil profesional
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuAbierto(false)
+                  cerrarSesion()
+                }}
+              >
                 Cerrar sesión
               </button>
             </div>
           )}
+
         </div>
       </header>
 
