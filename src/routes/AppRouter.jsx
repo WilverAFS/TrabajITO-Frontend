@@ -6,6 +6,7 @@ import Registro from '../pages/Registro.jsx'
 import Recuperacion from '../pages/Recuperacion.jsx'
 import InicioAutenticado from './InicioAutenticado.jsx'
 import MiPerfil from '../pages/MiPerfil.jsx'
+import PerfilProfesional from '../pages/PerfilProfesional.jsx'
 import './AppRouter.css'
 
 // Estas rutas describen la navegacion prevista, NO implementan autorizacion.
@@ -19,7 +20,7 @@ const modulos = [
   { ruta: '/inicio', nombre: 'Inicio de usuario', descripcion: 'Pantalla real con sesión validada', estado: 'existente' },
   { ruta: '/mi-perfil', nombre: 'Mi perfil', descripcion: 'Información y seguridad de la cuenta', estado: 'existente' },
   { ruta: '/explorar', nombre: 'Exploración de trabajadores', descripcion: 'Exploración', estado: 'pendiente' },
-  { ruta: '/perfil-profesional', nombre: 'Perfil profesional', descripcion: 'Perfil profesional', estado: 'pendiente' },
+  { ruta: '/perfil-profesional', nombre: 'Perfil profesional', descripcion: 'Perfil profesional', estado: 'existente' },
   { ruta: '/contrataciones', nombre: 'Contrataciones', descripcion: 'Contrataciones', estado: 'pendiente' },
   { ruta: '/administracion', nombre: 'Administración', descripcion: 'Administración', estado: 'pendiente' },
 ];
@@ -191,11 +192,7 @@ export default function AppRouter() {
         path="/perfil-profesional"
         element={
           <ConTitulo titulo="Perfil profesional">
-            <Marcador
-              nombre="Perfil profesional"
-              descripcion="Creacion, oficios, disponibilidad, portafolio y reputacion."
-              restringida
-            />
+            <PerfilProfesional />
           </ConTitulo>
         }
       />
