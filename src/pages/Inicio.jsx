@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import logo from '../assets/registro-logo-provisional.png';
 import hero from '../assets/registro-hero-provisional.png';
+import { useNavigate } from 'react-router'
 import './Inicio.css';
 
 // --- ICONOS SVG ---
@@ -20,6 +21,7 @@ export default function Inicio({ cerrarSesion, nombreUsuario }) {
   // Estado para controlar si el menú del usuario está abierto o cerrado
 
   const [menuAbierto, setMenuAbierto] = useState(false);
+  const navigate = useNavigate()
   const oficios = [
     { id: 1, nombre: "Plomeros", desc: "Fugas e instalaciones", icono: <PlomeroIcono /> },
     { id: 2, nombre: "Electricistas", desc: "Conexiones seguras", icono: <RayoIcono /> },
@@ -57,7 +59,15 @@ export default function Inicio({ cerrarSesion, nombreUsuario }) {
           {/* Menú desplegable */}
           {menuAbierto && (
             <div className="in-menu-desplegable">
-              <button>Ver perfil</button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuAbierto(false)
+                  navigate('/mi-perfil')
+                }}
+              >
+                Ver perfil
+              </button>
               <button onClick={cerrarSesion}>
                 Cerrar sesión
               </button>
