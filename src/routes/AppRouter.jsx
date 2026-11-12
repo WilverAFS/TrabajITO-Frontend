@@ -1,3 +1,4 @@
+import Catalogo from '../pages/Catalogo';
 import { useEffect } from 'react'
 import { Link, Route, Routes, useNavigate } from 'react-router'
 import App from '../App.jsx'
@@ -113,6 +114,7 @@ export default function AppRouter() {
   return (
     <Routes>
       {/* Página principal: Presentación de TrabajITO */}
+      <Route path="/catalogo" element={<Catalogo />} />
       <Route
         path="/"
         element={<PresentacionConNavegacion />}
