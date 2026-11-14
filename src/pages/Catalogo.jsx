@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from '../assets/registro-logo-provisional.png';
+import { useNavigate } from 'react-router';
 import './Catalogo.css';
 
 // --- ICONOS DE LA BARRA DE NAVEGACIÓN ---
@@ -27,37 +28,164 @@ function EstrellaIcono() { return <svg width="14" height="14" viewBox="0 0 24 24
 function UbicacionIcono() { return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2.5"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg> }
 function RelojIcono() { return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> }
 
-const Catalogo = ({ nombreUsuario = "Uriel", cerrarSesion }) => {
+const Catalogo = () => {
   const [menuAbierto, setMenuAbierto] = useState(false);
-  const [oficioActivo, setOficioActivo] = useState(1);
+  const navigate = useNavigate();
+
+  // Estados de datos
+  const [usuarioActual, setUsuarioActual] = useState("Invitado");
+  const [perfiles, setPerfiles] = useState([]);
+  const [cargandoPerfiles, setCargandoPerfiles] = useState(false);
+  
+  // Catálogos para los selects
+  const [listaOficios, setListaOficios] = useState([]);
+  const [listaMunicipios, setListaMunicipios] = useState([]);
+
+  // Estados de los filtros
+  const [filtroOficio, setFiltroOficio] = useState("");
+  const [filtroMunicipio, setFiltroMunicipio] = useState("");
+  const [filtroReputacion, setFiltroReputacion] = useState("");
+
+  // 1. Cargar usuario conectado
+  useEffect(() => {
+    const cargarUsuario = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      try {
+        const response = await fetch('http://localhost:8000/api/v1/me', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json'
+          }
+        });
+        const result = await response.json();
+        if (result.success) {
+          setUsuarioActual(result.data.nombre);
+        }
+      } catch (error) {
+        console.error("Error al obtener usuario:", error);
+      }
+    };
+    cargarUsuario();
+  }, []);
+
+  // 2. Cargar opciones para los filtros
+  useEffect(() => {
+    const cargarFiltrosBasicos = async () => {
+      try {
+        const oficiosRes = await fetch('http://localhost:8000/api/v1/oficios', { headers: { 'Accept': 'application/json' } });
+        const oficiosData = await oficiosRes.json();
+        if (oficiosData.success) setListaOficios(oficiosData.data);
+
+        const muniRes = await fetch('http://localhost:8000/api/v1/estados/1/municipios', { headers: { 'Accept': 'application/json' } });
+        const muniData = await muniRes.json();
+        if (muniData.success) setListaMunicipios(muniData.data);
+      } catch (error) {
+        console.error("Error al cargar datos de filtros:", error);
+      }
+    };
+    cargarFiltrosBasicos();
+  }, []);
+
+  // 3. Función principal para cargar el catálogo con filtros
+  const cargarCatálogo = async () => {
+    setCargandoPerfiles(true);
+    try {
+      let url = 'http://localhost:8000/api/v1/trabajadores?page=1';
+      
+      if (filtroOficio) url += `&id_oficio=${filtroOficio}`;
+      if (filtroMunicipio) url += `&id_municipio=${filtroMunicipio}`;
+      if (filtroReputacion) url += `&calificacion_minima=${filtroReputacion}`;
+
+      const response = await fetch(url, {
+        headers: { 'Accept': 'application/json' }
+      });
+      const result = await response.json();
+      if (result.success) {
+        setPerfiles(result.data);
+      }
+    } catch (error) {
+      console.error("Error al cargar el catálogo:", error);
+    } finally {
+      setCargandoPerfiles(false);
+    }
+  };
+
+  useEffect(() => {
+    cargarCatálogo();
+  }, []);
+
+  const handleBuscar = () => {
+    cargarCatálogo();
+  };
+
+  // Función corregida para los botones de oficios
+  const handleOficioClick = (idOficio) => {
+    // Si hacemos clic en el mismo que ya está activo, lo desmarcamos
+    const nuevoId = filtroOficio === idOficio ? "" : idOficio;
+    
+    setFiltroOficio(nuevoId);
+    
+    setTimeout(() => {
+      setCargandoPerfiles(true);
+      let url = 'http://localhost:8000/api/v1/trabajadores?page=1';
+      
+      if (nuevoId) url += `&id_oficio=${nuevoId}`;
+      if (filtroMunicipio) url += `&id_municipio=${filtroMunicipio}`;
+      if (filtroReputacion) url += `&calificacion_minima=${filtroReputacion}`;
+
+      fetch(url, { headers: { 'Accept': 'application/json' } })
+        .then(res => res.json())
+        .then(result => {
+          if (result.success) setPerfiles(result.data);
+        })
+        .finally(() => setCargandoPerfiles(false));
+    }, 50);
+  };
+
+  // 4. Implementación del Cierre de Sesión
+  const manejarCerrarSesion = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      await fetch('http://localhost:8000/api/v1/auth/logout', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
+        }
+      });
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    } finally {
+      localStorage.removeItem('token');
+      navigate('/login');
+    }
+  };
 
   const botonesOficios = [
-    { id: 1, nombre: "Todos los oficios", count: 96, icono: <GridIcono /> },
-    { id: 2, nombre: "Plomeros", count: 24, icono: <GotaIcono /> },
-    { id: 3, nombre: "Electricistas", count: 18, icono: <RayoIcono /> },
-    { id: 4, nombre: "Carpinteros", count: 20, icono: <MartilloIcono /> },
-    { id: 5, nombre: "Herreros", count: 16, icono: <YunqueIcono /> },
-    { id: 6, nombre: "Pintores", count: 18, icono: <RodilloIcono /> },
-  ];
-
-  const perfiles = [
-    { id: 1, nombre: "Carlos Mendoza", oficio: "Plomero • 12 años de experiencia", rating: "4.9", resenas: 128, tags: ["Fugas", "Instalaciones", "Calentadores"], ubicacion: "Centro, Oaxaca de Juárez", estado: "Horario publicado", horario: "Jueves 15 · 14:00-18:00", tipoHorario: "verde", img: "https://i.pravatar.cc/300?img=11" },
-    { id: 2, nombre: "Elena Vargas", oficio: "Electricista • 9 años de experiencia", rating: "4.9", resenas: 104, tags: ["Iluminación", "Instalaciones eléctricas"], ubicacion: "Santa Cruz Xoxocotlán", estado: "Disponible hoy", horario: "Hoy, 16:00-19:00", tipoHorario: "verde", img: "https://i.pravatar.cc/300?img=5" },
-    { id: 3, nombre: "Luis Hernández", oficio: "Carpintero • 10 años de experiencia", rating: "4.8", resenas: 87, tags: ["Muebles", "Cocinas", "Reparaciones"], ubicacion: "Santa Lucía del Camino", estado: "Disponible hoy", horario: "Hoy, 15:00-19:00", tipoHorario: "verde", img: "https://i.pravatar.cc/300?img=8" },
-    { id: 4, nombre: "Diego Martínez", oficio: "Electricista • 11 años de experiencia", rating: "4.8", resenas: 92, tags: ["Tableros", "Cableado", "Mantenimiento"], ubicacion: "Santa Cruz Xoxocotlán", estado: "Disponible mañana", horario: "Mañana, 09:00-13:00", tipoHorario: "azul", img: "https://i.pravatar.cc/300?img=12" },
-    { id: 5, nombre: "Mateo Santiago", oficio: "Herrero • 13 años de experiencia", rating: "4.8", resenas: 81, tags: ["Puertas", "Rejas", "Estructuras metálicas"], ubicacion: "San Antonio de la Cal", estado: "Disponible mañana", horario: "Mañana, 08:00-12:00", tipoHorario: "azul", img: "https://i.pravatar.cc/300?img=59" },
-    { id: 6, nombre: "Sofía Pérez", oficio: "Pintora • 7 años de experiencia", rating: "4.9", resenas: 58, tags: ["Interiores", "Fachadas", "Acabados"], ubicacion: "Centro, Oaxaca de Juárez", estado: "Disponible hoy", horario: "Hoy, 16:00-18:00", tipoHorario: "verde", img: "https://i.pravatar.cc/300?img=41" },
+    { id: "", nombre: "Todos los oficios", icono: <GridIcono /> },
+    { id: "2", nombre: "Plomeros", icono: <GotaIcono /> },
+    { id: "1", nombre: "Electricistas", icono: <RayoIcono /> },
+    { id: "4", nombre: "Carpinteros", icono: <MartilloIcono /> },
+    { id: "5", nombre: "Herreros", icono: <YunqueIcono /> },
+    { id: "6", nombre: "Pintores", icono: <RodilloIcono /> },
   ];
 
   return (
     <div className="catalogo-pagina">
       
-      {/* BARRA DE NAVEGACIÓN SUPERIOR BLANCA */}
+      {/* BARRA DE NAVEGACIÓN */}
       <header className="cat-header">
         <a href="/" className="cat-logo"><img src={logo} alt="TrabajITO" /></a>
         <nav className="cat-nav">
-           <a href="#inicio">Inicio</a>
-           <a href="#buscar" className="activo">Buscar trabajadores</a>
+           <button onClick={() => navigate('/inicio')} className="cat-btn-enlace">Inicio</button>
+           <button className="cat-btn-enlace activo">Buscar trabajadores</button>
         </nav>
         
         <div className="cat-usuario-contenedor">
@@ -67,19 +195,19 @@ const Catalogo = ({ nombreUsuario = "Uriel", cerrarSesion }) => {
           </div>
           
           <button className="cat-perfil" onClick={() => setMenuAbierto(!menuAbierto)}>
-            Bienvenido {nombreUsuario} <span style={{fontSize: '12px', marginLeft: '4px'}}>v</span>
+            Bienvenido {usuarioActual} <span style={{fontSize: '12px', marginLeft: '4px'}}>v</span>
           </button>
 
           {menuAbierto && (
             <div className="cat-menu-desplegable">
-              <button>Ver perfil</button>
-              <button onClick={cerrarSesion}>Cerrar sesión</button>
+              <button onClick={() => { setMenuAbierto(false); navigate('/mi-perfil'); }}>Ver perfil</button>
+              <button onClick={manejarCerrarSesion}>Cerrar sesión</button>
             </div>
           )}
         </div>
       </header>
 
-      {/* --- FONDO AZUL --- */}
+      {/* FONDO AZUL */}
       <div className="catalogo-fondo-azul">
         <div className="contenedor-centrado">
           
@@ -94,16 +222,12 @@ const Catalogo = ({ nombreUsuario = "Uriel", cerrarSesion }) => {
               <span className="filtro-icono"><LlaveIcono /></span>
               <div className="filtro-contenido">
                 <label>TIPO DE OFICIO</label>
-                <select><option>Todos los oficios</option></select>
-              </div>
-              <span className="filtro-chevron"><ChevronIcono /></span>
-            </div>
-
-            <div className="filtro-caja">
-              <span className="filtro-icono"><AjustesIcono /></span>
-              <div className="filtro-contenido">
-                <label>ESPECIALIDAD</label>
-                <select><option>Todas las especialidades</option></select>
+                <select value={filtroOficio} onChange={(e) => setFiltroOficio(e.target.value)}>
+                  <option value="">Todos los oficios</option>
+                  {listaOficios.map(oficio => (
+                    <option key={oficio.id_oficio} value={oficio.id_oficio.toString()}>{oficio.nombre}</option>
+                  ))}
+                </select>
               </div>
               <span className="filtro-chevron"><ChevronIcono /></span>
             </div>
@@ -112,7 +236,12 @@ const Catalogo = ({ nombreUsuario = "Uriel", cerrarSesion }) => {
               <span className="filtro-icono"><PinIcono /></span>
               <div className="filtro-contenido">
                 <label>ZONA DE SERVICIO</label>
-                <select><option>Todas las zonas</option></select>
+                <select value={filtroMunicipio} onChange={(e) => setFiltroMunicipio(e.target.value)}>
+                  <option value="">Todas las zonas</option>
+                  {listaMunicipios.map(muni => (
+                    <option key={muni.id_municipio} value={muni.id_municipio.toString()}>{muni.municipio}</option>
+                  ))}
+                </select>
               </div>
               <span className="filtro-chevron"><ChevronIcono /></span>
             </div>
@@ -120,20 +249,24 @@ const Catalogo = ({ nombreUsuario = "Uriel", cerrarSesion }) => {
             <div className="filtro-caja">
               <span className="filtro-icono"><EstrellaFiltroIcono /></span>
               <div className="filtro-contenido">
-                <label>REPUTACIÓN</label>
-                <select><option>Todas las calificaciones</option></select>
+                <label>REPUTACIÓN MÍNIMA</label>
+                <select value={filtroReputacion} onChange={(e) => setFiltroReputacion(e.target.value)}>
+                  <option value="">Todas las calificaciones</option>
+                  <option value="4">4 estrellas o más</option>
+                  <option value="3">3 estrellas o más</option>
+                </select>
               </div>
               <span className="filtro-chevron"><ChevronIcono /></span>
             </div>
 
-            <button className="btn-ver-resultados">
+            <button className="btn-ver-resultados" onClick={handleBuscar}>
               <CirculoVacioIcono /> Ver resultados
             </button>
           </div>
         </div>
       </div>
 
-      {/* --- CONTENIDO INFERIOR BLANCO --- */}
+      {/* CONTENIDO INFERIOR */}
       <div className="catalogo-contenido-inferior">
         <div className="contenedor-centrado">
           
@@ -142,20 +275,19 @@ const Catalogo = ({ nombreUsuario = "Uriel", cerrarSesion }) => {
           <div className="contenedor-botones-oficios">
             {botonesOficios.map(btn => (
               <button 
-                key={btn.id} 
-                className={`btn-oficio ${oficioActivo === btn.id ? 'activo' : ''}`}
-                onClick={() => setOficioActivo(btn.id)}
+                key={btn.nombre} 
+                className={`btn-oficio ${filtroOficio === btn.id ? 'activo' : ''}`}
+                onClick={() => handleOficioClick(btn.id)}
               >
                 <span className="icono-btn">{btn.icono}</span>
                 {btn.nombre}
-                <span className="badge">{btn.count}</span>
               </button>
             ))}
           </div>
 
           <div className="cabecera-resultados">
             <div className="resultados-textos">
-              <h2>96 perfiles de profesionales</h2>
+              <h2>{perfiles.length} perfiles de profesionales</h2>
               <p className="res-ubicacion">En Oaxaca de Juárez y alrededores</p>
               <p className="res-ayuda">Todos los oficios y calificaciones. Usa los filtros para afinar tu búsqueda.</p>
             </div>
@@ -168,46 +300,53 @@ const Catalogo = ({ nombreUsuario = "Uriel", cerrarSesion }) => {
             </div>
           </div>
 
-          {/* --- CUADRÍCULA DE PERFILES --- */}
-          <div className="grid-perfiles">
-            {perfiles.map(perfil => (
-              <div key={perfil.id} className="tarjeta-perfil">
-                <img src={perfil.img} alt={perfil.nombre} className="perfil-img" />
-                <div className="perfil-info">
-                  <h3 className="perfil-nombre">{perfil.nombre}</h3>
-                  <p className="perfil-oficio">{perfil.oficio}</p>
-                  
-                  <div className="perfil-rating">
-                    <EstrellaIcono /> {perfil.rating} <small>({perfil.resenas} opiniones)</small>
-                  </div>
-                  
-                  <p className="perfil-tags">{perfil.tags.join(' · ')}</p>
-                  
-                  <p className="perfil-ubicacion"><UbicacionIcono /> {perfil.ubicacion}</p>
-                  
-                  <div className={`perfil-horario horario-${perfil.tipoHorario}`}>
-                    <RelojIcono />
-                    <div className="horario-textos">
-                      <span className="horario-titulo">{perfil.estado}</span>
-                      <span className="horario-detalle">{perfil.horario}</span>
+          {/* CUADRÍCULA DE PERFILES DINÁMICA */}
+          {cargandoPerfiles ? (
+            <p style={{textAlign: 'center', margin: '40px 0'}}>Buscando profesionales...</p>
+          ) : perfiles.length === 0 ? (
+            <div style={{textAlign: 'center', margin: '40px 0', padding: '40px', backgroundColor: '#f8fafc', borderRadius: '12px'}}>
+              <h3 style={{color: '#475569', marginBottom: '8px'}}>No se encontraron trabajadores</h3>
+              <p style={{color: '#64748b'}}>Prueba modificando tus filtros o eliminando la especialidad seleccionada.</p>
+            </div>
+          ) : (
+            <div className="grid-perfiles">
+              {perfiles.map(perfil => (
+                <div key={perfil.id_trabajador} className="tarjeta-perfil">
+                  <img src={`https://i.pravatar.cc/300?u=${perfil.id_trabajador}`} alt={perfil.nombre_completo} className="perfil-img" />
+                  <div className="perfil-info">
+                    <h3 className="perfil-nombre">{perfil.nombre_completo}</h3>
+                    
+                    <p className="perfil-oficio">
+                      {perfil.oficios?.length > 0 ? perfil.oficios[0].nombre : "Sin oficio registrado"}
+                    </p>
+                    
+                    <div className="perfil-rating">
+                      <EstrellaIcono /> {perfil.calificacion_promedio ?? "0.0"} <small>({perfil.total_valoraciones ?? 0} opiniones)</small>
                     </div>
+                    
+                    <p className="perfil-tags">{perfil.descripcion?.substring(0, 40)}...</p>
+                    
+                    <p className="perfil-ubicacion"><UbicacionIcono /> {perfil.municipio?.municipio}, {perfil.estado?.estado}</p>
+                    
+                    <div className="perfil-horario horario-verde">
+                      <RelojIcono />
+                      <div className="horario-textos">
+                        <span className="horario-titulo">Disponible</span>
+                        <span className="horario-detalle">Consulta disponibilidad</span>
+                      </div>
+                    </div>
+                    
+                    <button className="btn-ver-perfil" onClick={() => navigate(`/perfiles/${perfil.id_trabajador}`)}>Ver perfil</button>
                   </div>
-                  
-                  <button className="btn-ver-perfil">Ver perfil</button>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
-          {/* --- PAGINACIÓN --- */}
           <div className="paginacion-contenedor">
-            <span className="paginacion-texto">Mostrando 1-6 de 96 perfiles</span>
+            <span className="paginacion-texto">Mostrando resultados</span>
             <div className="paginacion-botones">
               <button className="btn-pagina activo">1</button>
-              <button className="btn-pagina">2</button>
-              <button className="btn-pagina">3</button>
-              <span className="btn-pagina-puntos">...</span>
-              <button className="btn-pagina">16</button>
               <button className="btn-pagina btn-siguiente">
                 Siguiente <span>→</span>
               </button>
@@ -217,7 +356,6 @@ const Catalogo = ({ nombreUsuario = "Uriel", cerrarSesion }) => {
         </div>
       </div>
 
-      {/* --- FOOTER AZUL OSCURO --- */}
       <footer className="cat-footer">
         <div className="contenedor-centrado footer-contenido">
           <div className="footer-logo-seccion">

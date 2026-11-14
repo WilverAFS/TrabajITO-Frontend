@@ -107,7 +107,7 @@ export default function Inicio({ cerrarSesion, nombreUsuario }) {
                   <input type="text" placeholder="Selecciona un oficio" />
                 </div>
               </div>
-              <button onClick={() => window.location.href = '#catalogo'}>
+              <button onClick={() => navigate('/catalogo')}>
                 Buscar trabajadores
               </button>
             </div>
@@ -117,7 +117,7 @@ export default function Inicio({ cerrarSesion, nombreUsuario }) {
         <section id="catalogo" className="in-seccion-catalogo">
           <div className="in-seccion-header">
             <h2>Oficios disponibles</h2>
-            <a href="#catalogo">Ver catálogo →</a>
+            <button onClick={() => navigate('/catalogo')} className="in-btn-enlace">Ver catálogo →</button>
           </div>
           <div className="in-grid-oficios">
             {oficios.map(oficio => (
@@ -134,7 +134,7 @@ export default function Inicio({ cerrarSesion, nombreUsuario }) {
         <section className="in-seccion-catalogo">
           <div className="in-seccion-header">
             <h2>Perfiles destacados</h2>
-            <a href="#catalogo">Ver catálogo →</a>
+            <button onClick={() => navigate('/catalogo')} className="in-btn-enlace">Ver catálogo →</button>
           </div>
           <p className="in-subtitulo">Consulta sus especialidades, horarios y reseñas de clientes.</p>
           
