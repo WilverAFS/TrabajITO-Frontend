@@ -1,11 +1,12 @@
 import { useEffect } from 'react'
 import { Link, Route, Routes, useNavigate } from 'react-router'
 import App from '../App.jsx'
-import Presentacion from '../pages/Presentacion.jsx';
+import Presentacion from '../pages/Presentacion.jsx'
 import Registro from '../pages/Registro.jsx'
 import Recuperacion from '../pages/Recuperacion.jsx'
 import InicioAutenticado from './InicioAutenticado.jsx'
 import MiPerfil from '../pages/MiPerfil.jsx'
+import Catalogo from '../pages/Catalogo.jsx'
 import './AppRouter.css'
 
 // Estas rutas describen la navegacion prevista, NO implementan autorizacion.
@@ -111,13 +112,24 @@ function PresentacionConNavegacion() {
     </ConTitulo>
   );
 }
+
 export default function AppRouter() {
   return (
     <Routes>
-      {/* Página principal: Presentación de TrabajITO */}
+      {/* 1. Página principal: Presentación de TrabajITO (Por defecto) */}
       <Route
         path="/"
         element={<PresentacionConNavegacion />}
+      />
+
+      {/* 2. Tu nueva página del Catálogo (Oculta hasta que hagas clic) */}
+      <Route 
+        path="/catalogo" 
+        element={
+          <ConTitulo titulo="Catálogo de Profesionales">
+            <Catalogo />
+          </ConTitulo>
+        } 
       />
 
       {/* Inicio de sesión */}
@@ -130,6 +142,7 @@ export default function AppRouter() {
         }
       />
 
+      {/* Registro */}
       <Route
         path="/registro"
         element={
@@ -139,6 +152,7 @@ export default function AppRouter() {
         }
       />
 
+      {/* Recuperar Contraseña */}
       <Route
         path="/recuperar"
         element={
@@ -148,6 +162,7 @@ export default function AppRouter() {
         }
       />
 
+      {/* Rutas de prueba de mapa */}
       <Route
         path="/rutas"
         element={
@@ -157,6 +172,7 @@ export default function AppRouter() {
         }
       />
 
+      {/* Inicio (Ya logueado) */}
       <Route
         path="/inicio"
         element={
@@ -166,6 +182,7 @@ export default function AppRouter() {
         }
       />
 
+      {/* Mi Perfil */}
       <Route
         path="/mi-perfil"
         element={
@@ -175,6 +192,7 @@ export default function AppRouter() {
         }
       />
 
+      {/* Marcadores Temporales */}
       <Route
         path="/explorar"
         element={
@@ -226,6 +244,7 @@ export default function AppRouter() {
         }
       />
 
+      {/* Error 404 */}
       <Route
         path="*"
         element={

@@ -1,0 +1,124 @@
+/* --- COMPONENTE TARJETA PERFIL REUTILIZABLE --- */
+
+.tarjeta-perfil {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.tarjeta-perfil:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+}
+
+.tarjeta-perfil .perfil-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.tarjeta-perfil .perfil-info {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.tarjeta-perfil .perfil-nombre {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.tarjeta-perfil .perfil-oficio {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+.tarjeta-perfil .perfil-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.tarjeta-perfil .perfil-rating small {
+  color: #94a3b8;
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.tarjeta-perfil .perfil-tags {
+  font-size: 13px;
+  color: #64748b;
+  margin: 4px 0;
+}
+
+.tarjeta-perfil .perfil-ubicacion {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+/* Cajas de horario (Verde) */
+.tarjeta-perfil .perfil-horario {
+  background-color: #f0fdf4;
+  color: #166534;
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto; /* Empuja el horario y el botón al fondo si la tarjeta crece */
+}
+
+.tarjeta-perfil .horario-textos {
+  display: flex;
+  flex-direction: column;
+}
+
+.tarjeta-perfil .horario-titulo {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.tarjeta-perfil .horario-detalle {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+/* Botón Ver Perfil */
+.tarjeta-perfil .btn-ver-perfil {
+  background: transparent;
+  color: #2563eb;
+  border: 1px solid #2563eb;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 8px 16px;
+  text-align: center;
+  margin-top: 8px;
+  display: inline-block;
+  align-self: flex-start;
+  transition: all 0.2s;
+}
+
+.tarjeta-perfil .btn-ver-perfil:hover {
+  background: #eff6ff;
+  text-decoration: none;
+}

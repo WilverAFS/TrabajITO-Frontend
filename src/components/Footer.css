@@ -1,0 +1,69 @@
+/* --- COMPONENTE FOOTER REUTILIZABLE --- */
+
+footer[class$="-footer"] {
+  background-color: #0F172A;
+  color: white;
+  padding: 40px 0 20px 0;
+  margin-top: auto;
+}
+
+footer[class$="-footer"] .footer-contenido {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  max-width: 1150px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+footer[class$="-footer"] .footer-logo-seccion {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+footer[class$="-footer"] .footer-logo {
+  height: 38px;
+  width: fit-content;
+  background-color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+footer[class$="-footer"] .footer-logo-seccion p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+footer[class$="-footer"] .footer-abajo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 20px;
+}
+
+footer[class$="-footer"] .footer-abajo p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+footer[class$="-footer"] .footer-enlaces {
+  display: flex;
+  gap: 8px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+footer[class$="-footer"] .footer-enlaces a {
+  color: #94a3b8;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+footer[class$="-footer"] .footer-enlaces a:hover {
+  color: white;
+}
