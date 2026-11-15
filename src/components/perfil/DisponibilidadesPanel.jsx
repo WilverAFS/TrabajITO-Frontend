@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router'
-import { ErrorPerfil } from '../../services/perfilProfesionalApi.js'
 import {
   listarDisponibilidades,
   crearDisponibilidad,
   editarDisponibilidad,
   eliminarDisponibilidad,
 } from '../../services/perfilComplementosApi.js'
+import AlertasPanel from './AlertasPanel.jsx'
 
 const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
 const FORMULARIO_VACIO = {
@@ -19,7 +18,6 @@ const FORMULARIO_VACIO = {
 const mostrarHora = (hora) => String(hora ?? '').slice(0, 5)
 
 export default function DisponibilidadesPanel() {
-  const navigate = useNavigate()
   const [registros, setRegistros] = useState([])
   const [formulario, setFormulario] = useState(FORMULARIO_VACIO)
   const [idEdicion, setIdEdicion] = useState(null)
@@ -30,12 +28,10 @@ export default function DisponibilidadesPanel() {
 
   const manejarError = useCallback((err) => {
     if (err?.name === 'AbortError') return
-    if (err instanceof ErrorPerfil && err.status === 401) {
-      navigate('/login', { replace: true })
-      return
-    }
+    // El cliente central elimina el token y notifica la sesión expirada.
+    if (err?.status === 401) return
     setError(err?.message || 'No fue posible completar la operación.')
-  }, [navigate])
+  }, [])
 
   const cargar = useCallback(async (signal) => {
     const lista = await listarDisponibilidades({ signal })
@@ -44,11 +40,14 @@ export default function DisponibilidadesPanel() {
 
   useEffect(() => {
     const controller = new AbortController()
-    cargar(controller.signal)
+    listarDisponibilidades({ signal: controller.signal })
+      .then((lista) => {
+        if (!controller.signal.aborted) setRegistros(Array.isArray(lista) ? lista : [])
+      })
       .catch((err) => { if (!controller.signal.aborted) manejarError(err) })
       .finally(() => { if (!controller.signal.aborted) setCargando(false) })
     return () => controller.abort()
-  }, [cargar, manejarError])
+  }, [manejarError])
 
   function modificar(campo, valor) {
     setFormulario((actual) => ({ ...actual, [campo]: valor }))
@@ -145,8 +144,7 @@ export default function DisponibilidadesPanel() {
         <h3>Mis horarios disponibles</h3>
         <p>Registra los periodos en los que puedes atender solicitudes. No se permiten intervalos superpuestos en un mismo día.</p>
       </div>
-      {error && <p className="pc-alerta pc-alerta-error" role="alert">{error}</p>}
-      {exito && <p className="pc-alerta pc-alerta-exito" role="status">{exito}</p>}
+      <AlertasPanel error={error} exito={exito} />
       <div className="pc-dos-columnas">
         <section className="pc-subtarjeta">
           <h4>{idEdicion !== null ? 'Editar disponibilidad' : 'Agregar disponibilidad'}</h4>

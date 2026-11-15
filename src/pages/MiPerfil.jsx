@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link } from 'react-router'
+import { eliminarToken } from '../services/apiClient.js'
 import { actualizarMiCuenta, cambiarMiContrasena, obtenerMiCuenta } from '../services/cuentaApi.js'
 import './MiPerfil.css'
 
@@ -22,7 +23,6 @@ function Campo({ etiqueta, id, ...props }) {
 }
 
 export default function MiPerfil() {
-  const navigate = useNavigate()
   const [usuario, setUsuario] = useState(null)
   const [datos, setDatos] = useState(formularioDesdeUsuario(null))
   const [cargando, setCargando] = useState(true)
@@ -50,18 +50,15 @@ export default function MiPerfil() {
       })
       .catch((error) => {
         if (error.name === 'AbortError') return
-        if (error.status === 401) {
-          localStorage.removeItem('token')
-          navigate('/login', { replace: true })
-          return
-        }
+        // El cliente central elimina el token y notifica la sesión expirada.
+        if (error.status === 401) return
         setErrorCarga(error.message)
       })
       .finally(() => {
         if (!controlador.signal.aborted) setCargando(false)
       })
     return () => controlador.abort()
-  }, [navigate])
+  }, [])
 
   function editarDato(evento) {
     const { name, value } = evento.target
@@ -88,11 +85,7 @@ export default function MiPerfil() {
       setDatos(formularioDesdeUsuario(cuentaActualizada))
       setMensajeDatos('Tus datos se guardaron correctamente en TrabajITO.')
     } catch (error) {
-      if (error.status === 401) {
-        localStorage.removeItem('token')
-        navigate('/login', { replace: true })
-        return
-      }
+      if (error.status === 401) return
       setErrorDatos(error.message)
     } finally {
       setGuardando(false)
@@ -121,15 +114,11 @@ export default function MiPerfil() {
     try {
       await cambiarMiContrasena(claves)
       // Laravel revoca todos los tokens al cambiar la contraseña.
-      localStorage.removeItem('token')
+      eliminarToken()
       setClaves({ password_actual: '', password: '', password_confirmation: '' })
       setClaveActualizada(true)
     } catch (error) {
-      if (error.status === 401) {
-        localStorage.removeItem('token')
-        navigate('/login', { replace: true })
-        return
-      }
+      if (error.status === 401) return
       setErrorClave(error.message)
     } finally {
       setCambiandoClave(false)
