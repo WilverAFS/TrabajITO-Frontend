@@ -1,65 +1,61 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
-import hero from '../assets/registro-hero-provisional.png';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import TarjetaPerfil from '../components/TarjetaPerfil'; // <-- Importamos nuestra tarjeta mágica
-import { 
-  CheckIcono, CirculoIcono, PlomeroIcono, RayoIcono, 
-  MartilloIcono, LlaveIcono, PinturaIcono 
-} from '../components/Iconos';
-import './Inicio.css';
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
+import hero from '../assets/registro-hero-provisional.png'
+import Header from '../components/Header'
+import Footer from '../components/Footer'
+import TarjetaPerfil from '../components/TarjetaPerfil'
+import {
+  CheckIcono, CirculoIcono, PlomeroIcono, RayoIcono,
+  MartilloIcono, LlaveIcono, PinturaIcono,
+} from '../components/Iconos'
+import { listarTrabajadores } from '../services/trabajadoresApi.js'
+import './Inicio.css'
 
 export default function Inicio() {
-  const navigate = useNavigate();
-  
-  // Estado para los perfiles destacados reales de la API
-  const [destacados, setDestacados] = useState([]);
-  const [cargandoDestacados, setCargandoDestacados] = useState(true);
+  const navigate = useNavigate()
 
-  // Traer los 3 mejores trabajadores desde Laravel
+  const [destacados, setDestacados] = useState([])
+  const [cargandoDestacados, setCargandoDestacados] = useState(true)
+  const [errorDestacados, setErrorDestacados] = useState('')
+
   useEffect(() => {
-    const cargarDestacados = async () => {
-      try {
-        // Pedimos solo 3 resultados para la página de inicio
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/trabajadores?per_page=3`, {
-          headers: { 'Accept': 'application/json' }
-        });
-        const result = await response.json();
-        if (result.success) {
-          setDestacados(result.data);
+    const controlador = new AbortController()
+
+    listarTrabajadores({ per_page: 3, signal: controlador.signal })
+      .then((datos) => {
+        if (!controlador.signal.aborted) setDestacados(Array.isArray(datos) ? datos : [])
+      })
+      .catch((error) => {
+        if (error.name !== 'AbortError' && !controlador.signal.aborted) {
+          setErrorDestacados('No se pudieron cargar los perfiles destacados.')
         }
-      } catch (error) {
-        console.error("Error al cargar destacados:", error);
-      } finally {
-        setCargandoDestacados(false);
-      }
-    };
-    cargarDestacados();
-  }, []);
+      })
+      .finally(() => {
+        if (!controlador.signal.aborted) setCargandoDestacados(false)
+      })
+
+    return () => controlador.abort()
+  }, [])
 
   const oficios = [
-    { id: 1, nombre: "Plomeros", desc: "Fugas e instalaciones", icono: <PlomeroIcono /> },
-    { id: 2, nombre: "Electricistas", desc: "Conexiones seguras", icono: <RayoIcono /> },
-    { id: 3, nombre: "Carpinteros", desc: "Muebles a tu medida", icono: <MartilloIcono /> },
-    { id: 4, nombre: "Herreros", desc: "Metal y estructuras", icono: <LlaveIcono /> },
-    { id: 5, nombre: "Pintores", desc: "Espacios renovados", icono: <PinturaIcono /> },
-  ];
+    { id: 1, nombre: 'Plomeros', desc: 'Fugas e instalaciones', icono: <PlomeroIcono /> },
+    { id: 2, nombre: 'Electricistas', desc: 'Conexiones seguras', icono: <RayoIcono /> },
+    { id: 3, nombre: 'Carpinteros', desc: 'Muebles a tu medida', icono: <MartilloIcono /> },
+    { id: 4, nombre: 'Herreros', desc: 'Metal y estructuras', icono: <LlaveIcono /> },
+    { id: 5, nombre: 'Pintores', desc: 'Espacios renovados', icono: <PinturaIcono /> },
+  ]
 
   return (
     <div className="in-pagina">
-      
-      {/* 1. HEADER REUTILIZABLE */}
       <Header estilo="in" botonActivo="inicio" />
 
       <main className="in-contenido-principal">
-        {/* Bloque superior: Texto e Imagen */}
         <section className="in-hero-superior">
           <div className="in-hero-texto">
             <span className="in-etiqueta"><CirculoIcono /> Gente de confianza, cerca de ti</span>
-            <h1>Encuentra profesionales<br/>en Oaxaca.</h1>
+            <h1>Encuentra profesionales<br />en Oaxaca.</h1>
             <p>Explora perfiles, especialidades, portafolio y horarios publicados por trabajadores de Oaxaca.</p>
-            
+
             <div className="in-caracteristicas">
               <span><CheckIcono /> Perfiles con especialidades</span>
               <span><CheckIcono /> Horarios publicados</span>
@@ -71,7 +67,6 @@ export default function Inicio() {
           </div>
         </section>
 
-        {/* Bloque inferior: Buscador de ancho completo */}
         <section className="in-buscador-seccion">
           <div className="in-buscador-contenedor">
             <label>¿Qué necesitas resolver hoy?</label>
@@ -89,15 +84,14 @@ export default function Inicio() {
             </div>
           </div>
         </section>
-        
-        {/* Sección: Oficios disponibles */}
+
         <section id="catalogo" className="in-seccion-catalogo">
           <div className="in-seccion-header">
             <h2>Oficios disponibles</h2>
             <button onClick={() => navigate('/catalogo')} className="in-btn-enlace">Ver catálogo →</button>
           </div>
           <div className="in-grid-oficios">
-            {oficios.map(oficio => (
+            {oficios.map((oficio) => (
               <div key={oficio.id} className="in-tarjeta-oficio">
                 <div className="in-icono-oficio">{oficio.icono}</div>
                 <h3>{oficio.nombre}</h3>
@@ -107,30 +101,32 @@ export default function Inicio() {
           </div>
         </section>
 
-        {/* Sección: Perfiles destacados usando el Componente Reutilizable */}
         <section className="in-seccion-catalogo">
           <div className="in-seccion-header">
             <h2>Perfiles destacados</h2>
             <button onClick={() => navigate('/catalogo')} className="in-btn-enlace">Ver catálogo →</button>
           </div>
           <p className="in-subtitulo">Consulta sus especialidades, horarios y reseñas de clientes.</p>
-          
-          {cargandoDestacados ? (
-            <p style={{textAlign: 'center', margin: '40px 0'}}>Cargando profesionales...</p>
+
+          {errorDestacados ? (
+            <p role="alert" style={{ textAlign: 'center', margin: '40px 0' }}>{errorDestacados}</p>
+          ) : cargandoDestacados ? (
+            <p style={{ textAlign: 'center', margin: '40px 0' }}>Cargando profesionales...</p>
+          ) : destacados.length === 0 ? (
+            <p style={{ textAlign: 'center', margin: '40px 0' }}>Aún no hay perfiles destacados publicados.</p>
           ) : (
             <div className="in-grid-destacados">
-              {destacados.map(perfil => (
+              {destacados.map((perfil) => (
                 <TarjetaPerfil key={perfil.id_trabajador} perfil={perfil} />
               ))}
             </div>
           )}
         </section>
 
-        {/* Sección: Cómo funciona */}
         <section className="in-seccion-como-funciona">
           <h2>Cómo funciona</h2>
           <p className="in-subtitulo">TrabajITO conecta a clientes con trabajadores. Tú consultas perfiles, contactas y acuerdas directamente.</p>
-          
+
           <div className="in-grid-pasos">
             <div className="in-paso">
               <div className="in-paso-numero">01</div>
@@ -155,12 +151,9 @@ export default function Inicio() {
             </div>
           </div>
         </section>
-        
       </main>
 
-      {/* 2. FOOTER REUTILIZABLE */}
       <Footer className="in-footer" />
-      
     </div>
-  );
+  )
 }
