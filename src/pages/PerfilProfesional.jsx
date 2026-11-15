@@ -11,6 +11,7 @@ import {
   actualizarOficiosProfesionales,
 } from '../services/perfilProfesionalApi.js'
 import './PerfilProfesional.css'
+import ComplementosPerfil from '../components/perfil/ComplementosPerfil.jsx'
 
 export default function PerfilProfesional() {
   const navigate = useNavigate()
@@ -180,6 +181,7 @@ export default function PerfilProfesional() {
   return (
     <main className="pp-pagina">
       <div className="pp-contenedor">
+        {perfil && <ComplementosPerfil activo={Boolean(perfil.activo)} />}
         <nav className="pp-volver" aria-label="Regresar">
           <Link to="/inicio">← Volver al inicio</Link>
           <Link to="/mi-perfil">Administrar mi cuenta</Link>
