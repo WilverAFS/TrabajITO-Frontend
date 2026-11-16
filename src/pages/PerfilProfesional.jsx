@@ -1,20 +1,17 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link } from 'react-router'
 import {
-  ErrorPerfil,
-  obtenerEstados,
-  obtenerMunicipios,
-  obtenerOficios,
   obtenerPerfilProfesional,
   crearPerfilProfesional,
   actualizarPerfilProfesional,
   actualizarOficiosProfesionales,
 } from '../services/perfilProfesionalApi.js'
+import { listarEstados, listarMunicipios, listarOficios } from '../services/catalogosApi.js'
 import './PerfilProfesional.css'
 import ComplementosPerfil from '../components/perfil/ComplementosPerfil.jsx'
+import SelectorOficios from '../components/perfil/SelectorOficios.jsx'
 
 export default function PerfilProfesional() {
-  const navigate = useNavigate()
   const [cargando, setCargando] = useState(true)
   const [guardando, setGuardando] = useState(false)
   const [guardandoOficios, setGuardandoOficios] = useState(false)
@@ -31,12 +28,10 @@ export default function PerfilProfesional() {
 
   const manejarError = useCallback((err) => {
     if (err?.name === 'AbortError') return
-    if (err instanceof ErrorPerfil && err.status === 401) {
-      navigate('/login', { replace: true })
-      return
-    }
+    // El cliente central elimina el token y notifica la sesión expirada.
+    if (err?.status === 401) return
     setError(err?.message || 'Ocurrió un error inesperado.')
-  }, [navigate])
+  }, [])
 
   // Consultar catálogos y detectar si el usuario ya tiene perfil.
   useEffect(() => {
@@ -45,8 +40,8 @@ export default function PerfilProfesional() {
     async function iniciar() {
       try {
         const [listaEstados, listaOficios, perfilActual] = await Promise.all([
-          obtenerEstados({ signal: controller.signal }),
-          obtenerOficios({ signal: controller.signal }),
+          listarEstados({ signal: controller.signal }),
+          listarOficios({ signal: controller.signal }),
           obtenerPerfilProfesional({ signal: controller.signal }).catch((err) => {
             // El 404 conocido significa "sin perfil"; no es un error de pantalla.
             if (err.status === 404 && err.codigo === 'PROFILE_NOT_FOUND') return null
@@ -80,7 +75,7 @@ export default function PerfilProfesional() {
     if (!idEstado) return undefined
     const controller = new AbortController()
 
-    obtenerMunicipios(idEstado, { signal: controller.signal })
+    listarMunicipios(idEstado, { signal: controller.signal })
       .then((lista) => {
         if (controller.signal.aborted) return
         const disponibles = lista ?? []
@@ -248,19 +243,12 @@ export default function PerfilProfesional() {
                   <div className="pp-oficios-crear">
                     <h3>Selecciona tus oficios</h3>
                     <p>Elige al menos uno. Podrás modificarlos más adelante.</p>
-                    <div className="pp-lista-oficios">
-                      {oficios.map((oficio) => (
-                        <label className="pp-opcion-oficio" key={oficio.id_oficio}>
-                          <input
-                            type="checkbox"
-                            checked={oficiosSeleccionados.includes(String(oficio.id_oficio))}
-                            onChange={() => alternarOficio(String(oficio.id_oficio))}
-                            disabled={guardando}
-                          />
-                          <span>{oficio.nombre}</span>
-                        </label>
-                      ))}
-                    </div>
+                    <SelectorOficios
+                      oficios={oficios}
+                      seleccionados={oficiosSeleccionados}
+                      onAlternar={alternarOficio}
+                      disabled={guardando}
+                    />
                   </div>
                 )}
 
@@ -295,19 +283,12 @@ export default function PerfilProfesional() {
                   <h2 id="pp-oficios-titulo">Mis oficios</h2>
                   <p className="pp-ayuda">Marca las especialidades que ofreces. Al guardar se reemplazará la selección anterior.</p>
                   <form onSubmit={guardarOficios}>
-                    <div className="pp-lista-oficios">
-                      {oficios.map((oficio) => (
-                        <label className="pp-opcion-oficio" key={oficio.id_oficio}>
-                          <input
-                            type="checkbox"
-                            checked={oficiosSeleccionados.includes(String(oficio.id_oficio))}
-                            onChange={() => alternarOficio(String(oficio.id_oficio))}
-                            disabled={guardandoOficios}
-                          />
-                          <span>{oficio.nombre}</span>
-                        </label>
-                      ))}
-                    </div>
+                    <SelectorOficios
+                      oficios={oficios}
+                      seleccionados={oficiosSeleccionados}
+                      onAlternar={alternarOficio}
+                      disabled={guardandoOficios}
+                    />
                     <button type="submit" className="pp-boton pp-boton-secundario" disabled={guardandoOficios}>
                       {guardandoOficios ? 'Guardando...' : 'Actualizar oficios'}
                     </button>

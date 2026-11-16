@@ -1,88 +1,69 @@
-
-
-import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router';
-import logo from './assets/logo.png';
-import './App.css';
+import { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router'
+import logo from './assets/logo.png'
+import { eliminarToken, obtenerToken } from './services/apiClient.js'
+import { iniciarSesion, obtenerUsuarioActual } from './services/authApi.js'
+import './App.css'
 
 function App() {
-  const navigate = useNavigate();
-  const [correo, setCorreo] = useState('');
-  const [contrasena, setContrasena] = useState('');
-  const [mostrarContrasena, setMostrarContrasena] = useState(false);
-  const [errorLogin, setErrorLogin] = useState('');
-  const [cargando, setCargando] = useState(true);
+  const navigate = useNavigate()
+  const [correo, setCorreo] = useState('')
+  const [contrasena, setContrasena] = useState('')
+  const [mostrarContrasena, setMostrarContrasena] = useState(false)
+  const [errorLogin, setErrorLogin] = useState('')
+  const [enviando, setEnviando] = useState(false)
+  const [cargando, setCargando] = useState(() => Boolean(obtenerToken()))
+
   useEffect(() => {
-    const verificarToken = async () => {
-      const token = localStorage.getItem('token');
-      if (!token || token === 'undefined') {
-        setCargando(false); // Quitamos la pausa si no hay sesión
-        return;
-      }
+    if (!obtenerToken()) return undefined
 
-      try {
-        const respuesta = await fetch('http://127.0.0.1:8000/api/v1/me', {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${token}` 
-          }
-        });
-        const data = await respuesta.json();
-        if (respuesta.ok && data.success) {
-          navigate('/inicio', { replace: true }); 
-        } else {
-          localStorage.removeItem('token'); 
+    const controlador = new AbortController()
+    obtenerUsuarioActual({ signal: controlador.signal })
+      .then(() => {
+        navigate('/inicio', { replace: true })
+      })
+      .catch((error) => {
+        if (error.name === 'AbortError') return
+        if (error.status === 401) {
+          eliminarToken()
+          return
         }
-      } catch (error) {
-        console.error('Error:', error);
-      } finally {
-        setCargando(false); // Quitamos la pausa sin importar el resultado
-      }
-    };
-    verificarToken();
-  }, [navigate]);
-  const iniciarSesion = async (e) => {
-    e.preventDefault();
-    setErrorLogin(''); 
-    
+        console.error('Error al verificar la sesión.')
+      })
+      .finally(() => {
+        if (!controlador.signal.aborted) setCargando(false)
+      })
+
+    return () => controlador.abort()
+  }, [navigate])
+
+  const manejarInicioSesion = async (e) => {
+    e.preventDefault()
+    if (enviando) return
+    setErrorLogin('')
+    setEnviando(true)
+
     try {
-      const respuesta = await fetch('http://127.0.0.1:8000/api/v1/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          correo: correo,
-          password: contrasena, // El backend requiere la clave en inglés
-          device_name: 'react-web'
-        })
-      });
-
-      const data = await respuesta.json();
-
-      if (respuesta.ok && data.success) {
-        // Guardamos el token en el almacenamiento local del navegador
-        const tokenReal = data.token || data.data.token;
-        localStorage.setItem('token', tokenReal);
-        // Extraemos el nombre del usuario desde la respuesta de Laravel
-        navigate('/inicio', { replace: true });
-      } else {
-        // Mostramos el error exacto que devuelva el backend
-        setErrorLogin(data.message || 'Correo o contraseña incorrectos.');
-      }
+      await iniciarSesion({
+        correo,
+        password: contrasena,
+        device_name: 'react-web',
+      })
+      navigate('/inicio', { replace: true })
     } catch (error) {
-      console.error('Error conectando a la API:', error);
-      setErrorLogin('Error de conexión con el servidor.');
+      setErrorLogin(
+        error?.status
+          ? error.message
+          : 'Error de conexión con el servidor.',
+      )
+    } finally {
+      setEnviando(false)
     }
-  };
+  }
 
   if (cargando) {
-     return <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', fontFamily: 'system-ui' }}>Cargando TrabajITO...</div>;
-    }
-
-
+    return <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', fontFamily: 'system-ui' }}>Cargando TrabajITO...</div>
+  }
 
   return (
     <div className="pagina">
@@ -142,7 +123,7 @@ function App() {
             </p>
           </div>
 
-          <form onSubmit={iniciarSesion}>
+          <form onSubmit={manejarInicioSesion}>
             <label htmlFor="correo">Correo electrónico</label>
             <div className="campo">
               <span className="campo-icono" aria-hidden="true">✉</span>
@@ -180,14 +161,13 @@ function App() {
               <span>Mostrar contraseña</span>
             </label>
 
-            {/* Aquí agregamos el mensaje de error en rojo */}
             {errorLogin && (
               <div style={{ color: '#d32f2f', fontSize: '0.9rem', marginBottom: '1rem', textAlign: 'center', fontWeight: '500' }}>
                 {errorLogin}
               </div>
             )}
 
-            <button type="submit" className="boton-login">
+            <button type="submit" className="boton-login" disabled={enviando}>
               Iniciar sesión
             </button>
 
@@ -217,7 +197,7 @@ function App() {
         </section>
       </main>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

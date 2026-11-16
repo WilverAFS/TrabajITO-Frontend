@@ -7,6 +7,8 @@ import Recuperacion from '../pages/Recuperacion.jsx'
 import InicioAutenticado from './InicioAutenticado.jsx'
 import MiPerfil from '../pages/MiPerfil.jsx'
 import Catalogo from '../pages/Catalogo.jsx'
+import PerfilProfesional from '../pages/PerfilProfesional.jsx'
+import { EVENTO_SESION_EXPIRADA } from '../services/apiClient.js'
 import './AppRouter.css'
 
 // Estas rutas describen la navegacion prevista, NO implementan autorizacion.
@@ -113,9 +115,24 @@ function PresentacionConNavegacion() {
   );
 }
 
+// Un único punto atiende todas las respuestas 401 autenticadas.
+function VigilarSesion() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const manejarSesionExpirada = () => navigate('/login', { replace: true })
+    window.addEventListener(EVENTO_SESION_EXPIRADA, manejarSesionExpirada)
+    return () => window.removeEventListener(EVENTO_SESION_EXPIRADA, manejarSesionExpirada)
+  }, [navigate])
+
+  return null
+}
+
 export default function AppRouter() {
   return (
-    <Routes>
+    <>
+      <VigilarSesion />
+      <Routes>
       {/* 1. Página principal: Presentación de TrabajITO (Por defecto) */}
       <Route
         path="/"
@@ -249,6 +266,7 @@ export default function AppRouter() {
           </ConTitulo>
         }
       />
-    </Routes>
+      </Routes>
+    </>
   );
 }

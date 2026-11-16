@@ -1,18 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router'
-import { ErrorPerfil } from '../../services/perfilProfesionalApi.js'
 import {
   listarCertificados,
   crearCertificado,
   eliminarCertificado,
   enlaceDocumento,
 } from '../../services/perfilComplementosApi.js'
+import AlertasPanel from './AlertasPanel.jsx'
 
 const LIMITE_BYTES = 5 * 1024 * 1024
 const EXTENSIONES_PERMITIDAS = /\.(pdf|jpe?g|png)$/i
 
 export default function CertificadosPanel() {
-  const navigate = useNavigate()
   const formularioRef = useRef(null)
   const [registros, setRegistros] = useState([])
   const [nombre, setNombre] = useState('')
@@ -27,12 +25,10 @@ export default function CertificadosPanel() {
 
   const manejarError = useCallback((err) => {
     if (err?.name === 'AbortError') return
-    if (err instanceof ErrorPerfil && err.status === 401) {
-      navigate('/login', { replace: true })
-      return
-    }
+    // El cliente central elimina el token y notifica la sesión expirada.
+    if (err?.status === 401) return
     setError(err?.message || 'No fue posible completar la operación.')
-  }, [navigate])
+  }, [])
 
   const cargar = useCallback(async (signal) => {
     const lista = await listarCertificados({ signal })
@@ -41,11 +37,14 @@ export default function CertificadosPanel() {
 
   useEffect(() => {
     const controller = new AbortController()
-    cargar(controller.signal)
+    listarCertificados({ signal: controller.signal })
+      .then((lista) => {
+        if (!controller.signal.aborted) setRegistros(Array.isArray(lista) ? lista : [])
+      })
       .catch((err) => { if (!controller.signal.aborted) manejarError(err) })
       .finally(() => { if (!controller.signal.aborted) setCargando(false) })
     return () => controller.abort()
-  }, [cargar, manejarError])
+  }, [manejarError])
 
   async function guardar(evento) {
     evento.preventDefault()
@@ -116,8 +115,7 @@ export default function CertificadosPanel() {
         <h3>Mis certificados</h3>
         <p>Registra documentos que acrediten tu preparación. Los documentos quedan sujetos a verificación; no se validan automáticamente.</p>
       </div>
-      {error && <p className="pc-alerta pc-alerta-error" role="alert">{error}</p>}
-      {exito && <p className="pc-alerta pc-alerta-exito" role="status">{exito}</p>}
+      <AlertasPanel error={error} exito={exito} />
       <div className="pc-dos-columnas">
         <section className="pc-subtarjeta">
           <h4>Registrar certificado</h4>

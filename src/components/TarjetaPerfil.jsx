@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router';
 import { EstrellaIcono, UbicacionIcono, RelojIcono } from './Iconos';
 import './TarjetaPerfil.css';
