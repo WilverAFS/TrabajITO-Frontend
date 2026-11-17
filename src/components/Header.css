@@ -105,3 +105,161 @@
   background: #f8faff;
   color: #2563eb;
 }
+
+/* Contenedor de la campana y el panel */
+.in-notificaciones-contenedor {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Botón de la campana */
+.in-icono-enlace {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  background: transparent;
+  border: none;
+  color: #555;
+  cursor: pointer;
+}
+
+.in-icono-enlace:hover {
+  color: #0d6efd;
+}
+
+/* Contador rojo */
+.in-notificaciones-contador {
+  position: absolute;
+  top: -5px;
+  right: -7px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #dc3545;
+  color: white;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* Panel desplegable */
+.in-notificaciones-panel {
+  position: absolute;
+  top: 145%;
+  right: -50px;
+  width: 360px;
+  max-height: 430px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+/* Encabezado */
+.in-notificaciones-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.in-notificaciones-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #002b5c;
+}
+
+.in-notificaciones-header span {
+  color: #777;
+  font-size: 12px;
+}
+
+.in-notificaciones-header button {
+  border: none;
+  background: transparent;
+  color: #0d6efd;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Lista */
+.in-notificaciones-lista {
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.in-notificacion-item {
+  padding: 14px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.in-notificacion-item.sin-leer {
+  background: #f0f7ff;
+}
+
+.in-notificacion-contenido {
+  min-width: 0;
+}
+
+.in-notificacion-contenido strong {
+  display: block;
+  font-size: 13px;
+  color: #222;
+}
+
+.in-notificacion-contenido p {
+  margin: 5px 0;
+  color: #555;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.in-notificacion-contenido small {
+  color: #999;
+  font-size: 10px;
+}
+
+.in-notificacion-leer {
+  align-self: center;
+  border: none;
+  background: transparent;
+  color: #0d6efd;
+  font-size: 11px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.in-notificaciones-vacio,
+.in-notificaciones-error {
+  padding: 22px 15px;
+  text-align: center;
+  font-size: 13px;
+  color: #777;
+}
+
+.in-notificaciones-error {
+  color: #dc3545;
+}
+
+@media (max-width: 600px) {
+  .in-notificaciones-panel {
+    position: fixed;
+    top: 75px;
+    right: 10px;
+    left: 10px;
+    width: auto;
+  }
+}

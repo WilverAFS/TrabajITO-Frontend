@@ -1,99 +1,203 @@
+
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
+
 import hero from '../assets/registro-hero-provisional.png'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import TarjetaPerfil from '../components/TarjetaPerfil'
+
 import {
-  CheckIcono, CirculoIcono, PlomeroIcono, RayoIcono,
-  MartilloIcono, LlaveIcono, PinturaIcono,
+  CheckIcono,
+  CirculoIcono,
+  PlomeroIcono,
+  RayoIcono,
+  MartilloIcono,
+  LlaveIcono,
+  PinturaIcono,
 } from '../components/Iconos'
+
 import { listarTrabajadores } from '../services/trabajadoresApi.js'
+
 import './Inicio.css'
 
 export default function Inicio() {
   const navigate = useNavigate()
 
+  // Estado de los perfiles destacados
   const [destacados, setDestacados] = useState([])
   const [cargandoDestacados, setCargandoDestacados] = useState(true)
   const [errorDestacados, setErrorDestacados] = useState('')
 
+  // Cargar los perfiles destacados desde Laravel
   useEffect(() => {
     const controlador = new AbortController()
 
-    listarTrabajadores({ per_page: 3, signal: controlador.signal })
+    listarTrabajadores({
+      per_page: 3,
+      signal: controlador.signal,
+    })
       .then((datos) => {
-        if (!controlador.signal.aborted) setDestacados(Array.isArray(datos) ? datos : [])
+        if (!controlador.signal.aborted) {
+          setDestacados(Array.isArray(datos) ? datos : [])
+        }
       })
       .catch((error) => {
-        if (error.name !== 'AbortError' && !controlador.signal.aborted) {
-          setErrorDestacados('No se pudieron cargar los perfiles destacados.')
+        if (
+          error.name !== 'AbortError' &&
+          !controlador.signal.aborted
+        ) {
+          setErrorDestacados(
+            'No se pudieron cargar los perfiles destacados.'
+          )
         }
       })
       .finally(() => {
-        if (!controlador.signal.aborted) setCargandoDestacados(false)
+        if (!controlador.signal.aborted) {
+          setCargandoDestacados(false)
+        }
       })
 
     return () => controlador.abort()
   }, [])
 
+  // Oficios disponibles
   const oficios = [
-    { id: 1, nombre: 'Plomeros', desc: 'Fugas e instalaciones', icono: <PlomeroIcono /> },
-    { id: 2, nombre: 'Electricistas', desc: 'Conexiones seguras', icono: <RayoIcono /> },
-    { id: 3, nombre: 'Carpinteros', desc: 'Muebles a tu medida', icono: <MartilloIcono /> },
-    { id: 4, nombre: 'Herreros', desc: 'Metal y estructuras', icono: <LlaveIcono /> },
-    { id: 5, nombre: 'Pintores', desc: 'Espacios renovados', icono: <PinturaIcono /> },
+    {
+      id: 1,
+      nombre: 'Plomeros',
+      desc: 'Fugas e instalaciones',
+      icono: <PlomeroIcono />,
+    },
+    {
+      id: 2,
+      nombre: 'Electricistas',
+      desc: 'Conexiones seguras',
+      icono: <RayoIcono />,
+    },
+    {
+      id: 3,
+      nombre: 'Carpinteros',
+      desc: 'Muebles a tu medida',
+      icono: <MartilloIcono />,
+    },
+    {
+      id: 4,
+      nombre: 'Herreros',
+      desc: 'Metal y estructuras',
+      icono: <LlaveIcono />,
+    },
+    {
+      id: 5,
+      nombre: 'Pintores',
+      desc: 'Espacios renovados',
+      icono: <PinturaIcono />,
+    },
   ]
 
   return (
     <div className="in-pagina">
+
+      {/* Encabezado compartido */}
       <Header estilo="in" botonActivo="inicio" />
 
       <main className="in-contenido-principal">
+
+        {/* Presentación */}
         <section className="in-hero-superior">
           <div className="in-hero-texto">
-            <span className="in-etiqueta"><CirculoIcono /> Gente de confianza, cerca de ti</span>
-            <h1>Encuentra profesionales<br />en Oaxaca.</h1>
-            <p>Explora perfiles, especialidades, portafolio y horarios publicados por trabajadores de Oaxaca.</p>
+            <span className="in-etiqueta">
+              <CirculoIcono />
+              Gente de confianza, cerca de ti
+            </span>
+
+            <h1>
+              Encuentra profesionales
+              <br />
+              en Oaxaca.
+            </h1>
+
+            <p>
+              Explora perfiles, especialidades, portafolio y horarios
+              publicados por trabajadores de Oaxaca.
+            </p>
 
             <div className="in-caracteristicas">
-              <span><CheckIcono /> Perfiles con especialidades</span>
-              <span><CheckIcono /> Horarios publicados</span>
+              <span>
+                <CheckIcono />
+                Perfiles con especialidades
+              </span>
+
+              <span>
+                <CheckIcono />
+                Horarios publicados
+              </span>
             </div>
           </div>
 
           <div className="in-hero-imagen">
-            <img src={hero} alt="Profesionales trabajando" />
+            <img
+              src={hero}
+              alt="Profesionales trabajando"
+            />
           </div>
         </section>
 
+        {/* Buscador */}
         <section className="in-buscador-seccion">
           <div className="in-buscador-contenedor">
             <label>¿Qué necesitas resolver hoy?</label>
+
             <div className="in-buscador">
               <div className="in-buscador-input">
                 <span className="in-circulo-vacio"></span>
+
                 <div>
                   <small>TIPO DE OFICIO</small>
-                  <input type="text" placeholder="Selecciona un oficio" />
+                  <input
+                    type="text"
+                    placeholder="Selecciona un oficio"
+                  />
                 </div>
               </div>
-              <button onClick={() => navigate('/catalogo')}>
+
+              <button
+                type="button"
+                onClick={() => navigate('/catalogo')}
+              >
                 Buscar trabajadores
               </button>
             </div>
           </div>
         </section>
 
-        <section id="catalogo" className="in-seccion-catalogo">
+        {/* Catálogo de oficios */}
+        <section
+          id="catalogo"
+          className="in-seccion-catalogo"
+        >
           <div className="in-seccion-header">
             <h2>Oficios disponibles</h2>
-            <button onClick={() => navigate('/catalogo')} className="in-btn-enlace">Ver catálogo →</button>
+
+            <button
+              type="button"
+              onClick={() => navigate('/catalogo')}
+              className="in-btn-enlace"
+            >
+              Ver catálogo →
+            </button>
           </div>
+
           <div className="in-grid-oficios">
             {oficios.map((oficio) => (
-              <div key={oficio.id} className="in-tarjeta-oficio">
-                <div className="in-icono-oficio">{oficio.icono}</div>
+              <div
+                key={oficio.id}
+                className="in-tarjeta-oficio"
+              >
+                <div className="in-icono-oficio">
+                  {oficio.icono}
+                </div>
+
                 <h3>{oficio.nombre}</h3>
                 <p>{oficio.desc}</p>
               </div>
@@ -101,59 +205,119 @@ export default function Inicio() {
           </div>
         </section>
 
+        {/* Perfiles destacados */}
         <section className="in-seccion-catalogo">
           <div className="in-seccion-header">
             <h2>Perfiles destacados</h2>
-            <button onClick={() => navigate('/catalogo')} className="in-btn-enlace">Ver catálogo →</button>
+
+            <button
+              type="button"
+              onClick={() => navigate('/catalogo')}
+              className="in-btn-enlace"
+            >
+              Ver catálogo →
+            </button>
           </div>
-          <p className="in-subtitulo">Consulta sus especialidades, horarios y reseñas de clientes.</p>
+
+          <p className="in-subtitulo">
+            Consulta sus especialidades, horarios y reseñas de clientes.
+          </p>
 
           {errorDestacados ? (
-            <p role="alert" style={{ textAlign: 'center', margin: '40px 0' }}>{errorDestacados}</p>
+            <p
+              role="alert"
+              style={{
+                textAlign: 'center',
+                margin: '40px 0',
+              }}
+            >
+              {errorDestacados}
+            </p>
           ) : cargandoDestacados ? (
-            <p style={{ textAlign: 'center', margin: '40px 0' }}>Cargando profesionales...</p>
+            <p
+              style={{
+                textAlign: 'center',
+                margin: '40px 0',
+              }}
+            >
+              Cargando profesionales...
+            </p>
           ) : destacados.length === 0 ? (
-            <p style={{ textAlign: 'center', margin: '40px 0' }}>Aún no hay perfiles destacados publicados.</p>
+            <p
+              style={{
+                textAlign: 'center',
+                margin: '40px 0',
+              }}
+            >
+              Aún no hay perfiles destacados publicados.
+            </p>
           ) : (
             <div className="in-grid-destacados">
               {destacados.map((perfil) => (
-                <TarjetaPerfil key={perfil.id_trabajador} perfil={perfil} />
+                <TarjetaPerfil
+                  key={perfil.id_trabajador}
+                  perfil={perfil}
+                />
               ))}
             </div>
           )}
         </section>
 
+        {/* Cómo funciona */}
         <section className="in-seccion-como-funciona">
           <h2>Cómo funciona</h2>
-          <p className="in-subtitulo">TrabajITO conecta a clientes con trabajadores. Tú consultas perfiles, contactas y acuerdas directamente.</p>
+
+          <p className="in-subtitulo">
+            TrabajITO conecta a clientes con trabajadores. Tú consultas
+            perfiles, contactas y acuerdas directamente.
+          </p>
 
           <div className="in-grid-pasos">
+
             <div className="in-paso">
               <div className="in-paso-numero">01</div>
+
               <div className="in-paso-texto">
                 <h4>Busca por oficio o especialidad</h4>
-                <p>Usa filtros para encontrar perfiles de Oaxaca de Juárez y zonas adyacentes.</p>
+                <p>
+                  Usa filtros para encontrar perfiles de Oaxaca de Juárez
+                  y zonas adyacentes.
+                </p>
               </div>
             </div>
+
             <div className="in-paso">
               <div className="in-paso-numero">02</div>
+
               <div className="in-paso-texto">
                 <h4>Consulta perfiles y reseñas</h4>
-                <p>Revisa especialidades, portafolio y horarios publicados por cada trabajador.</p>
+                <p>
+                  Revisa especialidades, portafolio y horarios publicados
+                  por cada trabajador.
+                </p>
               </div>
             </div>
+
             <div className="in-paso">
               <div className="in-paso-numero">03</div>
+
               <div className="in-paso-texto">
                 <h4>Contacta y acuerda directamente</h4>
-                <p>Acuerda con el trabajador los detalles de tu proyecto y el seguimiento que necesitas.</p>
+                <p>
+                  Acuerda con el trabajador los detalles de tu proyecto
+                  y el seguimiento que necesitas.
+                </p>
               </div>
             </div>
+
           </div>
         </section>
+
       </main>
 
+      {/* Pie de página */}
       <Footer className="in-footer" />
+
     </div>
   )
 }
