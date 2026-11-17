@@ -116,10 +116,14 @@ export default function Header({ botonActivo = 'catalogo' }) {
 
   // Consultar notificaciones al cargar el encabezado.
   useEffect(() => {
-    if (obtenerToken()) {
-      cargarNotificaciones()
-    }
-  }, [cargarNotificaciones])
+  if (!obtenerToken()) return undefined
+
+  const temporizador = setTimeout(() => {
+    cargarNotificaciones()
+  }, 0)
+
+  return () => clearTimeout(temporizador)
+}, [cargarNotificaciones])
 
   // Marcar una notificación como leída.
   const marcarComoLeida = async (id) => {
