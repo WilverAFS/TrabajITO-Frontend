@@ -104,16 +104,6 @@
 .menu-desplegable-usuario button:hover {
   background: #f8faff;
   color: #2563eb;
-.menu-desplegable-usuario button:hover {
-  background: #f8faff;
-  color: #2563eb;
-}
-
-/* Contenedor de la campana y el panel */
-.in-notificaciones-contenedor {
-  position: relative;
-  display: flex;
-  align-items: center;
 }
 
 /* Contenedor de la campana y el panel */
@@ -272,4 +262,4 @@
     left: 10px;
     width: auto;
   }
-}}
+}
