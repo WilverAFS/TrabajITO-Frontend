@@ -7,16 +7,17 @@ import { CampanaIcono, CorreoIcono } from './Iconos'
 
 import { obtenerToken } from '../services/apiClient.js'
 import {
+  listarNotificaciones,
+  contarNotificacionesNoLeidas,
+  marcarNotificacionComoLeida,
+  marcarTodasNotificacionesComoLeidas,
+} from '../services/notificacionesApi.js'
+import {
   cerrarSesion,
   obtenerUsuarioActual,
 } from '../services/authApi.js'
 
 import './Header.css'
-
-const BASE_API = (
-  import.meta.env.VITE_API_BASE_URL ||
-  'http://127.0.0.1:8000/api/v1'
-).replace(/\/$/, '')
 
 export default function Header({ botonActivo = 'catalogo' }) {
   const [menuAbierto, setMenuAbierto] = useState(false)
@@ -30,16 +31,6 @@ export default function Header({ botonActivo = 'catalogo' }) {
   const [errorNotificaciones, setErrorNotificaciones] = useState('')
 
   const navigate = useNavigate()
-
-  const obtenerHeaders = useCallback(() => {
-    const token = obtenerToken()
-
-    return {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      Authorization: `Bearer ${token}`,
-    }
-  }, [])
 
   // Obtener usuario autenticado.
   useEffect(() => {
@@ -65,54 +56,33 @@ export default function Header({ botonActivo = 'catalogo' }) {
     return () => controlador.abort()
   }, [])
 
-  // Cargar notificaciones y contador.
+  // Cargar notificaciones y contador mediante el servicio Axios.
   const cargarNotificaciones = useCallback(async () => {
-    const token = obtenerToken()
-
-    if (!token) return
+    if (!obtenerToken()) return
 
     setCargandoNotificaciones(true)
     setErrorNotificaciones('')
 
     try {
       const [respuestaLista, respuestaContador] = await Promise.all([
-        fetch(`${BASE_API}/notificaciones?page=1`, {
-          headers: obtenerHeaders(),
-        }),
-        fetch(`${BASE_API}/notificaciones/no-leidas/count`, {
-          headers: obtenerHeaders(),
-        }),
+        listarNotificaciones({ pagina: 1 }),
+        contarNotificacionesNoLeidas(),
       ])
 
-      if (!respuestaLista.ok || !respuestaContador.ok) {
-        throw new Error('No se pudieron cargar las notificaciones.')
-      }
-
-      const datosLista = await respuestaLista.json()
-      const datosContador = await respuestaContador.json()
-
-      const lista = Array.isArray(datosLista.data)
-        ? datosLista.data
-        : Array.isArray(datosLista.data?.data)
-          ? datosLista.data.data
-          : []
-
-      setNotificaciones(lista)
-
-      setNoLeidas(
-        Number(
-          datosContador.data?.total ??
-          datosContador.total ??
-          0
-        )
+      setNotificaciones(
+        Array.isArray(respuestaLista) ? respuestaLista : []
       )
+
+      setNoLeidas(Number(respuestaContador?.total ?? 0))
     } catch (error) {
       console.error('Error al cargar notificaciones:', error)
-      setErrorNotificaciones(error.message)
+      setErrorNotificaciones(
+        error.message || 'No se pudieron cargar las notificaciones.'
+      )
     } finally {
       setCargandoNotificaciones(false)
     }
-  }, [obtenerHeaders])
+  }, [])
 
   // Consultar notificaciones al cargar el encabezado.
   useEffect(() => {
@@ -128,44 +98,26 @@ export default function Header({ botonActivo = 'catalogo' }) {
   // Marcar una notificación como leída.
   const marcarComoLeida = async (id) => {
     try {
-      const respuesta = await fetch(
-        `${BASE_API}/notificaciones/${id}/leer`,
-        {
-          method: 'PATCH',
-          headers: obtenerHeaders(),
-        }
-      )
-
-      if (!respuesta.ok) {
-        throw new Error('No se pudo marcar la notificación como leída.')
-      }
-
+      await marcarNotificacionComoLeida(id)
       await cargarNotificaciones()
     } catch (error) {
       console.error(error)
-      setErrorNotificaciones(error.message)
+      setErrorNotificaciones(
+        error.message || 'No se pudo marcar la notificación como leída.'
+      )
     }
   }
 
   // Marcar todas las notificaciones como leídas.
   const marcarTodasComoLeidas = async () => {
     try {
-      const respuesta = await fetch(
-        `${BASE_API}/notificaciones/leer-todas`,
-        {
-          method: 'PATCH',
-          headers: obtenerHeaders(),
-        }
-      )
-
-      if (!respuesta.ok) {
-        throw new Error('No se pudieron marcar todas como leídas.')
-      }
-
+      await marcarTodasNotificacionesComoLeidas()
       await cargarNotificaciones()
     } catch (error) {
       console.error(error)
-      setErrorNotificaciones(error.message)
+      setErrorNotificaciones(
+        error.message || 'No se pudieron marcar todas como leídas.'
+      )
     }
   }
 

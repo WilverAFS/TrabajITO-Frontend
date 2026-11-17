@@ -1,16 +1,17 @@
-
 import { NavLink } from 'react-router';
 import './NavbarBandejas.css';
 
-export default function NavbarBandejas({ rol }) {
-  const esTrabajador =
-    rol?.toLowerCase() === 'trabajador';
+export default function NavbarBandejas({
+  esTrabajadorHabilitado = false,
+  esAdministrador = false,
+}) {
+  const puedeVerSolicitudes =
+    esTrabajadorHabilitado || esAdministrador;
 
   return (
     <nav className="navbar-bandejas">
       <div className="navbar-bandejas-contenido">
-
-        {esTrabajador && (
+        {puedeVerSolicitudes && (
           <NavLink
             to="/solicitudes"
             className={({ isActive }) =>
@@ -41,7 +42,6 @@ export default function NavbarBandejas({ rol }) {
           <span>🔔</span>
           Notificaciones
         </NavLink>
-
       </div>
     </nav>
   );

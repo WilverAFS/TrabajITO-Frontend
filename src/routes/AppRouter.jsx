@@ -1,6 +1,6 @@
 
 import { useEffect } from 'react'
-import { Link, Route, Routes, useNavigate } from 'react-router'
+import { Link, Navigate, Route, Routes, useNavigate, useOutletContext } from 'react-router'
 
 import App from '../App.jsx'
 import Presentacion from '../pages/Presentacion.jsx'
@@ -9,7 +9,10 @@ import Recuperacion from '../pages/Recuperacion.jsx'
 import MiPerfil from '../pages/MiPerfil.jsx'
 import Catalogo from '../pages/Catalogo.jsx'
 import PerfilProfesional from '../pages/PerfilProfesional.jsx'
-import BandejaTemporal from '../pages/BandejaTemporal.jsx'
+import Solicitudes from '../pages/solicitudes.jsx'
+import Contrataciones from '../pages/contratacion.jsx'
+import Notificaciones from '../pages/notificaciones.jsx'
+import BandejasLayout from './BandejasLayout.jsx'
 
 import InicioAutenticado from './InicioAutenticado.jsx'
 
@@ -145,6 +148,25 @@ function PresentacionConNavegacion() {
   )
 }
 
+// Protege la bandeja de solicitudes según los permisos devueltos por /me.
+function SolicitudesProtegidas() {
+  const { usuario } = useOutletContext()
+
+  const puedeVerSolicitudes =
+    Boolean(usuario?.es_trabajador_habilitado) ||
+    Boolean(usuario?.es_administrador)
+
+  if (!puedeVerSolicitudes) {
+    return <Navigate to="/inicio" replace />
+  }
+
+  return (
+    <ConTitulo titulo="Solicitudes">
+      <Solicitudes />
+    </ConTitulo>
+  )
+}
+
 // Atiende las respuestas 401 de los servicios autenticados
 function VigilarSesion() {
   const navigate = useNavigate()
@@ -242,32 +264,30 @@ export default function AppRouter() {
             }
           />
 
-          <Route
-            path="/solicitudes"
-            element={
-              <ConTitulo titulo="Solicitudes">
-                <BandejaTemporal titulo="Solicitudes" />
-              </ConTitulo>
-            }
-          />
+          <Route element={<BandejasLayout />}>
+            <Route
+              path="/solicitudes"
+              element={<SolicitudesProtegidas />}
+            />
 
-          <Route
-            path="/contrataciones"
-            element={
-              <ConTitulo titulo="Contrataciones">
-                <BandejaTemporal titulo="Contrataciones" />
-              </ConTitulo>
-            }
-          />
+            <Route
+              path="/contrataciones"
+              element={
+                <ConTitulo titulo="Contrataciones">
+                  <Contrataciones />
+                </ConTitulo>
+              }
+            />
 
-          <Route
-            path="/notificaciones"
-            element={
-              <ConTitulo titulo="Notificaciones">
-                <BandejaTemporal titulo="Notificaciones" />
-              </ConTitulo>
-            }
-          />
+            <Route
+              path="/notificaciones"
+              element={
+                <ConTitulo titulo="Notificaciones">
+                  <Notificaciones />
+                </ConTitulo>
+              }
+            />
+          </Route>
 
           <Route
             path="/perfil-profesional"
