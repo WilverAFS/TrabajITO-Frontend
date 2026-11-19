@@ -1,6 +1,6 @@
 
 import { useEffect, useState, useCallback } from 'react'
-import { useNavigate } from 'react-router'
+import { NavLink, useNavigate } from 'react-router'
 
 import logo from '../assets/registro-logo-provisional.png'
 import { CampanaIcono, CorreoIcono } from './Iconos'
@@ -21,6 +21,7 @@ import './Header.css'
 
 export default function Header({ botonActivo = 'catalogo' }) {
   const [menuAbierto, setMenuAbierto] = useState(false)
+  const [menuMovilAbierto, setMenuMovilAbierto] = useState(false)
   const [usuarioActual, setUsuarioActual] = useState('Invitado')
   const [cerrando, setCerrando] = useState(false)
 
@@ -43,8 +44,9 @@ export default function Header({ botonActivo = 'catalogo' }) {
       notificarSesion: false,
     })
       .then((usuario) => {
-        if (usuario?.nombre) {
-          setUsuarioActual(usuario.nombre)
+        if (usuario) {
+
+          if (usuario.nombre) setUsuarioActual(usuario.nombre)
         }
       })
       .catch((error) => {
@@ -143,24 +145,84 @@ export default function Header({ botonActivo = 'catalogo' }) {
         <img src={logo} alt="TrabajITO" />
       </a>
 
-      <nav>
-        <button
-          onClick={() => navigate('/inicio')}
-          className={`btn-enlace-nav ${
-            botonActivo === 'inicio' ? 'activo' : ''
-          }`}
+      <button
+        type="button"
+        className="btn-menu-movil"
+        aria-label={menuMovilAbierto ? 'Cerrar navegación' : 'Abrir navegación'}
+        aria-expanded={menuMovilAbierto}
+        aria-controls="trabajito-navegacion"
+        onClick={() => setMenuMovilAbierto(!menuMovilAbierto)}
+      >
+        <span>{menuMovilAbierto ? '✕' : '☰'}</span>
+        <span className="sr-only">
+          {menuMovilAbierto ? 'Cerrar menú' : 'Abrir menú'}
+        </span>
+      </button>
+
+      <nav
+        id="trabajito-navegacion"
+        className={menuMovilAbierto ? 'navegacion-abierta' : ''}
+      >
+        <NavLink
+          to="/inicio"
+          onClick={() => setMenuMovilAbierto(false)}
+          className={({ isActive }) =>
+            `btn-enlace-nav ${
+              isActive || botonActivo === 'inicio' ? 'activo' : ''
+            }`
+          }
         >
           Inicio
-        </button>
+        </NavLink>
 
-        <button
-          onClick={() => navigate('/catalogo')}
-          className={`btn-enlace-nav ${
-            botonActivo === 'catalogo' ? 'activo' : ''
-          }`}
+        <NavLink
+          to="/catalogo"
+          onClick={() => setMenuMovilAbierto(false)}
+          className={({ isActive }) =>
+            `btn-enlace-nav ${
+              isActive || botonActivo === 'catalogo' ? 'activo' : ''
+            }`
+          }
         >
           Buscar trabajadores
-        </button>
+        </NavLink>
+
+        <NavLink
+            to="/solicitudes"
+            onClick={() => setMenuMovilAbierto(false)}
+            className={({ isActive }) =>
+              `btn-enlace-nav ${isActive ? 'activo' : ''}`
+            }
+          >
+            Solicitudes
+        </NavLink>
+
+        <NavLink
+          to="/contrataciones"
+          onClick={() => setMenuMovilAbierto(false)}
+          className={({ isActive }) =>
+            `btn-enlace-nav ${isActive ? 'activo' : ''}`
+          }
+        >
+          Contrataciones
+        </NavLink>
+
+        <NavLink
+          to="/notificaciones"
+          onClick={() => setMenuMovilAbierto(false)}
+          className={({ isActive }) =>
+            `btn-enlace-nav enlace-notificaciones ${
+              isActive ? 'activo' : ''
+            }`
+          }
+        >
+          Notificaciones
+          {noLeidas > 0 && (
+            <span className="contador-nav-notificaciones">
+              {noLeidas > 99 ? '99+' : noLeidas}
+            </span>
+          )}
+        </NavLink>
       </nav>
 
       <div className="usuario-contenedor">

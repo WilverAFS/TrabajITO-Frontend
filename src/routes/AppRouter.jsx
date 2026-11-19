@@ -156,11 +156,7 @@ function PresentacionConNavegacion() {
 function SolicitudesProtegidas() {
   const { usuario } = useOutletContext()
 
-  const puedeVerSolicitudes =
-    Boolean(usuario?.es_trabajador_habilitado) ||
-    Boolean(usuario?.es_administrador)
-
-  if (!puedeVerSolicitudes) {
+  if (!usuario) {
     return <Navigate to="/inicio" replace />
   }
 
