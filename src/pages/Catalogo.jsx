@@ -10,7 +10,7 @@ import {
 import { listarEstados, listarMunicipios, listarOficios } from '../services/catalogosApi.js'
 import { listarTrabajadores } from '../services/trabajadoresApi.js'
 import './Catalogo.css'
-
+import { validarBusqueda } from '../utils/validaciones.js'
 const FILTROS_VACIOS = {
   buscar: '',
   oficio: '',
@@ -69,7 +69,7 @@ export default function Catalogo() {
   useEffect(() => {
     if (!filtros.estado) return
       const controlador = new AbortController()
-      
+
     listarMunicipios(filtros.estado, { signal: controlador.signal })
       .then((municipios) => {
         if (controlador.signal.aborted) return
@@ -120,13 +120,18 @@ export default function Catalogo() {
   }, [filtrosAplicados, pagina, orden])
 
 const handleBuscar = (evento) => {
-    evento.preventDefault()
-    setErrorPerfiles('')
-    setCargandoPerfiles(true)
-    setPagina(1)
-    setFiltrosAplicados({ ...filtros })
+  evento.preventDefault()
+  const errorBusqueda = validarBusqueda(filtros.buscar)
+  if (errorBusqueda) {
+    setErrorFiltros(errorBusqueda)
+    return
   }
-
+  setErrorFiltros('')
+  setErrorPerfiles('')
+  setCargandoPerfiles(true)
+  setPagina(1)
+  setFiltrosAplicados({ ...filtros })
+}
   const handleCambioEstado = (nuevoEstado) => {
     setFiltros((actual) => ({ ...actual, estado: nuevoEstado, municipio: '' }))
     if (!nuevoEstado) setListaMunicipios([])

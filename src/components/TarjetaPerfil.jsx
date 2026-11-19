@@ -44,7 +44,7 @@ export default function TarjetaPerfil({ perfil }) {
         <button
           type="button"
           className="btn-ver-perfil"
-          onClick={() => navigate(`/perfiles/${perfil.id_trabajador}`, { state: { perfil } })}
+          onClick={() => navigate(`/perfiles/${perfil.id_trabajador}`)}
         >
           Ver perfil
         </button>

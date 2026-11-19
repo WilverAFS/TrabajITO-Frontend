@@ -2,11 +2,11 @@ import './SidebarPerfil.css';
 export default function SidebarPerfil({ perfil }) {
   return (
     <div className="columna-sidebar">
-      
+
       <div className="tarjeta-figma-sidebar">
         <h3>Disponibilidad</h3>
         <p className="sidebar-subtitulo">Horario publicado por {perfil.usuario?.nombre || 'el trabajador'}:</p>
-        
+
         {perfil.disponibilidades?.length > 0 ? (
           perfil.disponibilidades.map((disp) => (
             <p key={disp.id_disponibilidad} className="sidebar-dato-principal" style={{ marginBottom: '8px' }}>
@@ -17,7 +17,7 @@ export default function SidebarPerfil({ perfil }) {
         ) : (
           <p className="sidebar-dato-principal">Sin horarios publicados.</p>
         )}
-        
+
         <div className="separador-sidebar"></div>
         <p className="sidebar-nota-pie">Contacta al trabajador para acordar el servicio.</p>
       </div>
@@ -25,19 +25,6 @@ export default function SidebarPerfil({ perfil }) {
       <div className="tarjeta-figma-sidebar">
         <h3 className="titulo-mayusculas">DATOS DE CONTACTO</h3>
         <p className="sidebar-subtitulo">Información directa del trabajador.</p>
-        
-        <div className="item-contacto">
-          <div className="icono-contacto-azul">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-              <polyline points="22,6 12,13 2,6"></polyline>
-            </svg>
-          </div>
-          <div className="texto-contacto">
-            <span className="contacto-label">Correo (Oculto por seguridad)</span>
-            <strong className="contacto-valor">contacto@trabajito.com</strong>
-          </div>
-        </div>
 
         <div className="item-contacto">
           <div className="icono-contacto-azul">
@@ -51,7 +38,7 @@ export default function SidebarPerfil({ perfil }) {
           </div>
         </div>
       </div>
-      
+
       <p className="sidebar-disclaimer">
         Las opiniones son referencias. TrabajITO no garantiza la calidad final del servicio.
       </p>

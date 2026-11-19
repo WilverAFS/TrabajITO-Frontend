@@ -253,7 +253,7 @@ export default function AppRouter() {
         />
         {/* Perfil público */}
         <Route
-          path="/perfiles/:id"   
+          path="/perfiles/:id"
           element={
             <ConTitulo titulo="Perfil del Profesional">
               <PerfilPublico />
