@@ -1,0 +1,124 @@
+.banner-azul-claro {
+  background-color: #eff6ff;
+  width: 100%;
+  padding: 32px 0 48px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.btn-volver {
+  display: inline-block;
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 32px;
+}
+
+.btn-volver:hover {
+  text-decoration: underline;
+}
+
+.cabecera-perfil-figma {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.foto-perfil-figma {
+  width: 180px;
+  height: 180px;
+  border-radius: 20px;
+  object-fit: cover;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  background-color: white;
+}
+
+.info-perfil-figma h1 {
+  margin: 0 0 8px 0;
+  font-size: 32px;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.oficio-experiencia {
+  font-size: 16px;
+  color: #64748b;
+  margin: 0 0 12px 0;
+}
+
+.rating-figma {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.estrellitas { color: #d97706; font-size: 16px; letter-spacing: 2px; }
+.rating-num { color: #0f172a; font-weight: 700; font-size: 15px; }
+.rating-texto { color: #64748b; font-size: 14px; }
+
+.badge-verde-horario {
+  color: #059669;
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 24px 0;
+}
+
+.bolita-verde { font-size: 12px; }
+
+.btn-contratar-azul {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 32px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-contratar-azul:hover {
+  background-color: #1d4ed8;
+}
+
+@media (max-width: 768px) {
+  .cabecera-perfil-figma {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .foto-perfil-figma {
+    width: 140px;
+    height: 140px;
+  }
+
+  .info-perfil-figma h1 {
+    font-size: 26px;
+  }
+
+  .rating-figma,
+  .badge-verde-horario {
+    justify-content: center;
+  }
+
+  .btn-contratar-azul {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
+@media (max-width: 600px) {
+  .banner-azul-claro {
+    padding: 24px 0 32px 0;
+  }
+
+  .btn-volver {
+    margin-bottom: 20px;
+  }
+}

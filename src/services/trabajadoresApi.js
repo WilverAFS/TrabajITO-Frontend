@@ -10,6 +10,7 @@ export function listarTrabajadores({
   per_page,
   sort,
   direction,
+  conMeta = false,
   signal,
 } = {}) {
   const params = { page: pagina }
@@ -22,5 +23,8 @@ export function listarTrabajadores({
   if (sort) params.sort = sort
   if (direction) params.direction = direction
 
-  return solicitud('/trabajadores', { params, signal })
+  return solicitud('/trabajadores', { params, conMeta, signal })
+}
+export function obtenerTrabajadorPublico(id, { signal } = {}) {
+  return solicitud(`/trabajadores/${id}`, { signal, autenticado: false });
 }
