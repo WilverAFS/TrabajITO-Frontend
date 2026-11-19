@@ -70,8 +70,11 @@ export default function Header({ botonActivo = 'catalogo' }) {
         contarNotificacionesNoLeidas(),
       ])
 
+      // El servicio devuelve { data, meta }, no un arreglo directo.
       setNotificaciones(
-        Array.isArray(respuestaLista) ? respuestaLista : []
+        Array.isArray(respuestaLista?.data)
+          ? respuestaLista.data
+          : []
       )
 
       setNoLeidas(Number(respuestaContador?.total ?? 0))
@@ -85,16 +88,23 @@ export default function Header({ botonActivo = 'catalogo' }) {
     }
   }, [])
 
-  // Consultar notificaciones al cargar el encabezado.
+  // Consultar al entrar y actualizar automáticamente cada 20 segundos.
   useEffect(() => {
-  if (!obtenerToken()) return undefined
+    if (!obtenerToken()) return undefined
 
-  const temporizador = setTimeout(() => {
-    cargarNotificaciones()
-  }, 0)
+    const temporizadorInicial = setTimeout(() => {
+      cargarNotificaciones()
+    }, 0)
 
-  return () => clearTimeout(temporizador)
-}, [cargarNotificaciones])
+    const intervalo = setInterval(() => {
+      cargarNotificaciones()
+    }, 20000)
+
+    return () => {
+      clearTimeout(temporizadorInicial)
+      clearInterval(intervalo)
+    }
+  }, [cargarNotificaciones])
 
   // Marcar una notificación como leída.
   const marcarComoLeida = async (id) => {

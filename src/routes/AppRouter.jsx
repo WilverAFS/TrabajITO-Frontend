@@ -33,9 +33,9 @@ const modulos = [
   { ruta: '/inicio', nombre: 'Inicio de usuario', descripcion: 'Pantalla con sesión validada', estado: 'existente' },
   { ruta: '/mi-perfil', nombre: 'Mi perfil', descripcion: 'Información y seguridad de la cuenta', estado: 'existente' },
   { ruta: '/catalogo', nombre: 'Catálogo', descripcion: 'Catálogo de profesionales', estado: 'existente' },
-  { ruta: '/solicitudes', nombre: 'Solicitudes', descripcion: 'Bandeja de solicitudes del trabajador', estado: 'pendiente' },
-  { ruta: '/contrataciones', nombre: 'Contrataciones', descripcion: 'Bandeja de contrataciones', estado: 'pendiente' },
-  { ruta: '/notificaciones', nombre: 'Notificaciones', descripcion: 'Bandeja de notificaciones', estado: 'pendiente' },
+  { ruta: '/solicitudes', nombre: 'Solicitudes', descripcion: 'Historial de solicitudes de habilitación', estado: 'existente' },
+  { ruta: '/contrataciones', nombre: 'Contrataciones', descripcion: 'Gestión y seguimiento de contrataciones', estado: 'existente' },
+  { ruta: '/notificaciones', nombre: 'Notificaciones', descripcion: 'Consulta y gestión de notificaciones', estado: 'existente' },
   { ruta: '/explorar', nombre: 'Exploración de trabajadores', descripcion: 'Exploración', estado: 'pendiente' },
   { ruta: '/perfil-profesional', nombre: 'Perfil profesional', descripcion: 'Perfil profesional', estado: 'existente' },
   { ruta: '/administracion', nombre: 'Administración', descripcion: 'Administración', estado: 'pendiente' },
@@ -94,7 +94,7 @@ function MapaRutas() {
         <span className="tj-ruta-etiqueta">Prueba de rutas</span>
         <h1>Rutas de TrabajITO</h1>
         <p>
-          Prueba la navegación. Las páginas pendientes todavía no tienen
+          Prueba la navegación. Las páginas marcadas como reservadas todavía no tienen
           funcionalidad implementada.
         </p>
 
