@@ -18,7 +18,8 @@ import Notificaciones from '../pages/notificaciones.jsx'
 import BandejasLayout from './BandejasLayout.jsx'
 import PerfilPublico from '../pages/PerfilPublico';
 import InicioAutenticado from './InicioAutenticado.jsx'
-
+import Header from '../components/Header.jsx'
+import Footer from '../components/Footer.jsx'
 import { EVENTO_SESION_EXPIRADA } from '../services/apiClient.js'
 
 import './AppRouter.css'
@@ -188,7 +189,17 @@ function VigilarSesion() {
 
   return null
 }
-
+function PublicacionPublica() {
+  return (
+    <>
+      <Header botonActivo="catalogo" />
+      <main>
+        <DetallePublicacion />
+      </main>
+      <Footer className="perfil-publico-footer" />
+    </>
+  )
+}
 export default function AppRouter() {
   return (
     <>
@@ -248,6 +259,14 @@ export default function AppRouter() {
               <PerfilPublico />
             </ConTitulo>
           }
+        />
+        <Route
+           path="/publicaciones/:id"
+           element={
+            <ConTitulo titulo="Detalle de publicación">
+              <PublicacionPublica />
+            </ConTitulo>
+       }
         />
         {/* Mapa de rutas */}
         <Route

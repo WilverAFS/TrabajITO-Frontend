@@ -1,97 +1,120 @@
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-
-// Importamos los 3 componentes nuevos
-import BannerPerfil from "../components/BannerPerfil";
-import ColumnaPrincipal from "../components/ColumnaPrincipal";
-import SidebarPerfil from "../components/SidebarPerfil";
-
-import { obtenerTrabajadorPublico } from '../services/trabajadoresApi';
-import './PerfilPublico.css';
+import { useState, useEffect } from 'react'
+import { useParams, useNavigate } from 'react-router'
+import Header from '../components/Header'
+import Footer from '../components/Footer'
+import BannerPerfil from '../components/BannerPerfil'
+import ColumnaPrincipal from '../components/ColumnaPrincipal'
+import SidebarPerfil from '../components/SidebarPerfil'
+import ModalContratar from '../components/ModalContratar'
+import { obtenerToken } from '../services/apiClient.js'
+import { obtenerUsuarioActual } from '../services/authApi.js'
+import { obtenerTrabajadorPublico } from '../services/trabajadoresApi.js'
+import { listarTrabajosPublicos } from '../services/publicacionesApi.js'
+import './PerfilPublico.css'
 
 export default function PerfilPublico() {
-  const { id } = useParams(); 
-  const [perfil, setPerfil] = useState(null);
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState(null);
+  const { id } = useParams()
+  const navigate = useNavigate()
+
+  const [perfil, setPerfil] = useState(null)
+  const [trabajos, setTrabajos] = useState([])
+  const [usuarioActual, setUsuarioActual] = useState(null)
+  const [modalAbierto, setModalAbierto] = useState(false)
+  const [cargando, setCargando] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    const controller = new AbortController();
+    const controller = new AbortController()
 
-    const cargarPerfil = async () => {
+    const cargar = async () => {
+      setCargando(true)
+      setError('')
+
       try {
-        setCargando(true);
-        setError(null);
-        
-        // Mantenemos los datos temporales hasta que el backend esté listo
-        setTimeout(() => {
-          setPerfil({
-            id_trabajador: id,
-            usuario: { 
-              nombre: "Carlos", 
-              nombre_completo: "Carlos Martínez Ruiz", 
-              telefono: "9510000003" 
-            },
-            oficios: [{ id_oficio: 2, nombre: "Electricidad" }],
-            calificacion_promedio: 5.0,
-            total_valoraciones: 128,
-            descripcion: "Electricista con 12 años de experiencia en hogares y pequeños negocios. Especializado en instalaciones y mantenimiento preventivo.",
-            disponibilidades: [
-              { id_disponibilidad: 1, dia_nombre: "Jueves", hora_inicio: "14:00:00", hora_fin: "18:00:00" }
-            ]
-          });
-          setCargando(false);
-        }, 500); 
+        const [datosPerfil, listaTrabajos] = await Promise.all([
+          obtenerTrabajadorPublico(id, { signal: controller.signal }),
+          listarTrabajosPublicos({ id, signal: controller.signal }).catch(() => []),
+        ])
 
+        if (controller.signal.aborted) return
+        setPerfil(datosPerfil)
+        setTrabajos(Array.isArray(listaTrabajos) ? listaTrabajos : [])
       } catch (err) {
-        if (err.name !== 'CanceledError') {
-          setError('No se pudo cargar la información del trabajador. Asegúrate de que el ID exista.');
+        if (err.name !== 'AbortError' && !controller.signal.aborted) {
+          setError(err.message || 'No se pudo cargar la información del trabajador.')
         }
+      } finally {
+        if (!controller.signal.aborted) setCargando(false)
       }
-    };
+    }
 
-    cargarPerfil();
-    return () => controller.abort();
-  }, [id]);
+    cargar()
+
+    if (obtenerToken()) {
+      obtenerUsuarioActual({ signal: controller.signal, notificarSesion: false })
+        .then((u) => {
+          if (!controller.signal.aborted) setUsuarioActual(u)
+        })
+        .catch(() => {})
+    }
+
+    return () => controller.abort()
+  }, [id])
+
+  const esPropio =
+    Boolean(usuarioActual?.id_trabajador) &&
+    Number(usuarioActual.id_trabajador) === Number(perfil?.id_trabajador)
+
+  const handleContratar = () => {
+    if (!obtenerToken()) {
+      navigate('/login')
+      return
+    }
+    setModalAbierto(true)
+  }
 
   return (
     <>
       <Header botonActivo="catalogo" />
-      
+
       <main className="perfil-publico-main">
-        
-        {cargando && <p className="mensaje-estado" role="status">Cargando perfil...</p>}
-        
+        {cargando && <p className="mensaje-estado" role="status">Cargando perfil…</p>}
+
         {!cargando && error && (
           <div className="mensaje-estado error" role="alert">
             <p>{error}</p>
-            <button onClick={() => window.location.reload()}>Reintentar</button>
+            <button type="button" className="tj-button tj-button-secondary" onClick={() => navigate('/catalogo')}>
+              Volver al catálogo
+            </button>
           </div>
         )}
 
         {!cargando && !error && perfil && (
           <>
-            {/* 1. Componente del Banner Azul */}
-            <BannerPerfil perfil={perfil} />
+            <BannerPerfil
+              perfil={perfil}
+              esPropio={esPropio}
+              onContratar={handleContratar}
+            />
 
             <div className="contenedor-perfil seccion-inferior-figma">
               <div className="perfil-grid-inferior">
-                
-                {/* 2. Componente de la Columna Principal (Tabs, Bio, Opiniones) */}
-                <ColumnaPrincipal perfil={perfil} />
-                
-                {/* 3. Componente de la Barra Lateral (Disponibilidad y Contacto) */}
+                <ColumnaPrincipal perfil={perfil} trabajos={trabajos} />
                 <SidebarPerfil perfil={perfil} />
-
               </div>
             </div>
+
+            {modalAbierto && (
+              <ModalContratar
+                trabajador={perfil}
+                onClose={() => setModalAbierto(false)}
+              />
+            )}
           </>
         )}
       </main>
 
       <Footer className="perfil-publico-footer" />
     </>
-  );
+  )
 }

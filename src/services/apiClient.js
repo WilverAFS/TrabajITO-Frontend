@@ -119,6 +119,7 @@ export async function solicitud(ruta, {
   params,
   autenticado = false,
   notificarSesion = true,
+  conMeta = false,
   signal,
   headers,
 } = {}) {
@@ -160,7 +161,12 @@ export async function solicitud(ruta, {
       errors: cuerpo.errors && typeof cuerpo.errors === 'object' ? cuerpo.errors : null,
     })
   }
-
+  if (conMeta) {
+    return {
+      data: cuerpo?.data ?? [],
+      meta: cuerpo?.meta ?? null,
+    }
+  }
   return cuerpo?.data ?? null
 }
 

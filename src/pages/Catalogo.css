@@ -246,3 +246,17 @@
     gap: 16px;
   }
 }
+.filtro-contenido input[type="search"] {
+  border: none;
+  font-size: 14px;
+  color: #334155;
+  background: transparent;
+  font-weight: 500;
+  outline: none;
+  padding: 0;
+  width: 100%;
+}
+
+.barra-filtros {
+  flex-wrap: wrap;
+}
