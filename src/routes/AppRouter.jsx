@@ -13,7 +13,7 @@ import Solicitudes from '../pages/solicitudes.jsx'
 import Contrataciones from '../pages/contratacion.jsx'
 import Notificaciones from '../pages/notificaciones.jsx'
 import BandejasLayout from './BandejasLayout.jsx'
-
+import PerfilPublico from '../pages/PerfilPublico';
 import InicioAutenticado from './InicioAutenticado.jsx'
 
 import { EVENTO_SESION_EXPIRADA } from '../services/apiClient.js'
@@ -237,7 +237,15 @@ export default function AppRouter() {
             </ConTitulo>
           }
         />
-
+        {/* Perfil público */}
+        <Route
+          path="/perfiles/:id"   
+          element={
+            <ConTitulo titulo="Perfil del Profesional">
+              <PerfilPublico />
+            </ConTitulo>
+          }
+        />
         {/* Mapa de rutas */}
         <Route
           path="/rutas"

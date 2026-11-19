@@ -1,0 +1,114 @@
+.perfil-publico-main {
+  min-height: calc(100vh - 160px);
+  background-color: #f8fafc;
+}
+
+.contenedor-perfil {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.mensaje-estado {
+  text-align: center;
+  padding: 40px;
+  margin: 40px auto;
+  max-width: 600px;
+}
+
+.seccion-inferior-figma {
+  padding-top: 40px;
+  padding-bottom: 60px;
+}
+
+.perfil-grid-inferior {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+@media (max-width: 850px) {
+  .perfil-grid-inferior {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .seccion-inferior-figma {
+    padding-top: 24px;
+    padding-bottom: 40px;
+  }
+}
+/* Corrección para que el textarea no se salga de su caja */
+.caja-dejar-opinion textarea {
+  box-sizing: border-box;
+}
+
+/* =========================================
+   RESPONSIVE: TABLET Y MÓVIL (PERFIL)
+   ========================================= */
+@media (max-width: 768px) {
+  .cabecera-perfil-figma {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .foto-perfil-figma {
+    width: 140px;
+    height: 140px;
+  }
+
+  .info-perfil-figma h1 {
+    font-size: 26px;
+  }
+
+  .rating-figma,
+  .badge-verde-horario {
+    justify-content: center;
+  }
+
+  .btn-contratar-azul {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  /* Pestañas con scroll horizontal si no caben */
+  .tabs-navegacion {
+    gap: 20px;
+    overflow-x: auto;
+    white-space: nowrap;
+    margin-bottom: 28px;
+  }
+}
+
+@media (max-width: 600px) {
+  .banner-azul-claro {
+    padding: 24px 0 32px 0;
+  }
+
+  .btn-volver {
+    margin-bottom: 20px;
+  }
+
+  .seccion-inferior-figma {
+    padding-top: 24px;
+    padding-bottom: 40px;
+  }
+
+  .rating-resumen-figma {
+    padding: 16px 20px;
+    gap: 16px;
+  }
+
+  .rating-numero-figma {
+    font-size: 38px;
+  }
+
+  .caja-dejar-opinion,
+  .tarjeta-figma-sidebar {
+    padding: 20px;
+  }
+}

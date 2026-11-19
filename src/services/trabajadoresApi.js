@@ -24,3 +24,6 @@ export function listarTrabajadores({
 
   return solicitud('/trabajadores', { params, signal })
 }
+export function obtenerTrabajadorPublico(id, { signal } = {}) {
+  return solicitud(`/trabajadores/${id}`, { signal, autenticado: false });
+}

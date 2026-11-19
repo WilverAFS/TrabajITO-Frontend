@@ -184,3 +184,65 @@
   font-weight: 600;
 }
 .btn-siguiente:hover { background: #eff6ff; }
+/* =========================================
+   RESPONSIVE: TABLET Y MÓVIL (CATÁLOGO)
+   ========================================= */
+@media (max-width: 960px) {
+  .barra-filtros {
+    flex-wrap: wrap;
+  }
+
+  .filtro-caja {
+    min-width: calc(50% - 6px);
+    box-sizing: border-box;
+  }
+
+  .btn-ver-resultados {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .grid-perfiles {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .catalogo-fondo-azul {
+    padding-top: 28px;
+    padding-bottom: 36px;
+  }
+
+  .catalogo-cabecera h1 {
+    font-size: 26px;
+  }
+
+  .subtitulo {
+    margin-bottom: 24px;
+  }
+
+  .filtro-caja {
+    min-width: 100%;
+  }
+
+  .cabecera-resultados {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .selector-orden {
+    width: 100%;
+    justify-content: space-between;
+    box-sizing: border-box;
+  }
+
+  .grid-perfiles {
+    grid-template-columns: 1fr;
+  }
+
+  .paginacion-contenedor {
+    flex-direction: column;
+    gap: 16px;
+  }
+}

@@ -340,7 +340,7 @@ html {
 }
 
 .in-footer-logo-texto p {
-  white-space: nowrap;
+  white-space: normal;
 }
 
 /* Adaptación a dispositivos móviles */
