@@ -9,6 +9,9 @@ import Recuperacion from '../pages/Recuperacion.jsx'
 import MiPerfil from '../pages/MiPerfil.jsx'
 import Catalogo from '../pages/Catalogo.jsx'
 import PerfilProfesional from '../pages/PerfilProfesional.jsx'
+import PortafolioLayout from './PortafolioLayout.jsx'
+import { PortafolioPropio, DetallePublicacion } from '../features/portafolio/Portafolio.jsx'
+import NuevaPublicacion from '../features/portafolio/NuevaPublicacion.jsx'
 import Solicitudes from '../pages/solicitudes.jsx'
 import Contrataciones from '../pages/contratacion.jsx'
 import Notificaciones from '../pages/notificaciones.jsx'
@@ -297,6 +300,11 @@ export default function AppRouter() {
               </ConTitulo>
             }
           />
+          <Route element={<PortafolioLayout />}>
+            <Route path="/portafolio" element={<ConTitulo titulo="Mi portafolio"><PortafolioPropio /></ConTitulo>} />
+            <Route path="/portafolio/nueva" element={<ConTitulo titulo="Publicar trabajo"><NuevaPublicacion /></ConTitulo>} />
+            <Route path="/portafolio/:id" element={<ConTitulo titulo="Editar publicacion"><DetallePublicacion edicion /></ConTitulo>} />
+          </Route>
 
           <Route
             path="/explorar"
