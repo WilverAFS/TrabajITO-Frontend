@@ -22,6 +22,7 @@ import './Header.css'
 export default function Header({ botonActivo = 'catalogo' }) {
   const [menuAbierto, setMenuAbierto] = useState(false)
   const [menuMovilAbierto, setMenuMovilAbierto] = useState(false)
+  const [datosUsuario, setDatosUsuario] = useState(null)
   const [usuarioActual, setUsuarioActual] = useState('Invitado')
   const [cerrando, setCerrando] = useState(false)
 
@@ -44,10 +45,8 @@ export default function Header({ botonActivo = 'catalogo' }) {
       notificarSesion: false,
     })
       .then((usuario) => {
-        if (usuario) {
-
-          if (usuario.nombre) setUsuarioActual(usuario.nombre)
-        }
+        setDatosUsuario(usuario)
+        if (usuario?.nombre) setUsuarioActual(usuario.nombre)
       })
       .catch((error) => {
         if (error.name !== 'AbortError') {
@@ -187,7 +186,8 @@ export default function Header({ botonActivo = 'catalogo' }) {
           Buscar trabajadores
         </NavLink>
 
-        <NavLink
+        {(datosUsuario?.es_trabajador_habilitado || datosUsuario?.es_administrador) && (
+          <NavLink
             to="/solicitudes"
             onClick={() => setMenuMovilAbierto(false)}
             className={({ isActive }) =>
@@ -195,7 +195,8 @@ export default function Header({ botonActivo = 'catalogo' }) {
             }
           >
             Solicitudes
-        </NavLink>
+          </NavLink>
+        )}
 
         <NavLink
           to="/contrataciones"
