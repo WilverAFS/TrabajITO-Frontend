@@ -293,6 +293,16 @@ export default function Header({ botonActivo = 'catalogo' }) {
             </button>
 
             <button
+              type="button"
+              onClick={() => {
+                setMenuAbierto(false)
+                navigate('/perfil-profesional')
+              }}
+            >
+              Mi perfil profesional
+            </button>
+
+            <button
               onClick={manejarCerrarSesion}
               disabled={cerrando}
             >

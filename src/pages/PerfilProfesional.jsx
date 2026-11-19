@@ -10,6 +10,8 @@ import { listarEstados, listarMunicipios, listarOficios } from '../services/cata
 import './PerfilProfesional.css'
 import ComplementosPerfil from '../components/perfil/ComplementosPerfil.jsx'
 import SelectorOficios from '../components/perfil/SelectorOficios.jsx'
+import Header from '../components/Header.jsx'
+import Footer from '../components/Footer.jsx'
 
 export default function PerfilProfesional() {
   const [cargando, setCargando] = useState(true)
@@ -170,13 +172,20 @@ export default function PerfilProfesional() {
   }
 
   if (cargando) {
-    return <main className="pp-pagina"><p className="pp-cargando" role="status">Cargando perfil profesional...</p></main>
+    return (
+      <>
+        <Header botonActivo="" />
+        <main className="pp-pagina"><p className="pp-cargando" role="status">Cargando perfil profesional...</p></main>
+        <Footer className="pp-footer" />
+      </>
+    )
   }
 
-  return (
+return (
+  <>
+    <Header botonActivo="" />
     <main className="pp-pagina">
       <div className="pp-contenedor">
-        {perfil && <ComplementosPerfil activo={Boolean(perfil.activo)} />}
         <nav className="pp-volver" aria-label="Regresar">
           <Link to="/inicio">← Volver al inicio</Link>
           <Link to="/mi-perfil">Administrar mi cuenta</Link>
@@ -270,7 +279,7 @@ export default function PerfilProfesional() {
                       <div><dt>Oficios registrados</dt><dd>{perfil.oficios?.length ?? 0}</dd></div>
                     </dl>
                     {!perfil.activo && (
-                      <p className="pp-nota">Tu perfil profesional todavía no está habilitado. La solicitud de habilitación se integrará en una etapa posterior.</p>
+                      <p className="pp-nota">Tu perfil todavía no está habilitado. Puedes solicitar su revisión desde la sección Habilitación.</p>
                     )}
                   </>
                 ) : (
@@ -298,7 +307,19 @@ export default function PerfilProfesional() {
             </aside>
           </div>
         )}
-      </div>
-    </main>
+        {perfil && (
+          <div id="herramientas-profesionales" className="pp-herramientas">
+            <ComplementosPerfil activo={Boolean(perfil.activo)} />
+            {perfil.activo && (
+              <Link to="/portafolio" className="pp-boton">
+                Gestionar portafolio
+              </Link>
+            )}
+            </div>
+          )}
+        </div>
+      </main>
+      <Footer className="pp-footer" />
+    </>
   )
 }

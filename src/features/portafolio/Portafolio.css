@@ -1,0 +1,13 @@
+.tj-work-card { min-width: 0; display: grid; align-content: start; gap: 5px; }
+.tj-work-card > a { color: var(--tj-ink); text-decoration: none; }
+.tj-work-card > a:hover { color: var(--tj-blue); text-decoration: underline; }
+.tj-work-card .tj-media { aspect-ratio: 1.55; border-radius: 14px; }
+.tj-work-card h3 { margin: 7px 0 0; font-size: 16px; overflow-wrap: anywhere; }
+.tj-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 18px; }
+.tj-gallery:empty { display: none; }
+.tj-evidence { margin: 0; min-width: 0; }
+.tj-evidence .tj-media, .tj-evidence video { width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; }
+.tj-evidence video { background: var(--tj-navy); }
+.tj-evidence figcaption { margin-top: 8px; }
+.tj-opinion { padding: 15px 0; border-top: 1px solid var(--tj-line); }
+.tj-opinion p { margin: 7px 0 0; }
