@@ -1,6 +1,6 @@
 
 import { useEffect, useState, useCallback } from 'react'
-import { useNavigate } from 'react-router'
+import { NavLink, useNavigate } from 'react-router'
 
 import logo from '../assets/registro-logo-provisional.png'
 import { CampanaIcono, CorreoIcono } from './Iconos'
@@ -21,6 +21,8 @@ import './Header.css'
 
 export default function Header({ botonActivo = 'catalogo' }) {
   const [menuAbierto, setMenuAbierto] = useState(false)
+  const [menuMovilAbierto, setMenuMovilAbierto] = useState(false)
+  const [datosUsuario, setDatosUsuario] = useState(null)
   const [usuarioActual, setUsuarioActual] = useState('Invitado')
   const [cerrando, setCerrando] = useState(false)
 
@@ -43,9 +45,8 @@ export default function Header({ botonActivo = 'catalogo' }) {
       notificarSesion: false,
     })
       .then((usuario) => {
-        if (usuario?.nombre) {
-          setUsuarioActual(usuario.nombre)
-        }
+        setDatosUsuario(usuario)
+        if (usuario?.nombre) setUsuarioActual(usuario.nombre)
       })
       .catch((error) => {
         if (error.name !== 'AbortError') {
@@ -69,8 +70,11 @@ export default function Header({ botonActivo = 'catalogo' }) {
         contarNotificacionesNoLeidas(),
       ])
 
+      // El servicio devuelve { data, meta }, no un arreglo directo.
       setNotificaciones(
-        Array.isArray(respuestaLista) ? respuestaLista : []
+        Array.isArray(respuestaLista?.data)
+          ? respuestaLista.data
+          : []
       )
 
       setNoLeidas(Number(respuestaContador?.total ?? 0))
@@ -84,16 +88,23 @@ export default function Header({ botonActivo = 'catalogo' }) {
     }
   }, [])
 
-  // Consultar notificaciones al cargar el encabezado.
+  // Consultar al entrar y actualizar automáticamente cada 20 segundos.
   useEffect(() => {
-  if (!obtenerToken()) return undefined
+    if (!obtenerToken()) return undefined
 
-  const temporizador = setTimeout(() => {
-    cargarNotificaciones()
-  }, 0)
+    const temporizadorInicial = setTimeout(() => {
+      cargarNotificaciones()
+    }, 0)
 
-  return () => clearTimeout(temporizador)
-}, [cargarNotificaciones])
+    const intervalo = setInterval(() => {
+      cargarNotificaciones()
+    }, 20000)
+
+    return () => {
+      clearTimeout(temporizadorInicial)
+      clearInterval(intervalo)
+    }
+  }, [cargarNotificaciones])
 
   // Marcar una notificación como leída.
   const marcarComoLeida = async (id) => {
@@ -143,24 +154,86 @@ export default function Header({ botonActivo = 'catalogo' }) {
         <img src={logo} alt="TrabajITO" />
       </a>
 
-      <nav>
-        <button
-          onClick={() => navigate('/inicio')}
-          className={`btn-enlace-nav ${
-            botonActivo === 'inicio' ? 'activo' : ''
-          }`}
+      <button
+        type="button"
+        className="btn-menu-movil"
+        aria-label={menuMovilAbierto ? 'Cerrar navegación' : 'Abrir navegación'}
+        aria-expanded={menuMovilAbierto}
+        aria-controls="trabajito-navegacion"
+        onClick={() => setMenuMovilAbierto(!menuMovilAbierto)}
+      >
+        <span>{menuMovilAbierto ? '✕' : '☰'}</span>
+        <span className="sr-only">
+          {menuMovilAbierto ? 'Cerrar menú' : 'Abrir menú'}
+        </span>
+      </button>
+
+      <nav
+        id="trabajito-navegacion"
+        className={menuMovilAbierto ? 'navegacion-abierta' : ''}
+      >
+        <NavLink
+          to="/inicio"
+          onClick={() => setMenuMovilAbierto(false)}
+          className={({ isActive }) =>
+            `btn-enlace-nav ${
+              isActive || botonActivo === 'inicio' ? 'activo' : ''
+            }`
+          }
         >
           Inicio
-        </button>
+        </NavLink>
 
-        <button
-          onClick={() => navigate('/catalogo')}
-          className={`btn-enlace-nav ${
-            botonActivo === 'catalogo' ? 'activo' : ''
-          }`}
+        <NavLink
+          to="/catalogo"
+          onClick={() => setMenuMovilAbierto(false)}
+          className={({ isActive }) =>
+            `btn-enlace-nav ${
+              isActive || botonActivo === 'catalogo' ? 'activo' : ''
+            }`
+          }
         >
           Buscar trabajadores
-        </button>
+        </NavLink>
+
+        {(datosUsuario?.es_trabajador_habilitado || datosUsuario?.es_administrador) && (
+          <NavLink
+            to="/solicitudes"
+            onClick={() => setMenuMovilAbierto(false)}
+            className={({ isActive }) =>
+              `btn-enlace-nav ${isActive ? 'activo' : ''}`
+            }
+          >
+            Solicitudes
+          </NavLink>
+        )}
+
+        <NavLink
+          to="/contrataciones"
+          onClick={() => setMenuMovilAbierto(false)}
+          className={({ isActive }) =>
+            `btn-enlace-nav ${isActive ? 'activo' : ''}`
+          }
+        >
+          Contrataciones
+        </NavLink>
+
+        <NavLink
+          to="/notificaciones"
+          onClick={() => setMenuMovilAbierto(false)}
+          className={({ isActive }) =>
+            `btn-enlace-nav enlace-notificaciones ${
+              isActive ? 'activo' : ''
+            }`
+          }
+        >
+          Notificaciones
+          {noLeidas > 0 && (
+            <span className="contador-nav-notificaciones">
+              {noLeidas > 99 ? '99+' : noLeidas}
+            </span>
+          )}
+        </NavLink>
       </nav>
 
       <div className="usuario-contenedor">

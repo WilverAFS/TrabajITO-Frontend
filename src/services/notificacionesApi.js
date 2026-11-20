@@ -1,18 +1,34 @@
-import { solicitud } from './apiClient.js';
+import { solicitud } from './apiClient.js'
 
-export function listarNotificaciones({ pagina = 1, signal } = {}) {
+// Listar notificaciones con filtro y paginación.
+export function listarNotificaciones({
+  leida,
+  pagina = 1,
+  porPagina = 10,
+  signal,
+} = {}) {
+  const params = {
+    page: pagina,
+    per_page: porPagina,
+  }
+
+  if (leida !== undefined && leida !== null && leida !== '') {
+    params.leida = leida
+  }
+
   return solicitud('/notificaciones', {
-    params: { page: pagina },
+    params,
     autenticado: true,
+    conMeta: true,
     signal,
-  });
+  })
 }
 
 export function contarNotificacionesNoLeidas({ signal } = {}) {
   return solicitud('/notificaciones/no-leidas/count', {
     autenticado: true,
     signal,
-  });
+  })
 }
 
 export function marcarNotificacionComoLeida(id, { signal } = {}) {
@@ -22,8 +38,8 @@ export function marcarNotificacionComoLeida(id, { signal } = {}) {
       method: 'PATCH',
       autenticado: true,
       signal,
-    }
-  );
+    },
+  )
 }
 
 export function marcarTodasNotificacionesComoLeidas({ signal } = {}) {
@@ -31,5 +47,5 @@ export function marcarTodasNotificacionesComoLeidas({ signal } = {}) {
     method: 'PATCH',
     autenticado: true,
     signal,
-  });
+  })
 }

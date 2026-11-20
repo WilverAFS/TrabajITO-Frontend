@@ -1,16 +1,12 @@
 import { Outlet, useOutletContext } from 'react-router';
-import NavbarBandejas from '../components/NavbarBandejas';
+import Header from '../components/Header.jsx';
 
 export default function BandejasLayout() {
   const { usuario, cerrarSesion } = useOutletContext();
 
   return (
     <>
-      <NavbarBandejas
-        esTrabajadorHabilitado={usuario?.es_trabajador_habilitado}
-        esAdministrador={usuario?.es_administrador}
-      />
-
+      <Header botonActivo="" />
       <Outlet context={{ usuario, cerrarSesion }} />
     </>
   );
