@@ -21,7 +21,7 @@ import InicioAutenticado from './InicioAutenticado.jsx'
 import Header from '../components/Header.jsx'
 import Footer from '../components/Footer.jsx'
 import { EVENTO_SESION_EXPIRADA } from '../services/apiClient.js'
-
+import Administracion from '../pages/Administracion.jsx'
 import './AppRouter.css'
 
 // Mapa de rutas de TrabajITO
@@ -170,7 +170,19 @@ function SolicitudesProtegidas() {
     </ConTitulo>
   )
 }
+function AdministracionProtegida() {
+  const { usuario } = useOutletContext()
 
+  if (!usuario?.es_administrador) {
+    return <Navigate to="/inicio" replace />
+  }
+
+  return (
+    <ConTitulo titulo="Administración">
+      <Administracion />
+    </ConTitulo>
+  )
+}
 // Atiende las respuestas 401 de los servicios autenticados
 function VigilarSesion() {
   const navigate = useNavigate()
@@ -347,17 +359,9 @@ export default function AppRouter() {
 
           <Route
             path="/administracion"
-            element={
-              <ConTitulo titulo="Administración">
-                <Marcador
-                  nombre="Administración"
-                  descripcion="Usuarios, verificación de trabajadores, publicaciones y reportes."
-                  restringida
-                />
-              </ConTitulo>
-            }
+            element={<AdministracionProtegida />}
           />
-        </Route>
+         </Route>
 
         {/* Error 404 */}
         <Route
