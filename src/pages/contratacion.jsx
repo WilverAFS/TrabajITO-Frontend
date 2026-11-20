@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router'
+import { Dialogo } from '../components/ui/Interfaz.jsx'
 import {
   ejecutarAccionContratacion,
   listarContrataciones,
@@ -13,6 +14,12 @@ function fecha(valor) {
   return Number.isNaN(date.getTime())
     ? valor
     : date.toLocaleString('es-MX', { dateStyle: 'medium', timeStyle: 'short' })
+}
+
+const mensajesConfirmacion = {
+  rechazar: 'rechazar esta contratación',
+  cancelar: 'cancelar esta contratación',
+  finalizar: 'finalizar este trabajo',
 }
 
 const nombresAcciones = {
@@ -37,6 +44,7 @@ export default function Contrataciones() {
   const [error, setError] = useState('')
   const [errorDetalle, setErrorDetalle] = useState('')
   const [mensaje, setMensaje] = useState('')
+  const [accionPendiente, setAccionPendiente] = useState(null)
 
   const cargar = useCallback(async (signal) => {
     setCargando(true)
@@ -108,13 +116,8 @@ export default function Contrataciones() {
     return () => controlador.abort()
   }, [seleccionada])
 
-  async function ejecutarAccion(accion) {
+  async function procesarAccion(accion) {
     if (!detalle || accionEnCurso) return
-
-    const confirmacion = ['rechazar', 'cancelar', 'finalizar'].includes(accion)
-    if (confirmacion && !window.confirm(`¿Confirmas que deseas ${accion} esta contratación?`)) {
-      return
-    }
 
     setAccionEnCurso(accion)
     setErrorDetalle('')
@@ -133,9 +136,33 @@ export default function Contrataciones() {
     }
   }
 
+  function ejecutarAccion(accion) {
+    if (!detalle || accionEnCurso) return
+
+    if (['rechazar', 'cancelar', 'finalizar'].includes(accion)) {
+      setAccionPendiente(accion)
+      return
+    }
+
+    procesarAccion(accion)
+  }
+
+  async function confirmarAccionPendiente() {
+    const accion = accionPendiente
+    setAccionPendiente(null)
+
+    if (accion) {
+      await procesarAccion(accion)
+    }
+  }
+
   const acciones = Array.isArray(detalle?.acciones_disponibles)
     ? detalle.acciones_disponibles
     : []
+
+  const accionesVisibles = acciones.filter(
+    (accion) => accion !== 'crear_publicacion'
+  )
 
   const paginasTotales = Number(meta?.last_page ?? 1)
   const paginaActual = Number(meta?.current_page ?? pagina)
@@ -279,7 +306,7 @@ export default function Contrataciones() {
                   {Array.isArray(detalle.trabajador?.oficios) && detalle.trabajador.oficios.length > 0 && (
                     <div className="bt-dato">
                       <span>Oficios</span>
-                      <strong>{detalle.trabajador.oficios.map((oficio) => oficio.nombre_oficio ?? oficio.oficio ?? '').filter(Boolean).join(', ') || 'No disponibles'}</strong>
+                      <strong>{detalle.trabajador.oficios.map((oficio) => oficio.nombre ?? '').filter(Boolean).join(', ') || 'No disponibles'}</strong>
                     </div>
                   )}
                   <div className="bt-dato">
@@ -302,9 +329,9 @@ export default function Contrataciones() {
                   )}
 
                   {mensaje && <div className="bt-mensaje exito" role="status">{mensaje}</div>}
-                  {acciones.length > 0 && (
+                  {accionesVisibles.length > 0 && (
                     <div className="bt-acciones">
-                      {acciones.map((accion) => (
+                      {accionesVisibles.map((accion) => (
                         <button
                           key={accion}
                           type="button"
@@ -317,7 +344,7 @@ export default function Contrataciones() {
                       ))}
                     </div>
                   )}
-                  {acciones.length === 0 && (
+                  {accionesVisibles.length === 0 && (
                     <p className="bt-mensaje exito">No hay acciones disponibles para tu usuario en el estado actual.</p>
                   )}
                 </>
@@ -326,6 +353,33 @@ export default function Contrataciones() {
           </div>
         </section>
       </div>
+      {accionPendiente && (
+        <Dialogo
+          titulo="Confirmar acción"
+          onClose={() => setAccionPendiente(null)}
+        >
+          <p>
+            ¿Confirmas que deseas {mensajesConfirmacion[accionPendiente]}?
+          </p>
+          <div className="bt-acciones">
+            <button
+              className="bt-boton secundario"
+              type="button"
+              onClick={() => setAccionPendiente(null)}
+            >
+              Volver
+            </button>
+            <button
+              className="bt-boton peligro"
+              type="button"
+              disabled={Boolean(accionEnCurso)}
+              onClick={confirmarAccionPendiente}
+            >
+              Confirmar
+            </button>
+          </div>
+        </Dialogo>
+      )}
     </main>
   )
 }
