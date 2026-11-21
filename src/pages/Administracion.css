@@ -5,42 +5,12 @@
   flex-direction: column;
   background: #f8fafc;
 }
-.admin-topbar {
-  background: #fff;
-  border-bottom: 1px solid #e2e8f0;
-}
 
-.admin-topbar-contenido {
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 0.75rem 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.admin-marca {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.admin-logo {
-  height: 34px;
-  width: auto;
-}
 
 .admin-marca-texto {
   font-weight: 700;
   font-size: 1.1rem;
   color: #0f172a;
-}
-
-.admin-usuario-barra {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
 }
 
 .admin-usuario-nombre {
@@ -282,4 +252,50 @@
   .admin-tabs {
     flex-direction: column;
   }
+}
+.admin-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-kpi {
+  text-align: left;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.admin-kpi:hover {
+  border-color: #2563eb;
+  transform: translateY(-2px);
+}
+
+.admin-kpi-etiqueta {
+  font-size: 0.875rem;
+  color: #475569;
+  font-weight: 600;
+}
+
+.admin-kpi-valor {
+  font-size: 2rem;
+  color: #0f172a;
+  line-height: 1.1;
+}
+
+.admin-kpi-info small {
+  color: #64748b;
+  font-size: 0.75rem;
+}
+
+.admin-resumen-acciones {
+  display: flex;
+  justify-content: flex-end;
 }

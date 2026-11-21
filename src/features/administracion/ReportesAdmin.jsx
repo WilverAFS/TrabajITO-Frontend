@@ -13,7 +13,7 @@ const ESTADOS = [
   { id: '', etiqueta: 'Todos los estados' },
   { id: '1', etiqueta: 'Pendiente' },
   { id: '2', etiqueta: 'En revisión' },
-  { id: '3', etiqueta: 'Resuelto' },
+  { id: '3', etiqueta: 'Concluido' },
 ]
 
 export default function ReportesAdmin() {
@@ -114,12 +114,12 @@ export default function ReportesAdmin() {
       setRecargar((v) => v + 1)
     } catch (err) {
       const errCampo = err?.errores?.resolucion?.[0]
-      if (errCampo) {
-        setErrorResolucion(errCampo)
+      if (err?.status === 409) {
+         setErrorResolucion('Este reporte ya fue concluido anteriormente.')
       } else {
-        setError(err.message || 'No se pudo resolver el reporte.')
-      }
-    } finally {
+         setErrorResolucion(errCampo || err.message || 'No se pudo resolver el reporte.')
+  }
+} finally {
       setProcesando(false)
     }
   }
@@ -172,7 +172,7 @@ export default function ReportesAdmin() {
                 const estadoId = Number(
                   rep.id_estado_reporte ?? rep.estado?.id_estado_reporte,
                 )
-                const nombreEstado = rep.estado?.nombre ?? `Estado ${estadoId}`
+                const nombreEstado = rep.estado?.estado_reporte || `Estado ${estadoId}`
                 return (
                   <tr key={rep.id_reporte}>
                     <td>{rep.id_reporte}</td>

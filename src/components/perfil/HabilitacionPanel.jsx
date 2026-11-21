@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useOutletContext } from 'react-router'
 import {
   listarSolicitudesHabilitacion,
   enviarSolicitudHabilitacion,
@@ -14,8 +15,11 @@ function fechaLegible(fecha) {
 }
 
 export default function HabilitacionPanel({ perfilActivo }) {
+  const contexto = useOutletContext()
+  const esAdministrador = Boolean(contexto?.usuario?.es_administrador)
+
   const [solicitudes, setSolicitudes] = useState([])
-  const [cargando, setCargando] = useState(true)
+  const [cargando, setCargando] = useState(!esAdministrador)
   const [ocupado, setOcupado] = useState(false)
   const [error, setError] = useState('')
   const [exito, setExito] = useState('')
@@ -33,6 +37,8 @@ export default function HabilitacionPanel({ perfilActivo }) {
   }, [])
 
   useEffect(() => {
+    if (esAdministrador) return undefined
+
     const controller = new AbortController()
     listarSolicitudesHabilitacion({ signal: controller.signal })
       .then((lista) => {
@@ -41,7 +47,21 @@ export default function HabilitacionPanel({ perfilActivo }) {
       .catch((err) => { if (!controller.signal.aborted) manejarError(err) })
       .finally(() => { if (!controller.signal.aborted) setCargando(false) })
     return () => controller.abort()
-  }, [manejarError])
+  }, [esAdministrador, manejarError])
+
+  if (esAdministrador) {
+    return (
+      <div className="pc-panel">
+        <div className="pc-seccion-titulo">
+          <h3>Solicitudes de habilitación</h3>
+          <p>
+            Las cuentas con rol de administrador no pueden habilitar ni solicitar la
+            habilitación de un perfil profesional.
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   const enProceso = solicitudes.some((solicitud) =>
     [1, 2].includes(Number(solicitud.estado?.id_estado_solicitud))

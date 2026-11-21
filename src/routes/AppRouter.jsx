@@ -153,20 +153,58 @@ function PresentacionConNavegacion() {
 }
 
 // Protege la bandeja de solicitudes según los permisos devueltos por /me.
+function InicioPorRol() {
+  const { usuario } = useOutletContext()
+
+  if (usuario?.es_administrador) {
+    return <Navigate to="/administracion" replace />
+  }
+
+  return null
+}
+
 function SolicitudesProtegidas() {
   const { usuario } = useOutletContext()
 
-  const puedeVerSolicitudes =
-    Boolean(usuario?.es_trabajador_habilitado) ||
-    Boolean(usuario?.es_administrador)
+  if (usuario?.es_administrador) {
+    return <Navigate to="/administracion" replace />
+  }
 
-  if (!puedeVerSolicitudes) {
+  if (!usuario?.es_trabajador_habilitado) {
     return <Navigate to="/inicio" replace />
   }
 
   return (
     <ConTitulo titulo="Solicitudes">
       <Solicitudes />
+    </ConTitulo>
+  )
+}
+
+function ContratacionesProtegidas() {
+  const { usuario } = useOutletContext()
+
+  if (usuario?.es_administrador) {
+    return <Navigate to="/administracion" replace />
+  }
+
+  return (
+    <ConTitulo titulo="Contrataciones">
+      <Contrataciones />
+    </ConTitulo>
+  )
+}
+
+function PerfilProfesionalProtegido() {
+  const { usuario } = useOutletContext()
+
+  if (usuario?.es_administrador) {
+    return <Navigate to="/administracion" replace />
+  }
+
+  return (
+    <ConTitulo titulo="Perfil profesional">
+      <PerfilProfesional />
     </ConTitulo>
   )
 }
@@ -290,11 +328,11 @@ export default function AppRouter() {
           }
         />
 
-        {/* Rutas que requieren sesión */}
+{/* Rutas que requieren sesión */}
         <Route element={<InicioAutenticado />}>
           <Route
             path="/inicio"
-            element={null}
+            element={<InicioPorRol />}
           />
 
           <Route
@@ -314,11 +352,7 @@ export default function AppRouter() {
 
             <Route
               path="/contrataciones"
-              element={
-                <ConTitulo titulo="Contrataciones">
-                  <Contrataciones />
-                </ConTitulo>
-              }
+              element={<ContratacionesProtegidas />}
             />
 
             <Route
@@ -333,12 +367,9 @@ export default function AppRouter() {
 
           <Route
             path="/perfil-profesional"
-            element={
-              <ConTitulo titulo="Perfil profesional">
-                <PerfilProfesional />
-              </ConTitulo>
-            }
+            element={<PerfilProfesionalProtegido />}
           />
+
           <Route element={<PortafolioLayout />}>
             <Route path="/portafolio" element={<ConTitulo titulo="Mi portafolio"><PortafolioPropio /></ConTitulo>} />
             <Route path="/portafolio/nueva" element={<ConTitulo titulo="Publicar trabajo"><NuevaPublicacion /></ConTitulo>} />
@@ -361,7 +392,7 @@ export default function AppRouter() {
             path="/administracion"
             element={<AdministracionProtegida />}
           />
-         </Route>
+        </Route>
 
         {/* Error 404 */}
         <Route

@@ -24,6 +24,14 @@ export default function UsuariosAdmin({ usuarioActual }) {
   const [usuarioASuspender, setUsuarioASuspender] = useState(null)
   const [procesandoId, setProcesandoId] = useState(null)
   const [recargar, setRecargar] = useState(0)
+  const [buscarDebounced, setBuscarDebounced] = useState('')
+
+  useEffect(() => {
+  const timer = setTimeout(() => {
+    setBuscarDebounced(buscar)
+  }, 350)
+  return () => clearTimeout(timer)
+  }, [buscar])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -32,7 +40,7 @@ export default function UsuariosAdmin({ usuarioActual }) {
       listarUsuariosAdmin({
         pagina,
         per_page: 15,
-        buscar: buscar.trim() || undefined,
+        buscar: buscarDebounced.trim() || undefined,
         activo: filtroActivo || undefined,
         es_administrador: filtroAdmin || undefined,
         signal: controller.signal,
@@ -60,7 +68,7 @@ export default function UsuariosAdmin({ usuarioActual }) {
       })
 
     return () => controller.abort()
-  }, [pagina, buscar, filtroActivo, filtroAdmin, recargar])
+  }, [pagina, buscarDebounced, filtroActivo, filtroAdmin, recargar])
 
   const motivoBloqueoSuspension = (u) => {
     if (u.id_usuario === usuarioActual?.id_usuario) {

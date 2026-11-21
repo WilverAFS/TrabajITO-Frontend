@@ -1,60 +1,28 @@
 import { useState } from 'react'
-import { useNavigate, useOutletContext } from 'react-router'
-import logo from '../assets/registro-logo-provisional.png'
+import { useOutletContext } from 'react-router'
+import Header from '../components/Header.jsx'
 import Footer from '../components/Footer.jsx'
-import '../components/Footer.css'
-import { cerrarSesion } from '../services/authApi.js'
 import UsuariosAdmin from '../features/administracion/UsuariosAdmin.jsx'
 import SolicitudesAdmin from '../features/administracion/SolicitudesAdmin.jsx'
 import PublicacionesAdmin from '../features/administracion/PublicacionesAdmin.jsx'
 import ReportesAdmin from '../features/administracion/ReportesAdmin.jsx'
 import './Administracion.css'
-
+import ResumenAdmin from '../features/administracion/ResumenAdmin.jsx'
 const PESTANAS = [
   { id: 'usuarios', etiqueta: 'Usuarios' },
   { id: 'solicitudes', etiqueta: 'Verificación de trabajadores' },
   { id: 'publicaciones', etiqueta: 'Publicaciones' },
   { id: 'reportes', etiqueta: 'Reportes' },
+  { id: 'resumen', etiqueta: 'Resumen' }
 ]
 
 export default function Administracion() {
   const { usuario } = useOutletContext()
-  const navigate = useNavigate()
-  const [pestanaActiva, setPestanaActiva] = useState('usuarios')
-  const [cerrando, setCerrando] = useState(false)
-
-  const handleCerrarSesion = async () => {
-    setCerrando(true)
-    try {
-      await cerrarSesion()
-    } finally {
-      navigate('/login', { replace: true })
-    }
-  }
+  const [pestanaActiva, setPestanaActiva] = useState('resumen')
 
   return (
     <div className="admin-pagina">
-      <header className="admin-topbar">
-        <div className="admin-topbar-contenido">
-          <div className="admin-marca">
-            <img src={logo} alt="TrabajITO" className="admin-logo" />
-          </div>
-
-          <div className="admin-usuario-barra">
-            <span className="admin-usuario-nombre">
-              Bienvenido {usuario?.nombre || 'Administrador'}
-            </span>
-            <button
-              type="button"
-              className="admin-btn"
-              disabled={cerrando}
-              onClick={handleCerrarSesion}
-            >
-              {cerrando ? 'Saliendo...' : 'Cerrar sesión'}
-            </button>
-          </div>
-        </div>
-      </header>
+      <Header botonActivo="administracion" />
 
       <main className="admin-main">
         <section className="admin-contenedor">
@@ -86,6 +54,7 @@ export default function Administracion() {
               {pestanaActiva === 'solicitudes' && <SolicitudesAdmin />}
               {pestanaActiva === 'publicaciones' && <PublicacionesAdmin />}
               {pestanaActiva === 'reportes' && <ReportesAdmin />}
+              {pestanaActiva === 'resumen' && (<ResumenAdmin onIrAPestana={setPestanaActiva} />)}
             </div>
           </div>
         </section>

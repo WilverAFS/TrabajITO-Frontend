@@ -144,7 +144,7 @@ export default function PublicacionesAdmin() {
       {cargando ? (
         <p>Cargando publicaciones...</p>
       ) : publicacionesFiltradas.length === 0 ? (
-        <p>No hay publicaciones para mostrar. Puedes consultar una por su ID arriba.</p>
+        <p>No hay publicaciones reportadas en este momento. Puedes consultar cualquier publicación por su ID arriba.</p>
       ) : (
         <div className="admin-tabla-wrapper">
           <table className="admin-tabla">
