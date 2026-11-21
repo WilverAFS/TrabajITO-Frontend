@@ -21,7 +21,7 @@ import InicioAutenticado from './InicioAutenticado.jsx'
 import Header from '../components/Header.jsx'
 import Footer from '../components/Footer.jsx'
 import { EVENTO_SESION_EXPIRADA } from '../services/apiClient.js'
-
+import Administracion from '../pages/Administracion.jsx'
 import './AppRouter.css'
 
 // Mapa de rutas de TrabajITO
@@ -153,14 +153,24 @@ function PresentacionConNavegacion() {
 }
 
 // Protege la bandeja de solicitudes según los permisos devueltos por /me.
+function InicioPorRol() {
+  const { usuario } = useOutletContext()
+
+  if (usuario?.es_administrador) {
+    return <Navigate to="/administracion" replace />
+  }
+
+  return null
+}
+
 function SolicitudesProtegidas() {
   const { usuario } = useOutletContext()
 
-  const puedeVerSolicitudes =
-    Boolean(usuario?.es_trabajador_habilitado) ||
-    Boolean(usuario?.es_administrador)
+  if (usuario?.es_administrador) {
+    return <Navigate to="/administracion" replace />
+  }
 
-  if (!puedeVerSolicitudes) {
+  if (!usuario?.es_trabajador_habilitado) {
     return <Navigate to="/inicio" replace />
   }
 
@@ -171,6 +181,46 @@ function SolicitudesProtegidas() {
   )
 }
 
+function ContratacionesProtegidas() {
+  const { usuario } = useOutletContext()
+
+  if (usuario?.es_administrador) {
+    return <Navigate to="/administracion" replace />
+  }
+
+  return (
+    <ConTitulo titulo="Contrataciones">
+      <Contrataciones />
+    </ConTitulo>
+  )
+}
+
+function PerfilProfesionalProtegido() {
+  const { usuario } = useOutletContext()
+
+  if (usuario?.es_administrador) {
+    return <Navigate to="/administracion" replace />
+  }
+
+  return (
+    <ConTitulo titulo="Perfil profesional">
+      <PerfilProfesional />
+    </ConTitulo>
+  )
+}
+function AdministracionProtegida() {
+  const { usuario } = useOutletContext()
+
+  if (!usuario?.es_administrador) {
+    return <Navigate to="/inicio" replace />
+  }
+
+  return (
+    <ConTitulo titulo="Administración">
+      <Administracion />
+    </ConTitulo>
+  )
+}
 // Atiende las respuestas 401 de los servicios autenticados
 function VigilarSesion() {
   const navigate = useNavigate()
@@ -278,11 +328,11 @@ export default function AppRouter() {
           }
         />
 
-        {/* Rutas que requieren sesión */}
+{/* Rutas que requieren sesión */}
         <Route element={<InicioAutenticado />}>
           <Route
             path="/inicio"
-            element={null}
+            element={<InicioPorRol />}
           />
 
           <Route
@@ -302,11 +352,7 @@ export default function AppRouter() {
 
             <Route
               path="/contrataciones"
-              element={
-                <ConTitulo titulo="Contrataciones">
-                  <Contrataciones />
-                </ConTitulo>
-              }
+              element={<ContratacionesProtegidas />}
             />
 
             <Route
@@ -321,12 +367,9 @@ export default function AppRouter() {
 
           <Route
             path="/perfil-profesional"
-            element={
-              <ConTitulo titulo="Perfil profesional">
-                <PerfilProfesional />
-              </ConTitulo>
-            }
+            element={<PerfilProfesionalProtegido />}
           />
+
           <Route element={<PortafolioLayout />}>
             <Route path="/portafolio" element={<ConTitulo titulo="Mi portafolio"><PortafolioPropio /></ConTitulo>} />
             <Route path="/portafolio/nueva" element={<ConTitulo titulo="Publicar trabajo"><NuevaPublicacion /></ConTitulo>} />
@@ -347,15 +390,7 @@ export default function AppRouter() {
 
           <Route
             path="/administracion"
-            element={
-              <ConTitulo titulo="Administración">
-                <Marcador
-                  nombre="Administración"
-                  descripcion="Usuarios, verificación de trabajadores, publicaciones y reportes."
-                  restringida
-                />
-              </ConTitulo>
-            }
+            element={<AdministracionProtegida />}
           />
         </Route>
 

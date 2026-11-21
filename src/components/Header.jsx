@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useCallback } from 'react'
 import { NavLink, useNavigate } from 'react-router'
 
@@ -148,9 +147,11 @@ export default function Header({ botonActivo = 'catalogo' }) {
     }
   }
 
+  const esAdmin = Boolean(datosUsuario?.es_administrador)
+
   return (
     <header className="trabajito-header">
-      <a href="/" className="logo-container">
+      <a href={esAdmin ? '/administracion' : '/'} className="logo-container">
         <img src={logo} alt="TrabajITO" />
       </a>
 
@@ -172,51 +173,67 @@ export default function Header({ botonActivo = 'catalogo' }) {
         id="trabajito-navegacion"
         className={menuMovilAbierto ? 'navegacion-abierta' : ''}
       >
-        <NavLink
-          to="/inicio"
-          onClick={() => setMenuMovilAbierto(false)}
-          className={({ isActive }) =>
-            `btn-enlace-nav ${
-              isActive || botonActivo === 'inicio' ? 'activo' : ''
-            }`
-          }
-        >
-          Inicio
-        </NavLink>
-
-        <NavLink
-          to="/catalogo"
-          onClick={() => setMenuMovilAbierto(false)}
-          className={({ isActive }) =>
-            `btn-enlace-nav ${
-              isActive || botonActivo === 'catalogo' ? 'activo' : ''
-            }`
-          }
-        >
-          Buscar trabajadores
-        </NavLink>
-
-        {(datosUsuario?.es_trabajador_habilitado || datosUsuario?.es_administrador) && (
+        {esAdmin ? (
           <NavLink
-            to="/solicitudes"
+            to="/administracion"
             onClick={() => setMenuMovilAbierto(false)}
             className={({ isActive }) =>
-              `btn-enlace-nav ${isActive ? 'activo' : ''}`
+              `btn-enlace-nav ${
+                isActive || botonActivo === 'administracion' ? 'activo' : ''
+              }`
             }
           >
-            Solicitudes
+            Administración
           </NavLink>
-        )}
+        ) : (
+          <>
+            <NavLink
+              to="/inicio"
+              onClick={() => setMenuMovilAbierto(false)}
+              className={({ isActive }) =>
+                `btn-enlace-nav ${
+                  isActive || botonActivo === 'inicio' ? 'activo' : ''
+                }`
+              }
+            >
+              Inicio
+            </NavLink>
 
-        <NavLink
-          to="/contrataciones"
-          onClick={() => setMenuMovilAbierto(false)}
-          className={({ isActive }) =>
-            `btn-enlace-nav ${isActive ? 'activo' : ''}`
-          }
-        >
-          Contrataciones
-        </NavLink>
+            <NavLink
+              to="/catalogo"
+              onClick={() => setMenuMovilAbierto(false)}
+              className={({ isActive }) =>
+                `btn-enlace-nav ${
+                  isActive || botonActivo === 'catalogo' ? 'activo' : ''
+                }`
+              }
+            >
+              Buscar trabajadores
+            </NavLink>
+
+            {datosUsuario?.es_trabajador_habilitado && (
+              <NavLink
+                to="/solicitudes"
+                onClick={() => setMenuMovilAbierto(false)}
+                className={({ isActive }) =>
+                  `btn-enlace-nav ${isActive ? 'activo' : ''}`
+                }
+              >
+                Solicitudes
+              </NavLink>
+            )}
+
+            <NavLink
+              to="/contrataciones"
+              onClick={() => setMenuMovilAbierto(false)}
+              className={({ isActive }) =>
+                `btn-enlace-nav ${isActive ? 'activo' : ''}`
+              }
+            >
+              Contrataciones
+            </NavLink>
+          </>
+        )}
 
         <NavLink
           to="/notificaciones"
@@ -365,15 +382,17 @@ export default function Header({ botonActivo = 'catalogo' }) {
               Ver perfil
             </button>
 
-            <button
-              type="button"
-              onClick={() => {
-                setMenuAbierto(false)
-                navigate('/perfil-profesional')
-              }}
-            >
-              Mi perfil profesional
-            </button>
+            {!esAdmin && (
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuAbierto(false)
+                  navigate('/perfil-profesional')
+                }}
+              >
+                Mi perfil profesional
+              </button>
+            )}
 
             <button
               onClick={manejarCerrarSesion}
