@@ -1,13 +1,13 @@
-import { Outlet, useOutletContext } from 'react-router';
-import Header from '../components/Header.jsx';
+
+import { Outlet, useOutletContext } from 'react-router'
+import LayoutAplicacion from '../components/LayoutAplicacion.jsx'
 
 export default function BandejasLayout() {
-  const { usuario, cerrarSesion } = useOutletContext();
+  const { usuario, cerrarSesion } = useOutletContext()
 
   return (
-    <>
-      <Header botonActivo="" />
+    <LayoutAplicacion>
       <Outlet context={{ usuario, cerrarSesion }} />
-    </>
-  );
+    </LayoutAplicacion>
+  )
 }
