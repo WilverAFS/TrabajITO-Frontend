@@ -46,3 +46,98 @@ export function validarResolucionReporte(texto = '') {
   }
   return ''
 }
+
+
+/**
+ * Reglas compartidas de datos personales.
+ * Basadas en ValidationRules.php del Backend.
+ */
+
+export const PATRON_NOMBRE_ESPANOL = String.raw`\p{Script=Latin}[\p{Script=Latin}\p{M}]*(?: \p{Script=Latin}[\p{Script=Latin}\p{M}]*)*`
+
+const REGEX_NOMBRE = new RegExp(
+  `^(?:${PATRON_NOMBRE_ESPANOL})$`,
+  'u',
+)
+
+export function validarNombreEspanol(valor, tipo = 'nombre') {
+  const texto = String(valor ?? '').trim()
+  const esApellido = tipo === 'apellido'
+  const limite = esApellido ? 150 : 100
+  const etiqueta = esApellido ? 'Los apellidos' : 'El nombre'
+
+  if (!texto) {
+    return `${etiqueta} es obligatorio.`
+  }
+
+  if (texto.length > limite) {
+    return `${etiqueta} no puede superar los ${limite} caracteres.`
+  }
+
+  if (!REGEX_NOMBRE.test(texto)) {
+    return `${etiqueta} solo puede contener letras y espacios simples.`
+  }
+
+  return ''
+}
+
+/**
+ * Requisitos para mostrar mientras se escribe.
+ * Solo se aplican a contraseñas nuevas.
+ */
+export function comprobarRequisitosContrasena(valor = '') {
+  const clave = String(valor)
+
+  return [
+    {
+      id: 'longitud',
+      texto: 'Mínimo 8 caracteres',
+      cumple: clave.length >= 8,
+    },
+    {
+      id: 'mayuscula',
+      texto: 'Al menos una mayúscula',
+      cumple: /[A-Z]/.test(clave),
+    },
+    {
+      id: 'minuscula',
+      texto: 'Al menos una minúscula',
+      cumple: /[a-z]/.test(clave),
+    },
+    {
+      id: 'numero',
+      texto: 'Al menos un número',
+      cumple: /[0-9]/.test(clave),
+    },
+    {
+      id: 'simbolo',
+      texto: 'Al menos un símbolo',
+      cumple: /[^\p{L}\p{N}\s]/u.test(clave),
+    },
+  ]
+}
+
+export function validarContrasenaNueva(valor) {
+  const requisitos = comprobarRequisitosContrasena(valor)
+
+  if (requisitos.every((requisito) => requisito.cumple)) {
+    return ''
+  }
+
+  return 'La contraseña debe tener al menos 8 caracteres e incluir mayúsculas, minúsculas, números y símbolos.'
+}
+
+export function validarConfirmacionContrasena(
+  contrasena,
+  confirmacion,
+) {
+  if (!confirmacion) {
+    return 'Debes confirmar la contraseña.'
+  }
+
+  if (contrasena !== confirmacion) {
+    return 'Las contraseñas no coinciden.'
+  }
+
+  return ''
+}
