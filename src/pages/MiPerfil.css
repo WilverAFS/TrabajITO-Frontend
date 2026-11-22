@@ -41,3 +41,9 @@
 .mp-clave-ok a { justify-self: start; }
 @media (max-width: 850px) { .mp-grid { grid-template-columns: 1fr; } }
 @media (max-width: 580px) { .mp-pagina { padding: 22px 12px 48px; } .mp-encabezado, .mp-tarjeta { padding: 19px; border-radius: 15px; } .mp-encabezado { align-items: flex-start; gap: 13px; } .mp-avatar { width: 55px; height: 55px; border-radius: 15px; font-size: 19px; } .mp-campos-dobles { grid-template-columns: 1fr; gap: 0; } .mp-acciones { align-items: stretch; flex-direction: column; } .mp-acciones button { width: 100%; } .mp-tarjeta h2 { font-size: 20px; } }
+.mp-campo input[aria-invalid="true"] { border-color: #c53243; background: #fffafa; }
+.mp-campo input[aria-invalid="true"]:focus { border-color: #c53243; box-shadow: 0 0 0 3px #c5324320; }
+.mp-error-campo { color: #a22b37; font-size: 12px; line-height: 1.45; margin: 6px 0 0; }
+.mp-requisitos { list-style: none; margin: -8px 0 16px; padding: 0; display: grid; gap: 6px; color: #6a7a8b; font-size: 12px; }
+.mp-requisitos li span { display: inline-block; width: 19px; }
+.mp-requisitos .mp-requisito-cumple { color: #087a51; font-weight: 650; }

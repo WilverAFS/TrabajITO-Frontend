@@ -159,3 +159,13 @@ export function validarCorreoElectronico(valor) {
 
   return ''
 }
+
+export function validarTelefono(valor) {
+  const telefono = String(valor ?? '').trim()
+
+  if (!telefono) return '' // El teléfono es opcional.
+  if (!/^[0-9]{10}$/.test(telefono)) {
+    return 'El teléfono debe contener exactamente 10 dígitos.'
+  }
+  return ''
+}
