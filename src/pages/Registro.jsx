@@ -14,12 +14,6 @@ import {
 } from '../utils/validaciones.js'
 import './Registro.css'
 
-const ENLACES_FOOTER = [
-  'Buscar trabajadores',
-  'Privacidad',
-  'Términos y condiciones',
-]
-
 const CAMPOS_INICIALES = {
   nombre: '',
   apellidos: '',
@@ -182,7 +176,6 @@ export default function Registro() {
       }
       introduccion="Crea una cuenta para buscar servicios o publicar tu perfil de trabajador."
       altHero="Una clienta conversa con un trabajador de oficio en una cocina"
-      enlacesFooter={ENLACES_FOOTER}
     >
       <h2 id="rg-formulario-titulo">Crea tu cuenta</h2>
 

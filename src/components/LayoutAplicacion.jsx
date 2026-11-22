@@ -6,10 +6,12 @@ import './LayoutAplicacion.css'
 export default function LayoutAplicacion({
   children,
   botonActivo = '',
+  publico = false,
+  className = '',
 }) {
   return (
-    <div className="tj-layout-aplicacion">
-      <Header botonActivo={botonActivo} />
+    <div className={`tj-layout-aplicacion ${className}`.trim()}>
+      <Header publico={publico} botonActivo={botonActivo} />
 
       {children}
 

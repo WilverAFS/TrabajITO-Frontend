@@ -4,8 +4,6 @@ import LayoutAuth from '../components/auth/LayoutAuth.jsx'
 import { CandadoIcono, CorreoIcono } from '../components/auth/IconosAuth.jsx'
 import './Registro.css'
 
-const ENLACES_FOOTER = ['Privacidad', 'Términos y condiciones']
-
 export default function Recuperacion() {
   const [mensaje, setMensaje] = useState('')
 
@@ -19,7 +17,6 @@ export default function Recuperacion() {
       titulo={<>Recupera el acceso a <span>tu cuenta.</span></>}
       introduccion="Ingresa el correo asociado a tu cuenta para recibir un enlace y volver a entrar."
       altHero="Dos trabajadores conversando sobre un proyecto"
-      enlacesFooter={ENLACES_FOOTER}
     >
       <div style={{ display: 'flex', marginBottom: '1rem' }}>
         <div style={{ backgroundColor: '#e7f1ff', padding: '12px', borderRadius: '12px' }}>

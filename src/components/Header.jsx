@@ -18,7 +18,7 @@ import {
 
 import './Header.css'
 
-export default function Header({ botonActivo = 'catalogo' }) {
+function HeaderAutenticado({ botonActivo = 'catalogo' }) {
   const [menuAbierto, setMenuAbierto] = useState(false)
   const [menuMovilAbierto, setMenuMovilAbierto] = useState(false)
   const [datosUsuario, setDatosUsuario] = useState(null)
@@ -405,4 +405,45 @@ export default function Header({ botonActivo = 'catalogo' }) {
       </div>
     </header>
   )
+}
+
+function HeaderPublico() {
+  return (
+    <header className="trabajito-header trabajito-header-publico">
+      <NavLink
+        to="/"
+        className="logo-container"
+        aria-label="TrabajITO, ir al inicio"
+      >
+        <img src={logo} alt="TrabajITO" />
+      </NavLink>
+
+      <nav className="navegacion-publica" aria-label="Navegación pública">
+        <NavLink to="/" end className="btn-enlace-nav">
+          Inicio
+        </NavLink>
+
+        <NavLink to="/catalogo" className="btn-enlace-nav">
+          Buscar trabajadores
+        </NavLink>
+
+        <NavLink to="/login" className="btn-enlace-nav">
+          Iniciar sesión
+        </NavLink>
+
+        <NavLink to="/registro" className="btn-enlace-nav">
+          Regístrate
+        </NavLink>
+      </nav>
+    </header>
+  )
+}
+
+export default function Header({
+  publico = false,
+  botonActivo = 'catalogo',
+}) {
+  return publico
+    ? <HeaderPublico />
+    : <HeaderAutenticado botonActivo={botonActivo} />
 }
