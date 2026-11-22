@@ -97,12 +97,12 @@ export function comprobarRequisitosContrasena(valor = '') {
     {
       id: 'mayuscula',
       texto: 'Al menos una mayúscula',
-      cumple: /[A-Z]/.test(clave),
+      cumple: /\p{Lu}/u.test(clave),
     },
     {
       id: 'minuscula',
       texto: 'Al menos una minúscula',
-      cumple: /[a-z]/.test(clave),
+      cumple: /\p{Ll}/u.test(clave),
     },
     {
       id: 'numero',
@@ -137,6 +137,24 @@ export function validarConfirmacionContrasena(
 
   if (contrasena !== confirmacion) {
     return 'Las contraseñas no coinciden.'
+  }
+
+  return ''
+}
+
+export function validarCorreoElectronico(valor) {
+  const correo = String(valor ?? '').trim()
+
+  if (!correo) {
+    return 'El correo electrónico es obligatorio.'
+  }
+
+  if (correo.length > 255) {
+    return 'El correo no puede superar los 255 caracteres.'
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+    return 'Ingresa un correo electrónico válido.'
   }
 
   return ''
