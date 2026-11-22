@@ -1,0 +1,20 @@
+
+/* Estructura compartida de las páginas autenticadas */
+.tj-layout-aplicacion {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  min-width: 0;
+}
+
+.tj-layout-aplicacion > main {
+  flex: 1;
+  min-width: 0;
+}
+
+.tj-layout-footer {
+  flex-shrink: 0;
+  margin-top: auto;
+}

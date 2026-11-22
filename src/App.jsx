@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
-import logo from './assets/logo.png'
+import logo from './assets/marca-oficial.png'
 import { eliminarToken, obtenerToken } from './services/apiClient.js'
 import { iniciarSesion, obtenerUsuarioActual } from './services/authApi.js'
+import LayoutAplicacion from './components/LayoutAplicacion.jsx'
+import hero from './assets/registro-hero-provisional.png'
 import './App.css'
 
 function App() {
@@ -61,19 +63,18 @@ function App() {
     }
   }
 
-  if (cargando) {
-    return <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', fontFamily: 'system-ui' }}>Cargando TrabajITO...</div>
-  }
+if (cargando) {
+  return (
+    <LayoutAplicacion publico className="pagina">
+      <main className="contenido">
+        <p role="status">Cargando TrabajITO...</p>
+      </main>
+    </LayoutAplicacion>
+  )
+}
 
   return (
-    <div className="pagina">
-      <header className="navbar">
-        <a className="logo" href="/" aria-label="TrabajITO inicio">
-          <img src={logo} alt="Logo de TrabajITO" className="logo-imagen" />
-          <span>trabaj<span className="logo-verde">ITO</span></span>
-        </a>
-      </header>
-
+  <LayoutAplicacion publico className="pagina">
       <main className="contenido">
         <section className="presentacion">
           <a href="/" className="volver">
@@ -94,9 +95,9 @@ function App() {
 
           <div className="imagen-principal">
             <img
-              className="logo"
-              src={logo}
-              alt="Profesionales ofreciendo sus servicios"
+              className="login-hero-imagen"
+              src={hero}
+              alt="Una clienta conversa con un trabajador de oficio"
             />
 
             <div className="imagen-mensaje">
@@ -196,7 +197,7 @@ function App() {
           </div>
         </section>
       </main>
-    </div>
+    </LayoutAplicacion>
   )
 }
 

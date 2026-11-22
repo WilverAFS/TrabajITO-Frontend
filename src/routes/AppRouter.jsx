@@ -143,11 +143,9 @@ function NoEncontrada() {
 }
 
 function PresentacionConNavegacion() {
-  const navigate = useNavigate()
-
   return (
     <ConTitulo titulo="Presentación">
-      <Presentacion onIniciarSesion={() => navigate('/login')} />
+      <Presentacion />
     </ConTitulo>
   )
 }

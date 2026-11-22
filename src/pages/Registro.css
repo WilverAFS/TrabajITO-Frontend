@@ -163,3 +163,45 @@ html.trabajito-registro-route #root {
   .rg-pagina .rg-tarjeta h2 { font-size: 30px; }
   .rg-fila-nombres { grid-template-columns: 1fr; gap: 18px; }
 }
+
+/* Errores de validación reutilizables */
+.rg-campo-control-error {
+  border-color: #cf3547;
+  background: #fffafa;
+}
+
+.rg-campo-control-error:focus-within {
+  border-color: #cf3547;
+  outline: 3px solid rgb(207 53 71 / 12%);
+}
+
+.rg-campo-error {
+  margin: 6px 0 0 !important;
+  color: #a22b37;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+/* Requisitos de contraseña en tiempo real */
+.rg-requisitos {
+  list-style: none;
+  margin: -6px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 5px;
+  font-size: 12px;
+}
+
+.rg-requisito {
+  color: #66798d;
+}
+
+.rg-requisito-cumple {
+  color: #087a51;
+  font-weight: 600;
+}
+
+.rg-requisito span {
+  display: inline-block;
+  width: 19px;
+}

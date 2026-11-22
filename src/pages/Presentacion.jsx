@@ -1,5 +1,5 @@
-import logo from '../assets/trabajito.png';
 import hero from '../assets/registro-hero-provisional.png';
+import LayoutAplicacion from '../components/LayoutAplicacion.jsx'
 import './Presentacion.css';
 
 const oficios = [
@@ -46,33 +46,10 @@ const trabajadores = [
   },
 ];
 
-function Presentacion({ onIniciarSesion }) {
+function Presentacion() {
   return (
-    <div className="inicio" id="inicio">
-
-      {/* NAVBAR */}
-      <header className="inicio-navbar">
-        <a
-          className="inicio-logo"
-          href="#inicio"
-          aria-label="TrabajITO inicio"
-        >
-          <img src={logo} alt="Logo de TrabajITO" />
-          <span>
-            trabaj<span>ITO</span>
-          </span>
-        </a>
-
-        <button
-          className="boton-iniciar"
-          onClick={onIniciarSesion}
-        >
-          Iniciar sesión
-        </button>
-      </header>
-
+  <LayoutAplicacion publico className="inicio">
       <main>
-
         {/* PRESENTACIÓN PRINCIPAL */}
         <section className="hero-inicio">
           <div className="hero-interior">
@@ -260,30 +237,7 @@ function Presentacion({ onIniciarSesion }) {
         </section>
 
       </main>
-
-      {/* FOOTER */}
-      <footer className="inicio-footer">
-        <div className="ancho-contenido">
-
-          <div className="footer-marca">
-            <img src={logo} alt="Logo de TrabajITO" />
-
-            <strong>
-              Trabaj<span>ITO</span>
-            </strong>
-          </div>
-
-          <p>El talento de tu comunidad, cerca de ti.</p>
-
-          <div className="footer-final">
-            <span>© 2026 TrabajITO. Hecho para conectar.</span>
-            <span>Privacidad · Términos y condiciones</span>
-          </div>
-
-        </div>
-      </footer>
-
-    </div>
+    </LayoutAplicacion>
   );
 }
 
