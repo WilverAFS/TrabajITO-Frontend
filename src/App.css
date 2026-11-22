@@ -517,3 +517,25 @@
   max-height: 50px;
   object-fit: contain;
 }
+
+/* Inicio de sesión dentro del layout compartido */
+.tj-layout-aplicacion.pagina > main.contenido {
+  min-height: 0;
+  flex: 1;
+}
+
+/* Imagen ilustrativa del inicio de sesión */
+.login-hero-imagen {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+@media (max-width: 650px) {
+  .imagen-principal {
+    width: 100%;
+    max-width: 100%;
+  }
+}

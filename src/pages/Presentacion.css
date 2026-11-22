@@ -635,27 +635,3 @@
     transition-duration: .01ms !important;
   }
 }
-
-/* Marca oficial de TrabajITO */
-.inicio .inicio-logo img {
-  width: 155px;
-  height: auto;
-  max-height: 48px;
-  object-fit: contain;
-}
-
-.inicio .footer-marca img {
-  width: 155px;
-  height: auto;
-  padding: 6px 10px;
-  border-radius: 8px;
-  object-fit: contain;
-  background: #fff;
-}
-
-@media (max-width: 650px) {
-  .inicio .inicio-logo img {
-    width: 135px;
-    height: auto;
-  }
-}
