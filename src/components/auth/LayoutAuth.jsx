@@ -1,4 +1,4 @@
-import logo from '../../assets/registro-logo-provisional.png'
+import logo from '../../assets/marca-oficial.png'
 import hero from '../../assets/registro-hero-provisional.png'
 
 // Estructura compartida por las pantallas de registro y recuperación.

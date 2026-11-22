@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
-import logo from './assets/logo.png'
+import logo from './assets/marca-oficial.png'
 import { eliminarToken, obtenerToken } from './services/apiClient.js'
 import { iniciarSesion, obtenerUsuarioActual } from './services/authApi.js'
 import './App.css'
@@ -70,7 +70,6 @@ function App() {
       <header className="navbar">
         <a className="logo" href="/" aria-label="TrabajITO inicio">
           <img src={logo} alt="Logo de TrabajITO" className="logo-imagen" />
-          <span>trabaj<span className="logo-verde">ITO</span></span>
         </a>
       </header>
 

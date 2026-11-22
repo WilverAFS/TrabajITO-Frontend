@@ -1,5 +1,5 @@
 // src/components/Footer.jsx
-import logo from '../assets/registro-logo-provisional.png';
+import logo from '../assets/marca-oficial.png'
 import './Footer.css';
 export default function Footer({ className }) {
   return (

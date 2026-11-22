@@ -509,3 +509,11 @@
 .imagen-principal:hover {
   transform: scale(1.06);
 }
+
+/* Logotipo oficial de la pantalla de acceso */
+.navbar .logo-imagen {
+  width: 155px;
+  height: auto;
+  max-height: 50px;
+  object-fit: contain;
+}

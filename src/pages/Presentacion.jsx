@@ -1,4 +1,4 @@
-import logo from '../assets/trabajito.png';
+import logo from '../assets/marca-oficial.png'
 import hero from '../assets/registro-hero-provisional.png';
 import './Presentacion.css';
 
@@ -58,9 +58,6 @@ function Presentacion({ onIniciarSesion }) {
           aria-label="TrabajITO inicio"
         >
           <img src={logo} alt="Logo de TrabajITO" />
-          <span>
-            trabaj<span>ITO</span>
-          </span>
         </a>
 
         <button
@@ -267,10 +264,6 @@ function Presentacion({ onIniciarSesion }) {
 
           <div className="footer-marca">
             <img src={logo} alt="Logo de TrabajITO" />
-
-            <strong>
-              Trabaj<span>ITO</span>
-            </strong>
           </div>
 
           <p>El talento de tu comunidad, cerca de ti.</p>

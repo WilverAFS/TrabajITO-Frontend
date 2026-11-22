@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { NavLink, useNavigate } from 'react-router'
 
-import logo from '../assets/registro-logo-provisional.png'
+import logo from '../assets/marca-oficial.png'
 import { CampanaIcono, CorreoIcono } from './Iconos'
 
 import { obtenerToken } from '../services/apiClient.js'
