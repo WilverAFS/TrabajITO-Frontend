@@ -24,6 +24,25 @@ export default function PerfilPublico() {
   const [error, setError] = useState('')
 
   useEffect(() => {
+    function actualizarReputacion(evento) {
+      const { idTrabajador, perfil: perfilActualizado } = evento.detail ?? {}
+
+      if (
+        Number(idTrabajador) === Number(id)
+        && perfilActualizado
+      ) {
+        setPerfil(perfilActualizado)
+      }
+    }
+
+    window.addEventListener('trabajito:valoracion-actualizada', actualizarReputacion)
+
+    return () => {
+      window.removeEventListener('trabajito:valoracion-actualizada', actualizarReputacion)
+    }
+  }, [id])
+
+  useEffect(() => {
     const controller = new AbortController()
 
     const cargar = async () => {

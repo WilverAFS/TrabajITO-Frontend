@@ -39,3 +39,25 @@ export function cargarEvidencias(id, archivos) {
 export function eliminarEvidencia(id) {
   return solicitud(`/evidencias/${encodeURIComponent(id)}`, { method: 'DELETE', autenticado: true })
 }
+
+
+export function crearValoracion(idPublicacion, data, { signal } = {}) {
+  return solicitud(
+    `/publicaciones/${encodeURIComponent(idPublicacion)}/valoracion`,
+    {
+      method: 'POST',
+      autenticado: true,
+      data,
+      signal,
+    },
+  )
+}
+
+export function actualizarValoracion(idValoracion, data, { signal } = {}) {
+  return solicitud(`/valoraciones/${encodeURIComponent(idValoracion)}`, {
+    method: 'PATCH',
+    autenticado: true,
+    data,
+    signal,
+  })
+}
