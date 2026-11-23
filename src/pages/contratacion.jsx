@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Link } from 'react-router'
+import { Link, useOutletContext } from 'react-router'
 import { Dialogo } from '../components/ui/Interfaz.jsx'
+import FormularioValoracion from '../features/valoraciones/FormularioValoracion.jsx'
+import { obtenerPublicacion } from '../services/publicacionesApi.js'
 import {
   ejecutarAccionContratacion,
   listarContrataciones,
@@ -31,6 +33,7 @@ const nombresAcciones = {
 }
 
 export default function Contrataciones() {
+  const { usuario } = useOutletContext() ?? {}
   const [registros, setRegistros] = useState([])
   const [seleccionada, setSeleccionada] = useState(null)
   const [detalle, setDetalle] = useState(null)
@@ -45,6 +48,10 @@ export default function Contrataciones() {
   const [errorDetalle, setErrorDetalle] = useState('')
   const [mensaje, setMensaje] = useState('')
   const [accionPendiente, setAccionPendiente] = useState(null)
+  const [modalValoracion, setModalValoracion] = useState(false)
+  const [valoracionContratacion, setValoracionContratacion] = useState(null)
+  const [cargandoValoracion, setCargandoValoracion] = useState(false)
+  const [errorValoracion, setErrorValoracion] = useState('')
 
   const cargar = useCallback(async (signal) => {
     setCargando(true)
@@ -115,6 +122,28 @@ export default function Contrataciones() {
 
     return () => controlador.abort()
   }, [seleccionada])
+
+  async function abrirFormularioValoracion() {
+    const idPublicacion = detalle?.publicacion?.id_publicacion
+    if (!idPublicacion || cargandoValoracion) return
+
+    setCargandoValoracion(true)
+    setErrorValoracion('')
+
+    try {
+      const publicacion = await obtenerPublicacion({
+        id: idPublicacion,
+        privada: true,
+      })
+
+      setValoracionContratacion(publicacion?.valoracion ?? null)
+      setModalValoracion(true)
+    } catch (err) {
+      setErrorValoracion(err.message || 'No se pudo consultar la publicación.')
+    } finally {
+      setCargandoValoracion(false)
+    }
+  }
 
   async function procesarAccion(accion) {
     if (!detalle || accionEnCurso) return
@@ -328,6 +357,50 @@ export default function Contrataciones() {
                     </div>
                   )}
 
+                  <section className="tj-card tj-stack">
+                    <h3>Valoración del servicio</h3>
+
+                    {Number(detalle.cliente?.id_usuario) === Number(usuario?.id_usuario)
+                      && Number(detalle.estado?.id_estado_contratacion) === 5
+                      && detalle.publicacion?.id_publicacion ? (
+                        <>
+                          <p className="tj-muted">
+                            {valoracionContratacion
+                              ? 'Puedes editar la valoración que publicaste para este servicio.'
+                              : 'La contratación está finalizada. Ya puedes valorar el servicio.'}
+                          </p>
+                          <button
+                            type="button"
+                            className="tj-button"
+                            disabled={cargandoValoracion}
+                            onClick={abrirFormularioValoracion}
+                          >
+                            {cargandoValoracion
+                              ? 'Consultando...'
+                              : valoracionContratacion
+                                ? 'Editar mi valoración'
+                                : 'Valorar servicio'}
+                          </button>
+                        </>
+                      ) : Number(detalle.cliente?.id_usuario) !== Number(usuario?.id_usuario) ? (
+                        <p className="tj-muted">
+                          Solo el cliente que contrató el servicio puede valorarlo.
+                        </p>
+                      ) : Number(detalle.estado?.id_estado_contratacion) !== 5 ? (
+                        <p className="tj-muted">
+                          Podrás valorar el servicio cuando la contratación esté finalizada.
+                        </p>
+                      ) : (
+                        <p className="tj-muted">
+                          Esta contratación no tiene una publicación asociada que pueda valorarse.
+                        </p>
+                      )}
+
+                    {errorValoracion && (
+                      <p className="bt-mensaje error" role="alert">{errorValoracion}</p>
+                    )}
+                  </section>
+
                   {mensaje && <div className="bt-mensaje exito" role="status">{mensaje}</div>}
                   {accionesVisibles.length > 0 && (
                     <div className="bt-acciones">
@@ -353,6 +426,18 @@ export default function Contrataciones() {
           </div>
         </section>
       </div>
+      {modalValoracion && detalle?.publicacion?.id_publicacion && (
+        <FormularioValoracion
+          idPublicacion={detalle.publicacion.id_publicacion}
+          idTrabajador={detalle.trabajador?.id_trabajador}
+          valoracion={valoracionContratacion}
+          onClose={() => setModalValoracion(false)}
+          onGuardada={({ valoracion }) => {
+            setValoracionContratacion(valoracion?.data ?? valoracion)
+          }}
+        />
+      )}
+
       {accionPendiente && (
         <Dialogo
           titulo="Confirmar acción"

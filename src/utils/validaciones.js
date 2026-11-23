@@ -169,3 +169,23 @@ export function validarTelefono(valor) {
   }
   return ''
 }
+
+export function validarCalificacion(valor) {
+  const numero = Number(valor)
+
+  if (!Number.isInteger(numero) || numero < 1 || numero > 5) {
+    return 'Selecciona una calificación de 1 a 5 estrellas.'
+  }
+
+  return ''
+}
+
+export function validarComentarioValoracion(texto = '') {
+  const comentario = String(texto).trim()
+
+  if (comentario.length > 1000) {
+    return 'La reseña no puede superar los 1000 caracteres.'
+  }
+
+  return ''
+}
