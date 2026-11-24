@@ -4,6 +4,7 @@ import CampoAuth from '../components/auth/CampoAuth.jsx'
 import LayoutAuth from '../components/auth/LayoutAuth.jsx'
 import { CandadoIcono, CorreoIcono } from '../components/auth/IconosAuth.jsx'
 import { registrarCuenta } from '../services/authApi.js'
+import { useNavigate } from 'react-router'
 import {
   PATRON_NOMBRE_ESPANOL,
   validarNombreEspanol,
@@ -56,13 +57,13 @@ function validarCampo(campo, datos) {
 }
 
 export default function Registro() {
+  const navigate = useNavigate()
   const [datos, setDatos] = useState(CAMPOS_INICIALES)
   const [errores, setErrores] = useState({})
   const [errorGeneral, setErrorGeneral] = useState('')
   const [errorTerminos, setErrorTerminos] = useState(false)
   const [aceptaCondiciones, setAceptaCondiciones] = useState(false)
   const [mostrarContrasenas, setMostrarContrasenas] = useState(false)
-  const [mensaje, setMensaje] = useState('')
   const [enviando, setEnviando] = useState(false)
 
   const requisitos = comprobarRequisitosContrasena(datos.contrasena)
@@ -82,7 +83,6 @@ export default function Registro() {
     }))
 
     setErrorGeneral('')
-    setMensaje('')
   }
 
   function validarAlSalir(evento) {
@@ -99,7 +99,6 @@ export default function Registro() {
 
     if (enviando) return
 
-    setMensaje('')
     setErrorGeneral('')
 
     const nuevosErrores = {}
@@ -131,14 +130,7 @@ export default function Registro() {
         device_name: 'react-web',
       })
 
-      setMensaje(
-        '¡Cuenta creada exitosamente! Ahora puedes regresar e iniciar sesión.',
-      )
-
-      setDatos({ ...CAMPOS_INICIALES })
-      setErrores({})
-      setAceptaCondiciones(false)
-      setErrorTerminos(false)
+      navigate('/inicio', { replace: true })
     } catch (error) {
       if (error?.status === 422 && error?.errors) {
         const erroresBackend = {}
@@ -147,7 +139,15 @@ export default function Registro() {
           const mensajes = error.errors[campoBackend]
 
           if (Array.isArray(mensajes) && mensajes.length > 0) {
-            erroresBackend[campoFrontend] = mensajes[0]
+            const mensajeBackend = mensajes[0]
+
+            const correoDuplicado =
+              campoBackend === 'correo' &&
+              /has already been taken/i.test(mensajeBackend)
+
+            erroresBackend[campoFrontend] = correoDuplicado
+              ? 'Este correo electrónico ya está registrado. Utiliza otro o inicia sesión.'
+              : mensajeBackend
           }
         }
 
@@ -310,12 +310,6 @@ export default function Registro() {
         {errorGeneral && (
           <p className="rg-mensaje rg-error" role="alert">
             {errorGeneral}
-          </p>
-        )}
-
-        {mensaje && (
-          <p className="rg-mensaje rg-confirmacion" role="status">
-            {mensaje}
           </p>
         )}
 
