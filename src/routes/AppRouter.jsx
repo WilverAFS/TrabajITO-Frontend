@@ -23,7 +23,7 @@ import Footer from '../components/Footer.jsx'
 import { EVENTO_SESION_EXPIRADA } from '../services/apiClient.js'
 import Administracion from '../pages/Administracion.jsx'
 import './AppRouter.css'
-
+import RestablecerContrasena from '../pages/RestablecerContrasena.jsx'
 // Mapa de rutas de TrabajITO
 const modulos = [
   { ruta: '/', nombre: 'Presentación', descripcion: 'Página principal de TrabajITO', estado: 'existente' },
@@ -289,7 +289,24 @@ export default function AppRouter() {
             </ConTitulo>
           }
         />
-
+        {/* Restablecimiento de contraseña */}
+        <Route
+          path="/restablecer-contrasena"
+          element={
+            <ConTitulo titulo="Restablecer contraseña">
+              <RestablecerContrasena />
+            </ConTitulo>
+          }
+        />
+        <Route
+          path="/reset-password/:token"
+          element={
+            <ConTitulo titulo="Restablecer contraseña">
+              <RestablecerContrasena />
+            </ConTitulo>
+          }
+        />
+        
         {/* Catálogo */}
         <Route
           path="/catalogo"

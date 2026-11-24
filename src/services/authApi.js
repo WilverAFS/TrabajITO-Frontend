@@ -26,6 +26,25 @@ export function registrarCuenta({
   })
 }
 
+export function solicitarRecuperacion({ correo }) {
+  return solicitud('/auth/forgot-password', {
+    method: 'POST',
+    data: { correo },
+  })
+}
+
+export function restablecerContrasena({
+  correo,
+  token,
+  password,
+  password_confirmation,
+}) {
+  return solicitud('/auth/reset-password', {
+    method: 'POST',
+    data: { correo, token, password, password_confirmation },
+  })
+}
+
 export function obtenerUsuarioActual({ signal, notificarSesion = true } = {}) {
   return solicitud('/me', { signal, autenticado: true, notificarSesion })
 }
