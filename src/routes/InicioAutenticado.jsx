@@ -15,7 +15,7 @@ export default function InicioAutenticado() {
 
   useEffect(() => {
     if (!obtenerToken()) {
-      navigate('/', { replace: true })
+      navigate('/login', { replace: true })
       return undefined
     }
 

@@ -24,6 +24,7 @@ import { EVENTO_SESION_EXPIRADA } from '../services/apiClient.js'
 import Administracion from '../pages/Administracion.jsx'
 import './AppRouter.css'
 import RestablecerContrasena from '../pages/RestablecerContrasena.jsx'
+import RutaProtegida from './RutaProtegida.jsx'
 // Mapa de rutas de TrabajITO
 const modulos = [
   { ruta: '/', nombre: 'Presentación', descripcion: 'Página principal de TrabajITO', estado: 'existente' },
@@ -316,6 +317,17 @@ export default function AppRouter() {
             </ConTitulo>
           }
         />
+
+        {/* Ruta pública de búsqueda de trabajadores */}
+        <Route
+          path="/buscar"
+          element={
+            <ConTitulo titulo="Catálogo de profesionales">
+              <Catalogo />
+            </ConTitulo>
+          }
+        />
+
         {/* Perfil público */}
         <Route
           path="/perfiles/:id"
@@ -343,8 +355,15 @@ export default function AppRouter() {
           }
         />
 
-{/* Rutas que requieren sesión */}
-        <Route element={<InicioAutenticado />}>
+        {/* Rutas que requieren sesión */}
+
+        <Route
+          element={
+            <RutaProtegida>
+              <InicioAutenticado />
+            </RutaProtegida>
+          }
+        >
           <Route
             path="/inicio"
             element={<InicioPorRol />}
