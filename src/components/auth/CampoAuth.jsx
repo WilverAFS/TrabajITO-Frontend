@@ -10,16 +10,19 @@ export default function CampoAuth({
   pattern,
   error = '',
   required = true,
+  claseGrupo = 'rg-campo-grupo',
+  claseControl = 'rg-campo-control',
+  claseError = 'rg-campo-error',
   ...props
 }) {
   const idError = `${id}-error`
 
   return (
-    <div className="rg-campo-grupo">
+    <div className={claseGrupo}>
       <label htmlFor={id}>{etiqueta}</label>
 
       <div
-        className={`rg-campo-control ${
+        className={`${claseControl} ${
           error ? 'rg-campo-control-error' : ''
         }`}
       >
@@ -45,7 +48,7 @@ export default function CampoAuth({
       </div>
 
       {error && (
-        <p id={idError} className="rg-campo-error" role="alert">
+        <p id={idError} className={claseError} role="alert">
           {error}
         </p>
       )}

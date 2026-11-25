@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useParams, useOutletContext } from 'react-router'
-import { Avisos, CabeceraPagina, Campo, Resultado } from '../../components/ui/Interfaz.jsx'
+import { Avisos, CabeceraPagina, Campo, Dialogo, Resultado } from '../../components/ui/Interfaz.jsx'
 import { fechaLegible } from '../../components/ui/formatos.js'
 import { useAccion } from '../../components/ui/useAccion.js'
 import { useConsulta } from '../../components/ui/useConsulta.js'
@@ -39,6 +39,7 @@ export function PortafolioPropio() {
 
 function GestionEvidencias({ publicacion, refrescar }) {
   const accion = useAccion()
+  const [evidenciaPendiente, setEvidenciaPendiente] = useState(null)
 
   function cargar(evento) {
     evento.preventDefault()
@@ -56,8 +57,23 @@ function GestionEvidencias({ publicacion, refrescar }) {
   }
 
   function retirar(id) {
-    if (!window.confirm('¿Retirar definitivamente este archivo del portafolio?')) return
-    accion.ejecutar(() => eliminarEvidencia(id), { exito: 'Archivo retirado.', alCompletar: refrescar, alConflicto: refrescar })
+    setEvidenciaPendiente(id)
+  }
+
+  function confirmarRetiro() {
+    if (evidenciaPendiente === null) return
+
+    accion.ejecutar(
+      () => eliminarEvidencia(evidenciaPendiente),
+      {
+        exito: 'Archivo retirado.',
+        alCompletar: () => {
+          setEvidenciaPendiente(null)
+          refrescar()
+        },
+        alConflicto: refrescar,
+      }
+    )
   }
 
   return <section className="tj-card tj-stack">
@@ -69,6 +85,36 @@ function GestionEvidencias({ publicacion, refrescar }) {
       <Avisos error={accion.error} exito={accion.exito} />
       <div><button type="submit" className="tj-button" disabled={accion.ocupada}>{accion.ocupada ? 'Cargando archivos…' : 'Cargar evidencias'}</button></div>
     </form>
+
+    {evidenciaPendiente !== null && (
+      <Dialogo
+        titulo="Retirar evidencia"
+        onClose={() => {
+          if (!accion.ocupada) setEvidenciaPendiente(null)
+        }}
+      >
+        <p>¿Retirar definitivamente este archivo del portafolio?</p>
+        <Avisos error={accion.error} />
+        <div className="tj-actions">
+          <button
+            type="button"
+            className="tj-button tj-button-secondary"
+            disabled={accion.ocupada}
+            onClick={() => setEvidenciaPendiente(null)}
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            className="tj-button tj-button-danger"
+            disabled={accion.ocupada}
+            onClick={confirmarRetiro}
+          >
+            {accion.ocupada ? 'Retirando…' : 'Sí, retirar evidencia'}
+          </button>
+        </div>
+      </Dialogo>
+    )}
   </section>
 }
 

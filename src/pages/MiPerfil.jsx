@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
+import CampoAuth from '../components/auth/CampoAuth.jsx'
 import { eliminarToken } from '../services/apiClient.js'
 import { actualizarMiCuenta, cambiarMiContrasena, obtenerMiCuenta } from '../services/cuentaApi.js'
 import LayoutAplicacion from '../components/LayoutAplicacion.jsx'
@@ -28,23 +29,6 @@ function formularioDesdeUsuario(usuario) {
     correo: usuario?.correo ?? '',
     telefono: usuario?.telefono ?? '',
   }
-}
-
-function Campo({ etiqueta, id, error = '', ...props }) {
-  const idError = `${id}-error`
-
-  return (
-    <div className="mp-campo">
-      <label htmlFor={id}>{etiqueta}</label>
-      <input
-        id={id}
-        aria-invalid={Boolean(error)}
-        aria-describedby={error ? idError : undefined}
-        {...props}
-      />
-      {error && <p className="mp-error-campo" id={idError} role="alert">{error}</p>}
-    </div>
-  )
 }
 
 function validarDato(campo, valor) {
@@ -299,11 +283,11 @@ if (errorCarga) {
               </div>
               <form onSubmit={guardarDatos} noValidate>
                 <div className="mp-campos-dobles">
-                  <Campo etiqueta="Nombre" id="mp-nombre" name="nombre" value={datos.nombre} onChange={editarDato} onBlur={validarDatoAlSalir} error={erroresDatos.nombre} autoComplete="given-name" maxLength={100} required />
-                  <Campo etiqueta="Apellidos" id="mp-apellido" name="apellido" value={datos.apellido} onChange={editarDato} onBlur={validarDatoAlSalir} error={erroresDatos.apellido} autoComplete="family-name" maxLength={150} required />
+                  <CampoAuth etiqueta="Nombre" id="mp-nombre" name="nombre" value={datos.nombre} onChange={editarDato} onBlur={validarDatoAlSalir} error={erroresDatos.nombre} claseGrupo="mp-campo" claseControl="mp-campo-control" claseError="mp-error-campo" autoComplete="given-name" maxLength={100} required />
+                  <CampoAuth etiqueta="Apellidos" id="mp-apellido" name="apellido" value={datos.apellido} onChange={editarDato} onBlur={validarDatoAlSalir} error={erroresDatos.apellido} claseGrupo="mp-campo" claseControl="mp-campo-control" claseError="mp-error-campo" autoComplete="family-name" maxLength={150} required />
                 </div>
-                <Campo etiqueta="Correo electrónico" id="mp-correo" name="correo" type="email" value={datos.correo} onChange={editarDato} onBlur={validarDatoAlSalir} error={erroresDatos.correo} autoComplete="email" maxLength={255} required />
-                <Campo etiqueta="Teléfono (10 dígitos, opcional)" id="mp-telefono" name="telefono" type="tel" inputMode="numeric" maxLength={10} placeholder="9511234567" value={datos.telefono} onChange={editarDato} onBlur={validarDatoAlSalir} error={erroresDatos.telefono} autoComplete="tel" />
+                <CampoAuth etiqueta="Correo electrónico" id="mp-correo" name="correo" tipo="email" value={datos.correo} onChange={editarDato} onBlur={validarDatoAlSalir} error={erroresDatos.correo} claseGrupo="mp-campo" claseControl="mp-campo-control" claseError="mp-error-campo" autoComplete="email" maxLength={255} required />
+                <CampoAuth etiqueta="Teléfono (10 dígitos, opcional)" id="mp-telefono" name="telefono" tipo="tel" inputMode="numeric" maxLength={10} placeholder="9511234567" value={datos.telefono} onChange={editarDato} onBlur={validarDatoAlSalir} error={erroresDatos.telefono} claseGrupo="mp-campo" claseControl="mp-campo-control" claseError="mp-error-campo" autoComplete="tel" required={false} />
                 <div className="mp-id">ID de usuario: <strong>{usuario.id_usuario}</strong> · Solo lectura</div>
                 {mensajeDatos && <p className="mp-exito" role="status">{mensajeDatos}</p>}
                 {errorDatos && <p className="mp-error" role="alert">{errorDatos}</p>}
@@ -340,8 +324,8 @@ if (errorCarga) {
                 </div>
               ) : (
                 <form onSubmit={guardarClave} noValidate>
-                  <Campo etiqueta="Contraseña actual" id="mp-clave-actual" name="password_actual" type={mostrarClaves ? 'text' : 'password'} value={claves.password_actual} onChange={editarClave} onBlur={validarClaveAlSalir} error={erroresClave.password_actual} autoComplete="current-password" required />
-                  <Campo etiqueta="Nueva contraseña" id="mp-clave-nueva" name="password" type={mostrarClaves ? 'text' : 'password'} value={claves.password} onChange={editarClave} onBlur={validarClaveAlSalir} error={erroresClave.password} minLength={8} autoComplete="new-password" required />
+                  <CampoAuth etiqueta="Contraseña actual" id="mp-clave-actual" name="password_actual" tipo={mostrarClaves ? 'text' : 'password'} value={claves.password_actual} onChange={editarClave} onBlur={validarClaveAlSalir} error={erroresClave.password_actual} claseGrupo="mp-campo" claseControl="mp-campo-control" claseError="mp-error-campo" autoComplete="current-password" required />
+                  <CampoAuth etiqueta="Nueva contraseña" id="mp-clave-nueva" name="password" tipo={mostrarClaves ? 'text' : 'password'} value={claves.password} onChange={editarClave} onBlur={validarClaveAlSalir} error={erroresClave.password} claseGrupo="mp-campo" claseControl="mp-campo-control" claseError="mp-error-campo" minLength={8} autoComplete="new-password" required />
                   {claves.password.length > 0 && (
                     <ul className="mp-requisitos" aria-label="Requisitos de la nueva contraseña">
                       {comprobarRequisitosContrasena(claves.password).map((requisito) => (
@@ -351,7 +335,7 @@ if (errorCarga) {
                       ))}
                     </ul>
                   )}
-                  <Campo etiqueta="Confirmar nueva contraseña" id="mp-clave-confirmacion" name="password_confirmation" type={mostrarClaves ? 'text' : 'password'} value={claves.password_confirmation} onChange={editarClave} onBlur={validarClaveAlSalir} error={erroresClave.password_confirmation} minLength={8} autoComplete="new-password" required />
+                  <CampoAuth etiqueta="Confirmar nueva contraseña" id="mp-clave-confirmacion" name="password_confirmation" tipo={mostrarClaves ? 'text' : 'password'} value={claves.password_confirmation} onChange={editarClave} onBlur={validarClaveAlSalir} error={erroresClave.password_confirmation} claseGrupo="mp-campo" claseControl="mp-campo-control" claseError="mp-error-campo" minLength={8} autoComplete="new-password" required />
                   <label className="mp-mostrar">
                     <input type="checkbox" checked={mostrarClaves} onChange={(e) => setMostrarClaves(e.target.checked)} />
                     Mostrar contraseñas

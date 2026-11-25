@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback } from 'react'
-import { NavLink, useNavigate } from 'react-router'
+import { Link, NavLink, useNavigate } from 'react-router'
 
 import logo from '../assets/marca-oficial.png'
-import { CampanaIcono, CorreoIcono } from './Iconos'
+import { CampanaIcono } from './Iconos'
 
 import { obtenerToken } from '../services/apiClient.js'
 import {
@@ -151,9 +151,9 @@ function HeaderAutenticado({ botonActivo = 'catalogo' }) {
 
   return (
     <header className="trabajito-header">
-      <a href={esAdmin ? '/administracion' : '/'} className="logo-container">
+      <Link to={esAdmin ? '/administracion' : '/'} className="logo-container">
         <img src={logo} alt="TrabajITO" />
-      </a>
+      </Link>
 
       <button
         type="button"
@@ -360,7 +360,6 @@ function HeaderAutenticado({ botonActivo = 'catalogo' }) {
             )}
           </div>
 
-          <CorreoIcono />
         </div>
 
         <button

@@ -5,6 +5,8 @@ import {
   enviarSolicitudHabilitacion,
 } from '../../services/perfilComplementosApi.js'
 import AlertasPanel from './AlertasPanel.jsx'
+import { Dialogo } from '../ui/Interfaz.jsx'
+import { ListaComplementos, ElementoListaComplemento } from './ListaComplementos.jsx'
 
 function fechaLegible(fecha) {
   if (!fecha) return 'No registrada'
@@ -23,6 +25,7 @@ export default function HabilitacionPanel({ perfilActivo }) {
   const [ocupado, setOcupado] = useState(false)
   const [error, setError] = useState('')
   const [exito, setExito] = useState('')
+  const [confirmacionAbierta, setConfirmacionAbierta] = useState(false)
 
   const manejarError = useCallback((err) => {
     if (err?.name === 'AbortError') return
@@ -67,14 +70,14 @@ export default function HabilitacionPanel({ perfilActivo }) {
     [1, 2].includes(Number(solicitud.estado?.id_estado_solicitud))
   )
 
-  async function enviar() {
-    if (!window.confirm('¿Enviar una solicitud de habilitación para tu perfil profesional?')) return
+  async function confirmarEnvio() {
     setError('')
     setExito('')
     setOcupado(true)
     try {
       await enviarSolicitudHabilitacion()
       await cargar()
+      setConfirmacionAbierta(false)
       setExito('Solicitud enviada correctamente. Ahora debes esperar la revisión administrativa.')
     } catch (err) {
       // Si el estado cambió en otra sesión, recuperamos el historial actualizado.
@@ -106,7 +109,7 @@ export default function HabilitacionPanel({ perfilActivo }) {
         <button
           type="button"
           className="pc-boton"
-          onClick={enviar}
+          onClick={() => setConfirmacionAbierta(true)}
           disabled={cargando || ocupado || perfilActivo || enProceso}
         >
           {ocupado ? 'Enviando...' : perfilActivo ? 'Perfil habilitado' : enProceso ? 'Solicitud en proceso' : 'Solicitar habilitación'}
@@ -118,9 +121,9 @@ export default function HabilitacionPanel({ perfilActivo }) {
         {cargando ? <p role="status">Cargando historial...</p> : solicitudes.length === 0 ? (
           <p className="pc-vacio">No existen solicitudes registradas.</p>
         ) : (
-          <ul className="pc-lista">
+          <ListaComplementos label="Historial de solicitudes">
             {solicitudes.map((solicitud) => (
-              <li className="pc-item" key={solicitud.id_solicitud}>
+              <ElementoListaComplemento key={solicitud.id_solicitud}>
                 <div className="pc-item-encabezado">
                   <strong>Solicitud #{solicitud.id_solicitud}</strong>
                   <span className="pc-pill">{solicitud.estado?.estado_solicitud || 'Sin estado'}</span>
@@ -129,11 +132,46 @@ export default function HabilitacionPanel({ perfilActivo }) {
                 {solicitud.fecha_revision && <p>Revisada: {fechaLegible(solicitud.fecha_revision)}</p>}
                 {solicitud.administrador_revisor?.nombre_completo && <p>Revisor: {solicitud.administrador_revisor.nombre_completo}</p>}
                 {solicitud.comentario_revision && <p>Comentario: {solicitud.comentario_revision}</p>}
-              </li>
+              </ElementoListaComplemento>
             ))}
-          </ul>
+          </ListaComplementos>
         )}
       </section>
+
+      {confirmacionAbierta && (
+        <Dialogo
+          titulo="Solicitar habilitación"
+          onClose={() => {
+            if (!ocupado) setConfirmacionAbierta(false)
+          }}
+        >
+          <p>
+            ¿Enviar una solicitud de habilitación para tu perfil profesional?
+          </p>
+
+          {error && <p role="alert">{error}</p>}
+
+          <div className="pc-botones">
+            <button
+              type="button"
+              className="pc-boton pc-boton-claro"
+              disabled={ocupado}
+              onClick={() => setConfirmacionAbierta(false)}
+            >
+              Cancelar
+            </button>
+
+            <button
+              type="button"
+              className="pc-boton"
+              disabled={ocupado}
+              onClick={confirmarEnvio}
+            >
+              {ocupado ? 'Enviando...' : 'Sí, enviar solicitud'}
+            </button>
+          </div>
+        </Dialogo>
+      )}
     </div>
   )
 }

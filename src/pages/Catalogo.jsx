@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import TarjetaPerfil from '../components/TarjetaPerfil'
@@ -27,6 +28,9 @@ const OPCIONES_ORDEN = {
 }
 
 export default function Catalogo() {
+  const [searchParams] = useSearchParams()
+  const busquedaInicial = (searchParams.get('buscar') || '').slice(0, 150)
+
   const [perfiles, setPerfiles] = useState([])
   const [meta, setMeta] = useState(null)
   const [pagina, setPagina] = useState(1)
@@ -40,8 +44,14 @@ export default function Catalogo() {
   const [listaMunicipios, setListaMunicipios] = useState([])
   const [errorFiltros, setErrorFiltros] = useState('')
 
-  const [filtros, setFiltros] = useState(FILTROS_VACIOS)
-  const [filtrosAplicados, setFiltrosAplicados] = useState(FILTROS_VACIOS)
+  const [filtros, setFiltros] = useState(() => ({
+    ...FILTROS_VACIOS,
+    buscar: busquedaInicial,
+  }))
+  const [filtrosAplicados, setFiltrosAplicados] = useState(() => ({
+    ...FILTROS_VACIOS,
+    buscar: busquedaInicial,
+  }))
 
   // 1. Cargar oficios y estados una sola vez
   useEffect(() => {
@@ -68,7 +78,8 @@ export default function Catalogo() {
   // 2. Cargar municipios cuando cambia el estado seleccionado
   useEffect(() => {
     if (!filtros.estado) return
-      const controlador = new AbortController()
+
+    const controlador = new AbortController()
 
     listarMunicipios(filtros.estado, { signal: controlador.signal })
       .then((municipios) => {
@@ -119,19 +130,21 @@ export default function Catalogo() {
     return () => controlador.abort()
   }, [filtrosAplicados, pagina, orden])
 
-const handleBuscar = (evento) => {
-  evento.preventDefault()
-  const errorBusqueda = validarBusqueda(filtros.buscar)
-  if (errorBusqueda) {
-    setErrorFiltros(errorBusqueda)
-    return
+  const handleBuscar = (evento) => {
+    evento.preventDefault()
+    const errorBusqueda = validarBusqueda(filtros.buscar)
+
+    if (errorBusqueda) {
+      setErrorFiltros(errorBusqueda)
+      return
+    }
+
+    setErrorFiltros('')
+    setErrorPerfiles('')
+    setCargandoPerfiles(true)
+    setPagina(1)
+    setFiltrosAplicados({ ...filtros })
   }
-  setErrorFiltros('')
-  setErrorPerfiles('')
-  setCargandoPerfiles(true)
-  setPagina(1)
-  setFiltrosAplicados({ ...filtros })
-}
   const handleCambioEstado = (nuevoEstado) => {
     setFiltros((actual) => ({ ...actual, estado: nuevoEstado, municipio: '' }))
     if (!nuevoEstado) setListaMunicipios([])

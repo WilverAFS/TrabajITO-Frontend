@@ -77,9 +77,9 @@ if (cargando) {
   <LayoutAplicacion publico className="pagina">
       <main className="contenido">
         <section className="presentacion">
-          <a href="/" className="volver">
+          <Link to="/" className="volver">
             <span aria-hidden="true">←</span> Volver al inicio
-          </a>
+          </Link>
 
           <div className="etiqueta">Trabajadores de oficio</div>
 
