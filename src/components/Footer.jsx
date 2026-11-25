@@ -12,11 +12,6 @@ export default function Footer({ className }) {
         
         <div className="footer-abajo in-footer-bottom">
           <p>© 2026 TrabajITO. Hecho para conectar.</p>
-          <div className="footer-enlaces in-footer-enlaces">
-            <a href="#privacidad">Privacidad</a>
-            <span> - </span>
-            <a href="#terminos">Términos y condiciones</a>
-          </div>
         </div>
       </div>
     </footer>

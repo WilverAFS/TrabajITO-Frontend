@@ -207,6 +207,36 @@ function PerfilProfesionalProtegido() {
     </ConTitulo>
   )
 }
+
+function NuevaPublicacionProtegida() {
+  const { usuario } = useOutletContext()
+
+  if (!usuario?.es_trabajador_habilitado) {
+    return (
+      <ConTitulo titulo="Publicar trabajo">
+        <div className="tj-container tj-section tj-stack">
+          <h1>Tu perfil profesional aún no está habilitado</h1>
+          <p>
+            Para publicar trabajos finalizados necesitas tener un perfil
+            profesional habilitado por el administrador.
+          </p>
+          <Link
+            to="/perfil-profesional"
+            className="tj-button tj-button-secondary"
+          >
+            Consultar mi perfil y habilitación
+          </Link>
+        </div>
+      </ConTitulo>
+    )
+  }
+
+  return (
+    <ConTitulo titulo="Publicar trabajo">
+      <NuevaPublicacion />
+    </ConTitulo>
+  )
+}
 function AdministracionProtegida() {
   const { usuario } = useOutletContext()
 
@@ -406,8 +436,8 @@ export default function AppRouter() {
 
           <Route element={<PortafolioLayout />}>
             <Route path="/portafolio" element={<ConTitulo titulo="Mi portafolio"><PortafolioPropio /></ConTitulo>} />
-            <Route path="/portafolio/nueva" element={<ConTitulo titulo="Publicar trabajo"><NuevaPublicacion /></ConTitulo>} />
-            <Route path="/portafolio/:id" element={<ConTitulo titulo="Editar publicacion"><DetallePublicacion edicion /></ConTitulo>} />
+            <Route path="/portafolio/nueva" element={<NuevaPublicacionProtegida />} />
+            <Route path="/portafolio/:id" element={<ConTitulo titulo="Editar publicación"><DetallePublicacion edicion /></ConTitulo>} />
           </Route>
 
           <Route

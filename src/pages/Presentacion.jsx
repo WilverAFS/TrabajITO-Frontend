@@ -1,14 +1,14 @@
-import hero from '../assets/registro-hero-provisional.png';
+import hero from '../assets/registro-hero-provisional.png'
 import LayoutAplicacion from '../components/LayoutAplicacion.jsx'
-import './Presentacion.css';
+import { OFICIOS, PASOS_INICIO } from '../data/contenidoInicio.js'
+import './Presentacion.css'
 
-const oficios = [
-  { icono: '♧', nombre: 'Plomeros', descripcion: 'Fugas e instalaciones' },
-  { icono: 'ϟ', nombre: 'Electricistas', descripcion: 'Conexiones seguras' },
-  { icono: '⚒', nombre: 'Carpinteros', descripcion: 'Muebles a tu medida' },
-  { icono: '⚒', nombre: 'Herreros', descripcion: 'Metal y estructuras' },
-  { icono: '▰', nombre: 'Pintores', descripcion: 'Espacios renovados' },
-];
+const iconosOficio = ['♧', 'ϟ', '⚒', '⚒', '▰']
+
+const oficios = OFICIOS.map((oficio, index) => ({
+  ...oficio,
+  icono: iconosOficio[index],
+}))
 
 const trabajadores = [
   {
@@ -196,41 +196,16 @@ function Presentacion() {
 
             <div className="pasos-grid">
 
-              <article className="paso">
-                <span>01</span>
+              {PASOS_INICIO.map((paso) => (
+                <article className="paso" key={paso.numero}>
+                  <span>{paso.numero}</span>
 
-                <div>
-                  <h3>Busca por oficio o especialidad</h3>
-                  <p>
-                    Usa filtros para encontrar perfiles de Oaxaca de Juárez
-                    y zonas adyacentes.
-                  </p>
-                </div>
-              </article>
-
-              <article className="paso">
-                <span>02</span>
-
-                <div>
-                  <h3>Consulta perfiles y reseñas</h3>
-                  <p>
-                    Revisa especialidades, portafolio y horarios publicados
-                    por cada trabajador.
-                  </p>
-                </div>
-              </article>
-
-              <article className="paso">
-                <span>03</span>
-
-                <div>
-                  <h3>Contacta y acuerda directamente</h3>
-                  <p>
-                    Acuerda con el trabajador los detalles de tu proyecto
-                    y el seguimiento que necesitas.
-                  </p>
-                </div>
-              </article>
+                  <div>
+                    <h3>{paso.titulo}</h3>
+                    <p>{paso.descripcion}</p>
+                  </div>
+                </article>
+              ))}
 
             </div>
           </div>

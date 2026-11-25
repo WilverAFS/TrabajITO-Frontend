@@ -18,6 +18,7 @@ import {
 } from '../components/Iconos'
 
 import { listarTrabajadores } from '../services/trabajadoresApi.js'
+import { OFICIOS, PASOS_INICIO } from '../data/contenidoInicio.js'
 
 import './Inicio.css'
 
@@ -25,6 +26,7 @@ export default function Inicio() {
   const navigate = useNavigate()
 
   // Estado de los perfiles destacados
+  const [busquedaOficio, setBusquedaOficio] = useState('')
   const [destacados, setDestacados] = useState([])
   const [cargandoDestacados, setCargandoDestacados] = useState(true)
   const [errorDestacados, setErrorDestacados] = useState('')
@@ -61,39 +63,29 @@ export default function Inicio() {
     return () => controlador.abort()
   }, [])
 
-  // Oficios disponibles
-  const oficios = [
-    {
-      id: 1,
-      nombre: 'Plomeros',
-      desc: 'Fugas e instalaciones',
-      icono: <PlomeroIcono />,
-    },
-    {
-      id: 2,
-      nombre: 'Electricistas',
-      desc: 'Conexiones seguras',
-      icono: <RayoIcono />,
-    },
-    {
-      id: 3,
-      nombre: 'Carpinteros',
-      desc: 'Muebles a tu medida',
-      icono: <MartilloIcono />,
-    },
-    {
-      id: 4,
-      nombre: 'Herreros',
-      desc: 'Metal y estructuras',
-      icono: <LlaveIcono />,
-    },
-    {
-      id: 5,
-      nombre: 'Pintores',
-      desc: 'Espacios renovados',
-      icono: <PinturaIcono />,
-    },
+  const buscarTrabajadores = (evento) => {
+    evento.preventDefault()
+    const termino = busquedaOficio.trim()
+    navigate(
+      termino
+        ? `/catalogo?buscar=${encodeURIComponent(termino)}`
+        : '/catalogo'
+    )
+  }
+
+  const iconosOficio = [
+    <PlomeroIcono key="plomeros" />,
+    <RayoIcono key="electricistas" />,
+    <MartilloIcono key="carpinteros" />,
+    <LlaveIcono key="herreros" />,
+    <PinturaIcono key="pintores" />,
   ]
+
+  const oficios = OFICIOS.map((oficio, index) => ({
+    ...oficio,
+    desc: oficio.descripcion,
+    icono: iconosOficio[index],
+  }))
 
   return (
     <div className="in-pagina">
@@ -146,28 +138,31 @@ export default function Inicio() {
         {/* Buscador */}
         <section className="in-buscador-seccion">
           <div className="in-buscador-contenedor">
-            <label>¿Qué necesitas resolver hoy?</label>
+            <label htmlFor="inicio-busqueda">
+              ¿Qué necesitas resolver hoy?
+            </label>
 
-            <div className="in-buscador">
+            <form className="in-buscador" onSubmit={buscarTrabajadores}>
               <div className="in-buscador-input">
                 <span className="in-circulo-vacio"></span>
 
                 <div>
                   <small>TIPO DE OFICIO</small>
                   <input
-                    type="text"
-                    placeholder="Selecciona un oficio"
+                    id="inicio-busqueda"
+                    type="search"
+                    maxLength={150}
+                    placeholder="Escribe un oficio o servicio"
+                    value={busquedaOficio}
+                    onChange={(evento) => setBusquedaOficio(evento.target.value)}
                   />
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={() => navigate('/catalogo')}
-              >
+              <button type="submit">
                 Buscar trabajadores
               </button>
-            </div>
+            </form>
           </div>
         </section>
 
@@ -274,41 +269,16 @@ export default function Inicio() {
 
           <div className="in-grid-pasos">
 
-            <div className="in-paso">
-              <div className="in-paso-numero">01</div>
+            {PASOS_INICIO.map((paso) => (
+              <div className="in-paso" key={paso.numero}>
+                <div className="in-paso-numero">{paso.numero}</div>
 
-              <div className="in-paso-texto">
-                <h4>Busca por oficio o especialidad</h4>
-                <p>
-                  Usa filtros para encontrar perfiles de Oaxaca de Juárez
-                  y zonas adyacentes.
-                </p>
+                <div className="in-paso-texto">
+                  <h4>{paso.titulo}</h4>
+                  <p>{paso.descripcion}</p>
+                </div>
               </div>
-            </div>
-
-            <div className="in-paso">
-              <div className="in-paso-numero">02</div>
-
-              <div className="in-paso-texto">
-                <h4>Consulta perfiles y reseñas</h4>
-                <p>
-                  Revisa especialidades, portafolio y horarios publicados
-                  por cada trabajador.
-                </p>
-              </div>
-            </div>
-
-            <div className="in-paso">
-              <div className="in-paso-numero">03</div>
-
-              <div className="in-paso-texto">
-                <h4>Contacta y acuerda directamente</h4>
-                <p>
-                  Acuerda con el trabajador los detalles de tu proyecto
-                  y el seguimiento que necesitas.
-                </p>
-              </div>
-            </div>
+            ))}
 
           </div>
         </section>

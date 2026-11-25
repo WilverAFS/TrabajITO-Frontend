@@ -21,8 +21,8 @@
 .mp-campos-dobles { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .mp-campo { margin-bottom: 18px; min-width: 0; }
 .mp-campo label { display: block; font-size: 13px; font-weight: 750; margin-bottom: 8px; color: #24435f; }
-.mp-campo input { width: 100%; min-width: 0; height: 46px; border: 1px solid #cfdceb; background: #fff; border-radius: 10px; outline: none; padding: 0 13px; font: inherit; font-size: 14px; color: #173453; }
-.mp-campo input:focus { border-color: #1a64bc; box-shadow: 0 0 0 3px #1a64bc20; }
+.mp-campo-control { display: flex; align-items: center; width: 100%; min-width: 0; height: 46px; border: 1px solid #cfdceb; background: #fff; border-radius: 10px; outline: none; padding: 0 13px; font: inherit; font-size: 14px; color: #173453; }
+.mp-campo-control:focus-within { border-color: #1a64bc; box-shadow: 0 0 0 3px #1a64bc20; }
 .mp-id { font-size: 12px; color: #687e94; padding-bottom: 6px; }
 .mp-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 23px; }
 .mp-acciones button, .mp-enlace-boton { min-height: 44px; padding: 11px 17px; border: 1px solid #1357a8; border-radius: 10px; background: #155cb5; color: #fff; font-size: 14px; font-weight: 750; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
@@ -41,9 +41,20 @@
 .mp-clave-ok a { justify-self: start; }
 @media (max-width: 850px) { .mp-grid { grid-template-columns: 1fr; } }
 @media (max-width: 580px) { .mp-pagina { padding: 22px 12px 48px; } .mp-encabezado, .mp-tarjeta { padding: 19px; border-radius: 15px; } .mp-encabezado { align-items: flex-start; gap: 13px; } .mp-avatar { width: 55px; height: 55px; border-radius: 15px; font-size: 19px; } .mp-campos-dobles { grid-template-columns: 1fr; gap: 0; } .mp-acciones { align-items: stretch; flex-direction: column; } .mp-acciones button { width: 100%; } .mp-tarjeta h2 { font-size: 20px; } }
-.mp-campo input[aria-invalid="true"] { border-color: #c53243; background: #fffafa; }
-.mp-campo input[aria-invalid="true"]:focus { border-color: #c53243; box-shadow: 0 0 0 3px #c5324320; }
+.mp-campo-control.rg-campo-control-error { border-color: #c53243; background: #fffafa; }
+.mp-campo-control.rg-campo-control-error:focus-within { border-color: #c53243; box-shadow: 0 0 0 3px #c5324320; }
 .mp-error-campo { color: #a22b37; font-size: 12px; line-height: 1.45; margin: 6px 0 0; }
 .mp-requisitos { list-style: none; margin: -8px 0 16px; padding: 0; display: grid; gap: 6px; color: #6a7a8b; font-size: 12px; }
 .mp-requisitos li span { display: inline-block; width: 19px; }
 .mp-requisitos .mp-requisito-cumple { color: #087a51; font-weight: 650; }
+.mp-campo-control input {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+}

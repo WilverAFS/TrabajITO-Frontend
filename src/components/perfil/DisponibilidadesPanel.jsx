@@ -6,6 +6,8 @@ import {
   eliminarDisponibilidad,
 } from '../../services/perfilComplementosApi.js'
 import AlertasPanel from './AlertasPanel.jsx'
+import { Dialogo } from '../ui/Interfaz.jsx'
+import { ListaComplementos, ElementoListaComplemento } from './ListaComplementos.jsx'
 
 const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
 const FORMULARIO_VACIO = {
@@ -25,6 +27,7 @@ export default function DisponibilidadesPanel() {
   const [ocupado, setOcupado] = useState(false)
   const [error, setError] = useState('')
   const [exito, setExito] = useState('')
+  const [disponibilidadPendiente, setDisponibilidadPendiente] = useState(null)
 
   const manejarError = useCallback((err) => {
     if (err?.name === 'AbortError') return
@@ -121,15 +124,28 @@ export default function DisponibilidadesPanel() {
     }
   }
 
-  async function eliminar(registro) {
-    if (!window.confirm(`¿Eliminar el horario de ${DIAS[registro.dia_semana - 1]}?`)) return
+  function eliminar(registro) {
+    setError('')
+    setExito('')
+    setDisponibilidadPendiente(registro)
+  }
+
+  async function confirmarEliminar() {
+    if (!disponibilidadPendiente) return
+
     setError('')
     setExito('')
     setOcupado(true)
+
     try {
-      await eliminarDisponibilidad(registro.id_disponibilidad)
+      await eliminarDisponibilidad(disponibilidadPendiente.id_disponibilidad)
       await cargar()
-      if (idEdicion === registro.id_disponibilidad) cancelar()
+
+      if (idEdicion === disponibilidadPendiente.id_disponibilidad) {
+        cancelar()
+      }
+
+      setDisponibilidadPendiente(null)
       setExito('Horario eliminado correctamente.')
     } catch (err) {
       manejarError(err)
@@ -183,9 +199,9 @@ export default function DisponibilidadesPanel() {
           {cargando ? <p role="status">Cargando horarios...</p> : registros.length === 0 ? (
             <p className="pc-vacio">Aún no tienes horarios registrados.</p>
           ) : (
-            <ul className="pc-lista">
+            <ListaComplementos label="Lista de disponibilidades">
               {registros.map((registro) => (
-                <li className="pc-item" key={registro.id_disponibilidad}>
+                <ElementoListaComplemento key={registro.id_disponibilidad}>
                   <div className="pc-item-encabezado">
                     <strong>{registro.dia_nombre || DIAS[registro.dia_semana - 1]}</strong>
                     <span className={registro.activo ? 'pc-pill pc-pill-ok' : 'pc-pill'}>{registro.activo ? 'Activo' : 'Inactivo'}</span>
@@ -196,12 +212,49 @@ export default function DisponibilidadesPanel() {
                     <button type="button" className="pc-boton pc-boton-claro" disabled={ocupado} onClick={() => alternar(registro)}>{registro.activo ? 'Desactivar' : 'Activar'}</button>
                     <button type="button" className="pc-boton pc-boton-peligro" disabled={ocupado} onClick={() => eliminar(registro)}>Eliminar</button>
                   </div>
-                </li>
+                </ElementoListaComplemento>
               ))}
-            </ul>
+            </ListaComplementos>
           )}
         </section>
       </div>
+
+      {disponibilidadPendiente && (
+        <Dialogo
+          titulo="Eliminar disponibilidad"
+          onClose={() => {
+            if (!ocupado) setDisponibilidadPendiente(null)
+          }}
+        >
+          <p>
+            ¿Eliminar el horario del día{' '}
+            <strong>{DIAS[disponibilidadPendiente.dia_semana - 1]}</strong>?
+            Esta acción no se puede deshacer.
+          </p>
+
+          {error && <p role="alert">{error}</p>}
+
+          <div className="pc-botones">
+            <button
+              type="button"
+              className="pc-boton pc-boton-claro"
+              disabled={ocupado}
+              onClick={() => setDisponibilidadPendiente(null)}
+            >
+              Cancelar
+            </button>
+
+            <button
+              type="button"
+              className="pc-boton pc-boton-peligro"
+              disabled={ocupado}
+              onClick={confirmarEliminar}
+            >
+              {ocupado ? 'Eliminando...' : 'Sí, eliminar horario'}
+            </button>
+          </div>
+        </Dialogo>
+      )}
     </div>
   )
 }

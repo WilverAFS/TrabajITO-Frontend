@@ -6,6 +6,8 @@ import {
   enlaceDocumento,
 } from '../../services/perfilComplementosApi.js'
 import AlertasPanel from './AlertasPanel.jsx'
+import { Dialogo } from '../ui/Interfaz.jsx'
+import { ListaComplementos, ElementoListaComplemento } from './ListaComplementos.jsx'
 
 const LIMITE_BYTES = 5 * 1024 * 1024
 const EXTENSIONES_PERMITIDAS = /\.(pdf|jpe?g|png)$/i
@@ -22,6 +24,7 @@ export default function CertificadosPanel() {
   const [ocupado, setOcupado] = useState(false)
   const [error, setError] = useState('')
   const [exito, setExito] = useState('')
+  const [certificadoPendiente, setCertificadoPendiente] = useState(null)
 
   const manejarError = useCallback((err) => {
     if (err?.name === 'AbortError') return
@@ -93,14 +96,19 @@ export default function CertificadosPanel() {
     }
   }
 
-  async function eliminar(registro) {
-    if (!window.confirm(`¿Eliminar el certificado «${registro.nombre}» y su documento?`)) return
+  function eliminar(registro) {
+    setCertificadoPendiente(registro)
+  }
+
+  async function confirmarEliminar() {
+    if (!certificadoPendiente) return
     setError('')
     setExito('')
     setOcupado(true)
     try {
-      await eliminarCertificado(registro.id_certificado)
+      await eliminarCertificado(certificadoPendiente.id_certificado)
       await cargar()
+      setCertificadoPendiente(null)
       setExito('Certificado eliminado correctamente.')
     } catch (err) {
       manejarError(err)
@@ -147,9 +155,9 @@ export default function CertificadosPanel() {
           {cargando ? <p role="status">Cargando certificados...</p> : registros.length === 0 ? (
             <p className="pc-vacio">Todavía no has registrado certificados.</p>
           ) : (
-            <ul className="pc-lista">
+            <ListaComplementos label="Lista de certificados">
               {registros.map((registro) => (
-                <li className="pc-item" key={registro.id_certificado}>
+                <ElementoListaComplemento key={registro.id_certificado}>
                   <div className="pc-item-encabezado">
                     <strong>{registro.nombre}</strong>
                     <span className={registro.verificado ? 'pc-pill pc-pill-ok' : 'pc-pill'}>
@@ -165,13 +173,45 @@ export default function CertificadosPanel() {
                     )}
                     <button type="button" className="pc-boton pc-boton-peligro" disabled={ocupado} onClick={() => eliminar(registro)}>Eliminar</button>
                   </div>
-                </li>
+                </ElementoListaComplemento>
               ))}
-            </ul>
+            </ListaComplementos>
           )}
           <p className="pc-nota">El enlace al documento necesita que el Backend publique su almacenamiento mediante <code>php artisan storage:link</code>.</p>
         </section>
       </div>
+
+      {certificadoPendiente && (
+        <Dialogo
+          titulo="Eliminar certificado"
+          onClose={() => {
+            if (!ocupado) setCertificadoPendiente(null)
+          }}
+        >
+          <p>
+            ¿Eliminar el certificado «{certificadoPendiente.nombre}» y su documento?
+          </p>
+          {error && <p role="alert">{error}</p>}
+          <div className="pc-botones">
+            <button
+              type="button"
+              className="pc-boton pc-boton-claro"
+              disabled={ocupado}
+              onClick={() => setCertificadoPendiente(null)}
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              className="pc-boton pc-boton-peligro"
+              disabled={ocupado}
+              onClick={confirmarEliminar}
+            >
+              {ocupado ? 'Eliminando...' : 'Sí, eliminar certificado'}
+            </button>
+          </div>
+        </Dialogo>
+      )}
     </div>
   )
 }

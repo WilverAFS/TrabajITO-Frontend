@@ -4,7 +4,7 @@ import CampoAuth from '../components/auth/CampoAuth.jsx'
 import LayoutAuth from '../components/auth/LayoutAuth.jsx'
 import { CandadoIcono, CorreoIcono } from '../components/auth/IconosAuth.jsx'
 import { registrarCuenta } from '../services/authApi.js'
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import {
   PATRON_NOMBRE_ESPANOL,
   validarNombreEspanol,
@@ -295,9 +295,9 @@ export default function Registro() {
           />
           <span>
             Acepto los{' '}
-            <span className="rg-texto-enlace">Términos y condiciones</span>
+            Términos y condiciones
             {' '}y la{' '}
-            <span className="rg-texto-enlace">Política de privacidad</span>.
+            Política de privacidad.
           </span>
         </label>
 
@@ -324,7 +324,7 @@ export default function Registro() {
 
       <div className="rg-tarjeta-pie">
         <p>¿Ya tienes una cuenta?</p>
-        <a href="/">Iniciar sesión</a>
+        <Link to="/">Iniciar sesión</Link>
       </div>
     </LayoutAuth>
   )
