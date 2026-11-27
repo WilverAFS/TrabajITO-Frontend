@@ -170,10 +170,29 @@ export async function solicitud(ruta, {
   return cuerpo?.data ?? null
 }
 
-// Resuelve rutas públicas servidas por Laravel (por ejemplo /storage/...).
+
+// Resuelve rutas relativas y absolutas del Backend.
 export function resolverUrlBackend(ruta) {
-  if (typeof ruta !== 'string' || !ruta.startsWith('/')) return null
-  return new URL(ruta, `${apiOrigin}/`).href
+  if (typeof ruta !== 'string' || !ruta.trim()) return null
+
+  const valor = ruta.trim()
+
+  if (!/^https?:\/\//i.test(valor) && !valor.startsWith('/')) {
+    return null
+  }
+
+  try {
+    const url = new URL(valor, `${apiOrigin}/`)
+
+    // Solo se permiten recursos del origen configurado de la API.
+    if (url.origin !== apiOrigin || url.username || url.password) {
+      return null
+    }
+
+    return url.href
+  } catch {
+    return null
+  }
 }
 
 export default cliente

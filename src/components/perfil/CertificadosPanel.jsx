@@ -177,7 +177,6 @@ export default function CertificadosPanel() {
               ))}
             </ListaComplementos>
           )}
-          <p className="pc-nota">El enlace al documento necesita que el Backend publique su almacenamiento mediante <code>php artisan storage:link</code>.</p>
         </section>
       </div>
 
