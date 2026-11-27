@@ -195,4 +195,52 @@ export function resolverUrlBackend(ruta) {
   }
 }
 
+// Obtiene archivos privados mediante autenticación Bearer.
+export async function obtenerArchivoBackend(ruta, { signal } = {}) {
+  const url = resolverUrlBackend(ruta)
+
+  if (!url) {
+    throw new ApiError('La URL del archivo no es válida.')
+  }
+
+  const token = obtenerToken()
+
+  if (!token) {
+    throw new ApiError(MENSAJES_POR_ESTADO[401], {
+      status: 401,
+      codigo: 'UNAUTHENTICATED',
+    })
+  }
+
+  let respuesta
+
+  try {
+    respuesta = await cliente.get(url, {
+      responseType: 'blob',
+      signal,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+  } catch (error) {
+    throw normalizarError(error, { autenticado: true })
+  }
+
+  const archivo = respuesta.data
+
+  const tipoPermitido =
+    archivo instanceof Blob &&
+    (
+      /^image\/(jpeg|png|webp|gif|bmp|avif)$/i.test(archivo.type) ||
+      /^video\//i.test(archivo.type) ||
+      archivo.type === 'application/pdf'
+    )
+
+  if (!tipoPermitido) {
+    throw new ApiError('El formato del archivo no es compatible.')
+  }
+
+  return archivo
+}
+
 export default cliente
