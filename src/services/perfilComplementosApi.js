@@ -48,9 +48,8 @@ export function eliminarCertificado(id) {
   })
 }
 
-// Documento_url viene como /storage/... y se publica desde Laravel, NO Vite.
+// Resuelve la URL del documento proporcionada por la API.
 export function enlaceDocumento(documentoUrl) {
-  if (typeof documentoUrl !== 'string' || !documentoUrl.startsWith('/storage/')) return null
   return resolverUrlBackend(documentoUrl)
 }
 

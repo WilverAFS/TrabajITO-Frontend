@@ -78,7 +78,7 @@ function GestionEvidencias({ publicacion, refrescar }) {
 
   return <section className="tj-card tj-stack">
     <div><h2>Evidencias del trabajo</h2><p className="tj-muted">Hasta 10 imágenes de 10 MB y 3 videos de 100 MB por publicación.</p></div>
-    <GaleriaEvidencias evidencias={publicacion.evidencias} titulo={publicacion.titulo} eliminar={retirar} ocupada={accion.ocupada} />
+    <GaleriaEvidencias evidencias={publicacion.evidencias} titulo={publicacion.titulo} eliminar={retirar} ocupada={accion.ocupada} privado={!publicacion.visible} />
     <form onSubmit={cargar} className="tj-form">
       <Campo etiqueta="Archivos" name="archivos" type="file" multiple required
         accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.mp4,.webm,.mov" />
@@ -196,7 +196,7 @@ export function DetallePublicacion({ edicion = false }) {
               <GestionEvidencias publicacion={trabajo} refrescar={consulta.refrescar} />
             </> : <section className="tj-card tj-stack">
               <div><h2>Descripción del trabajo</h2><p className="tj-text-preserve">{trabajo.descripcion}</p></div>
-              {trabajo.evidencias?.length > 0 && <GaleriaEvidencias evidencias={trabajo.evidencias} titulo={trabajo.titulo} />}
+                {trabajo.evidencias?.length > 0 && (<GaleriaEvidencias evidencias={trabajo.evidencias} titulo={trabajo.titulo} privado={!trabajo.visible} />)}
             </section>}
             {!edicion && (
               <section className="tj-card tj-stack">

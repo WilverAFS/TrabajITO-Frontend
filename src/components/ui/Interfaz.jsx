@@ -78,14 +78,27 @@ export function Insignia({ children, tono = 'neutral' }) {
   return <span className={`tj-badge tj-badge-${tono}`}>{children}</span>
 }
 
-export function Medio({ url, nombre = '', icono = 'usuario', className = '' }) {
-  const src = resolverUrlBackend(url)
+export function Medio({url, urlBlob = null, nombre = '', icono = 'usuario', className = '',}) {
+  const src = urlBlob || resolverUrlBackend(url)
   const [fallida, setFallida] = useState('')
+
   return (
     <div className={`tj-media ${className}`}>
       {src && src !== fallida
-        ? <img src={src} alt={nombre} loading="lazy" onError={() => setFallida(src)} />
-        : <span aria-hidden="true">{icono === 'usuario' && iniciales(nombre) || <Icono nombre={icono} />}</span>}
+        ? (
+          <img
+            src={src}
+            alt={nombre}
+            loading="lazy"
+            onError={() => setFallida(src)}
+          />
+        )
+        : (
+          <span aria-hidden="true">
+            {icono === 'usuario' && iniciales(nombre) ||
+              <Icono nombre={icono} />}
+          </span>
+        )}
     </div>
   )
 }

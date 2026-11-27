@@ -8,6 +8,7 @@ import {
 import AlertasPanel from './AlertasPanel.jsx'
 import { Dialogo } from '../ui/Interfaz.jsx'
 import { ListaComplementos, ElementoListaComplemento } from './ListaComplementos.jsx'
+import { useArchivoBackend } from '../ui/useArchivoBackend.js'
 
 const LIMITE_BYTES = 5 * 1024 * 1024
 const EXTENSIONES_PERMITIDAS = /\.(pdf|jpe?g|png)$/i
@@ -25,6 +26,12 @@ export default function CertificadosPanel() {
   const [error, setError] = useState('')
   const [exito, setExito] = useState('')
   const [certificadoPendiente, setCertificadoPendiente] = useState(null)
+  const [certificadoAbierto, setCertificadoAbierto] = useState(null)
+
+  const vistaDocumento = useArchivoBackend(
+    certificadoAbierto?.documento_url,
+    { privado: true },
+  )
 
   const manejarError = useCallback((err) => {
     if (err?.name === 'AbortError') return
@@ -169,17 +176,75 @@ export default function CertificadosPanel() {
                   {registro.fecha_vencimiento && <p>Vencimiento: {registro.fecha_vencimiento}</p>}
                   <div className="pc-botones pc-botones-pequenos">
                     {enlaceDocumento(registro.documento_url) && (
-                      <a href={enlaceDocumento(registro.documento_url)} className="pc-boton pc-boton-claro" target="_blank" rel="noopener noreferrer">Ver documento</a>
-                    )}
+                      <button type="button" className="pc-boton pc-boton-claro" disabled={ocupado} onClick={() => setCertificadoAbierto(registro)}> Ver documento </button> )}
                     <button type="button" className="pc-boton pc-boton-peligro" disabled={ocupado} onClick={() => eliminar(registro)}>Eliminar</button>
                   </div>
                 </ElementoListaComplemento>
               ))}
             </ListaComplementos>
           )}
-          <p className="pc-nota">El enlace al documento necesita que el Backend publique su almacenamiento mediante <code>php artisan storage:link</code>.</p>
         </section>
       </div>
+
+      {certificadoAbierto && (
+        <Dialogo
+          titulo={certificadoAbierto.nombre}
+          onClose={() => setCertificadoAbierto(null)}
+        >
+          {vistaDocumento.cargando && (
+            <p role="status">Cargando documento...</p>
+          )}
+
+          {vistaDocumento.error && (
+            <p role="alert">{vistaDocumento.error}</p>
+          )}
+
+          {vistaDocumento.url && (
+            <>
+              {vistaDocumento.tipo === 'application/pdf' ? (
+                <iframe
+                  src={vistaDocumento.url}
+                  title={certificadoAbierto.nombre}
+                  style={{
+                    width: '100%',
+                    height: '65vh',
+                    border: 0,
+                  }}
+                />
+              ) : (
+                <img
+                  src={vistaDocumento.url}
+                  alt={certificadoAbierto.nombre}
+                  style={{
+                    maxWidth: '100%',
+                    maxHeight: '65vh',
+                    objectFit: 'contain',
+                  }}
+                />
+              )}
+
+              <div className="pc-botones">
+                <a
+                  href={vistaDocumento.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="pc-boton pc-boton-claro"
+                >
+                  Abrir en otra pestaña
+                </a>
+
+                <button
+                  type="button"
+                  className="pc-boton"
+                  onClick={() => setCertificadoAbierto(null)}
+                >
+                  Cerrar
+                </button>
+              </div>
+            </>
+          )}
+        </Dialogo>
+      )}
 
       {certificadoPendiente && (
         <Dialogo

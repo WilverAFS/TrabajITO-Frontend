@@ -170,10 +170,77 @@ export async function solicitud(ruta, {
   return cuerpo?.data ?? null
 }
 
-// Resuelve rutas públicas servidas por Laravel (por ejemplo /storage/...).
+
+// Resuelve rutas relativas y absolutas del Backend.
 export function resolverUrlBackend(ruta) {
-  if (typeof ruta !== 'string' || !ruta.startsWith('/')) return null
-  return new URL(ruta, `${apiOrigin}/`).href
+  if (typeof ruta !== 'string' || !ruta.trim()) return null
+
+  const valor = ruta.trim()
+
+  if (!/^https?:\/\//i.test(valor) && !valor.startsWith('/')) {
+    return null
+  }
+
+  try {
+    const url = new URL(valor, `${apiOrigin}/`)
+
+    // Solo se permiten recursos del origen configurado de la API.
+    if (url.origin !== apiOrigin || url.username || url.password) {
+      return null
+    }
+
+    return url.href
+  } catch {
+    return null
+  }
+}
+
+// Obtiene archivos privados mediante autenticación Bearer.
+export async function obtenerArchivoBackend(ruta, { signal } = {}) {
+  const url = resolverUrlBackend(ruta)
+
+  if (!url) {
+    throw new ApiError('La URL del archivo no es válida.')
+  }
+
+  const token = obtenerToken()
+
+  if (!token) {
+    throw new ApiError(MENSAJES_POR_ESTADO[401], {
+      status: 401,
+      codigo: 'UNAUTHENTICATED',
+    })
+  }
+
+  let respuesta
+
+  try {
+    respuesta = await cliente.get(url, {
+      responseType: 'blob',
+      signal,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+  } catch (error) {
+    throw normalizarError(error, { autenticado: true })
+  }
+
+  const archivo = respuesta.data
+
+  const tipoPermitido =
+    archivo instanceof Blob &&
+    (
+      /^image\/(jpeg|png|webp|gif|bmp|avif)$/i.test(archivo.type) ||
+      /^video\//i.test(archivo.type) ||
+      archivo.type === 'application/pdf'
+    )
+
+  if (!tipoPermitido) {
+    throw new ApiError('El formato del archivo no es compatible.')
+  }
+
+  return archivo
 }
 
 export default cliente
