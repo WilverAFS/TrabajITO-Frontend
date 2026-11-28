@@ -20,7 +20,7 @@ import PerfilPublico from '../pages/PerfilPublico';
 import InicioAutenticado from './InicioAutenticado.jsx'
 import Header from '../components/Header.jsx'
 import Footer from '../components/Footer.jsx'
-import { EVENTO_SESION_EXPIRADA } from '../services/apiClient.js'
+import { EVENTO_SESION_EXPIRADA, obtenerToken } from '../services/apiClient.js'
 import Administracion from '../pages/Administracion.jsx'
 import './AppRouter.css'
 import RestablecerContrasena from '../pages/RestablecerContrasena.jsx'
@@ -144,9 +144,39 @@ function NoEncontrada() {
 }
 
 function PresentacionConNavegacion() {
+  if (obtenerToken()) {
+    return <Navigate to="/inicio" replace />
+  }
+
   return (
     <ConTitulo titulo="Presentación">
       <Presentacion />
+    </ConTitulo>
+  )
+}
+
+function AccesoRestringido({
+  titulo,
+  mensaje,
+  enlace = "/inicio",
+  textoEnlace = "Volver al inicio",
+}) {
+  return (
+    <ConTitulo titulo={titulo}>
+      <main className="tj-ruta-pagina">
+        <section
+          className="tj-ruta-tarjeta"
+          role="alert"
+          aria-labelledby="titulo-acceso-restringido"
+        >
+          <span className="tj-ruta-etiqueta">Acceso restringido</span>
+          <h1 id="titulo-acceso-restringido">{titulo}</h1>
+          <p>{mensaje}</p>
+          <nav className="tj-ruta-acciones" aria-label="Opciones disponibles">
+            <Link to={enlace}>{textoEnlace}</Link>
+          </nav>
+        </section>
+      </main>
     </ConTitulo>
   )
 }
@@ -170,7 +200,14 @@ function SolicitudesProtegidas() {
   }
 
   if (!usuario?.es_trabajador_habilitado) {
-    return <Navigate to="/inicio" replace />
+    return (
+      <AccesoRestringido
+        titulo="Perfil profesional no habilitado"
+        mensaje="Todavía no tienes habilitado tu perfil profesional. Revisa tu perfil y consulta los pasos necesarios para solicitar o completar la habilitación."
+        enlace="/perfil-profesional"
+        textoEnlace="Revisar mi perfil profesional"
+      />
+    )
   }
 
   return (
@@ -241,7 +278,12 @@ function AdministracionProtegida() {
   const { usuario } = useOutletContext()
 
   if (!usuario?.es_administrador) {
-    return <Navigate to="/inicio" replace />
+    return (
+      <AccesoRestringido
+        titulo="Acceso denegado"
+        mensaje="No tienes permisos para acceder al módulo de administración. Esta sección está disponible únicamente para cuentas administradoras."
+      />
+    )
   }
 
   return (

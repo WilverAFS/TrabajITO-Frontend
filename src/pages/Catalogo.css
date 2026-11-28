@@ -260,3 +260,59 @@
 .barra-filtros {
   flex-wrap: wrap;
 }
+
+/* Ajustes QA: filtros legibles en tablet y resoluciones intermedias. */
+@media (max-width: 1024px) {
+  .barra-filtros {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .filtro-caja {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .filtro-contenido {
+    min-width: 0;
+  }
+
+  .filtro-contenido input,
+  .filtro-contenido select {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .btn-ver-resultados {
+    grid-column: 1 / -1;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .grid-perfiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .barra-filtros {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .filtro-caja {
+    min-width: 0;
+  }
+
+  .btn-ver-resultados {
+    grid-column: 1;
+  }
+
+  .grid-perfiles {
+    grid-template-columns: 1fr;
+  }
+}

@@ -324,7 +324,7 @@ export default function Registro() {
 
       <div className="rg-tarjeta-pie">
         <p>¿Ya tienes una cuenta?</p>
-        <Link to="/">Iniciar sesión</Link>
+        <Link to="/login">Iniciar sesión</Link>
       </div>
     </LayoutAuth>
   )
